@@ -1,0 +1,35 @@
+{
+  "type": "object",
+  "required": [
+    "title"
+  ],
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Page title",
+      "example": "Quick Start Guide"
+    },
+    "content": {
+      "type": "string",
+      "description": "Page content in Markdown",
+      "example": "# Quick Start\n\nWelcome to our API..."
+    },
+    "status": {
+      "type": "string",
+      "description": "Page status",
+      "enum": [
+        "draft",
+        "published"
+      ],
+      "example": "draft"
+    },
+    "parentId": {
+      "type": "string",
+      "description": "Parent page ID for nested pages",
+      "example": "pg_parent123"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/archbee/refs/heads/main/json-schema/archbee-api-page-request-schema.json",
+  "title": "PageRequest"
+}

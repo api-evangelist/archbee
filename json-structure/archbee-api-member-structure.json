@@ -1,0 +1,35 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "User identifier",
+      "example": "usr_abc123"
+    },
+    "email": {
+      "type": "string",
+      "description": "Member email address",
+      "example": "alice@example.com"
+    },
+    "name": {
+      "type": "string",
+      "description": "Member display name",
+      "example": "Alice Smith"
+    },
+    "role": {
+      "type": "string",
+      "description": "Member role in the space",
+      "enum": [
+        "owner",
+        "admin",
+        "editor",
+        "viewer",
+        "commenter"
+      ],
+      "example": "editor"
+    }
+  },
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/archbee/refs/heads/main/json-structure/archbee-api-member-structure.json",
+  "name": "Member"
+}

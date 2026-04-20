@@ -1,0 +1,54 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique page identifier",
+      "example": "pg_abc123"
+    },
+    "title": {
+      "type": "string",
+      "description": "Page title",
+      "example": "Getting Started"
+    },
+    "slug": {
+      "type": "string",
+      "description": "URL-friendly page identifier",
+      "example": "getting-started"
+    },
+    "status": {
+      "type": "string",
+      "description": "Page publication status",
+      "enum": [
+        "draft",
+        "published",
+        "archived"
+      ],
+      "example": "published"
+    },
+    "content": {
+      "type": "string",
+      "description": "Page content in Markdown",
+      "example": "# Getting Started\n\nWelcome to our API..."
+    },
+    "spaceId": {
+      "type": "string",
+      "description": "Parent space identifier",
+      "example": "sp_abc123"
+    },
+    "parentId": {
+      "type": "string",
+      "description": "Parent page identifier (if nested)",
+      "example": "pg_parent123"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last update timestamp",
+      "example": "2026-04-19T10:00:00Z"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/archbee/refs/heads/main/json-schema/archbee-api-page-schema.json",
+  "title": "Page"
+}

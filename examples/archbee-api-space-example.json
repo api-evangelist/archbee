@@ -1,0 +1,9 @@
+{
+  "id": "sp_abc123",
+  "name": "Developer Docs",
+  "slug": "developer-docs",
+  "visibility": "public",
+  "description": "Main developer documentation",
+  "pageCount": 42,
+  "createdAt": "2026-01-15T10:00:00Z"
+}

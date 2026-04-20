@@ -1,0 +1,101 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "archbee": "https://api.archbee.com/schema/",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "ErrorResponse": "archbee:ErrorResponse",
+    "message": {
+      "@id": "archbee:message",
+      "@type": "xsd:string"
+    },
+    "code": {
+      "@id": "archbee:code",
+      "@type": "xsd:integer"
+    },
+    "Space": "archbee:Space",
+    "id": {
+      "@id": "archbee:id",
+      "@type": "xsd:string"
+    },
+    "name": {
+      "@id": "archbee:name",
+      "@type": "xsd:string"
+    },
+    "slug": {
+      "@id": "archbee:slug",
+      "@type": "xsd:string"
+    },
+    "visibility": {
+      "@id": "archbee:visibility",
+      "@type": "xsd:string"
+    },
+    "description": {
+      "@id": "archbee:description",
+      "@type": "xsd:string"
+    },
+    "pageCount": {
+      "@id": "archbee:pageCount",
+      "@type": "xsd:integer"
+    },
+    "createdAt": {
+      "@id": "archbee:createdAt",
+      "@type": "xsd:dateTime"
+    },
+    "SpaceRequest": "archbee:SpaceRequest",
+    "SpaceList": "archbee:SpaceList",
+    "spaces": {
+      "@id": "archbee:spaces",
+      "@type": "xsd:string"
+    },
+    "totalCount": {
+      "@id": "archbee:totalCount",
+      "@type": "xsd:integer"
+    },
+    "Page": "archbee:Page",
+    "title": {
+      "@id": "archbee:title",
+      "@type": "xsd:string"
+    },
+    "status": {
+      "@id": "archbee:status",
+      "@type": "xsd:string"
+    },
+    "content": {
+      "@id": "archbee:content",
+      "@type": "xsd:string"
+    },
+    "spaceId": {
+      "@id": "archbee:spaceId",
+      "@type": "xsd:string"
+    },
+    "parentId": {
+      "@id": "archbee:parentId",
+      "@type": "xsd:string"
+    },
+    "updatedAt": {
+      "@id": "archbee:updatedAt",
+      "@type": "xsd:dateTime"
+    },
+    "PageRequest": "archbee:PageRequest",
+    "PageList": "archbee:PageList",
+    "pages": {
+      "@id": "archbee:pages",
+      "@type": "xsd:string"
+    },
+    "Member": "archbee:Member",
+    "email": {
+      "@id": "archbee:email",
+      "@type": "xsd:string"
+    },
+    "role": {
+      "@id": "archbee:role",
+      "@type": "xsd:string"
+    },
+    "MemberList": "archbee:MemberList",
+    "members": {
+      "@id": "archbee:members",
+      "@type": "xsd:string"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "type": "object",
+  "properties": {
+    "spaces": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {},
+          "name": {},
+          "slug": {},
+          "visibility": {},
+          "description": {},
+          "pageCount": {},
+          "createdAt": {}
+        }
+      }
+    },
+    "totalCount": {
+      "type": "integer",
+      "description": "Total number of spaces",
+      "example": 3
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/archbee/refs/heads/main/json-schema/archbee-api-space-list-schema.json",
+  "title": "SpaceList"
+}

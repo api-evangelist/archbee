@@ -1,0 +1,31 @@
+{
+  "type": "object",
+  "required": [
+    "name"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Space name",
+      "example": "API Reference"
+    },
+    "visibility": {
+      "type": "string",
+      "description": "Space visibility",
+      "enum": [
+        "public",
+        "private",
+        "password-protected"
+      ],
+      "example": "public"
+    },
+    "description": {
+      "type": "string",
+      "description": "Space description",
+      "example": "API reference documentation"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/archbee/refs/heads/main/json-schema/archbee-api-space-request-schema.json",
+  "title": "SpaceRequest"
+}

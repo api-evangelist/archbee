@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "properties": {
+    "members": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {},
+          "email": {},
+          "name": {},
+          "role": {}
+        }
+      }
+    },
+    "totalCount": {
+      "type": "integer",
+      "description": "Total number of members",
+      "example": 5
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/archbee/refs/heads/main/json-schema/archbee-api-member-list-schema.json",
+  "title": "MemberList"
+}

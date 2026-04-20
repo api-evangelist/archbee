@@ -1,0 +1,48 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique space identifier",
+      "example": "sp_abc123"
+    },
+    "name": {
+      "type": "string",
+      "description": "Space display name",
+      "example": "Developer Docs"
+    },
+    "slug": {
+      "type": "string",
+      "description": "URL-friendly space identifier",
+      "example": "developer-docs"
+    },
+    "visibility": {
+      "type": "string",
+      "description": "Space visibility",
+      "enum": [
+        "public",
+        "private",
+        "password-protected"
+      ],
+      "example": "public"
+    },
+    "description": {
+      "type": "string",
+      "description": "Space description",
+      "example": "Main developer documentation"
+    },
+    "pageCount": {
+      "type": "int32",
+      "description": "Number of pages in the space",
+      "example": 42
+    },
+    "createdAt": {
+      "type": "datetime",
+      "description": "Space creation timestamp",
+      "example": "2026-01-15T10:00:00Z"
+    }
+  },
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/archbee/refs/heads/main/json-structure/archbee-api-space-structure.json",
+  "name": "Space"
+}

@@ -1,0 +1,29 @@
+{
+  "type": "object",
+  "properties": {
+    "pages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {},
+          "title": {},
+          "slug": {},
+          "status": {},
+          "content": {},
+          "spaceId": {},
+          "parentId": {},
+          "updatedAt": {}
+        }
+      }
+    },
+    "totalCount": {
+      "type": "int32",
+      "description": "Total number of pages",
+      "example": 10
+    }
+  },
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/archbee/refs/heads/main/json-structure/archbee-api-page-list-structure.json",
+  "name": "PageList"
+}

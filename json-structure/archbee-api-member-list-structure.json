@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "properties": {
+    "members": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {},
+          "email": {},
+          "name": {},
+          "role": {}
+        }
+      }
+    },
+    "totalCount": {
+      "type": "int32",
+      "description": "Total number of members",
+      "example": 5
+    }
+  },
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/archbee/refs/heads/main/json-structure/archbee-api-member-list-structure.json",
+  "name": "MemberList"
+}

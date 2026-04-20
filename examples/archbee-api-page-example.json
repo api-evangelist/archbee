@@ -1,0 +1,10 @@
+{
+  "id": "pg_abc123",
+  "title": "Getting Started",
+  "slug": "getting-started",
+  "status": "published",
+  "content": "# Getting Started\n\nWelcome to our API...",
+  "spaceId": "sp_abc123",
+  "parentId": "pg_parent123",
+  "updatedAt": "2026-04-19T10:00:00Z"
+}

@@ -1,0 +1,29 @@
+{
+  "type": "object",
+  "properties": {
+    "pages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {},
+          "title": {},
+          "slug": {},
+          "status": {},
+          "content": {},
+          "spaceId": {},
+          "parentId": {},
+          "updatedAt": {}
+        }
+      }
+    },
+    "totalCount": {
+      "type": "integer",
+      "description": "Total number of pages",
+      "example": 10
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/archbee/refs/heads/main/json-schema/archbee-api-page-list-schema.json",
+  "title": "PageList"
+}
