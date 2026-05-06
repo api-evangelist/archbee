@@ -1,0 +1,348 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Archbee API
+  description: The Archbee API enables programmatic management of documentation spaces, pages, and content within the Archbee
+    documentation platform. Manage your docs, spaces, members, and settings through RESTful API endpoints.
+  tags:
+  - Archbee
+  - API
+  created: '2026-05-06'
+  modified: '2026-05-06'
+capability:
+  consumes:
+  - type: http
+    namespace: archbee
+    baseUri: https://api.archbee.com/v1
+    description: Archbee API HTTP API.
+    authentication:
+      type: apikey
+      in: header
+      name: X-Api-Key
+      value: '{{ARCHBEE_TOKEN}}'
+    resources:
+    - name: spaces
+      path: /spaces
+      operations:
+      - name: listspaces
+        method: GET
+        description: Archbee List Spaces
+        inputParameters:
+        - name: page
+          in: query
+          type: integer
+          description: Page number for pagination
+        - name: limit
+          in: query
+          type: integer
+          description: Results per page
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createspace
+        method: POST
+        description: Archbee Create Space
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: spaces-spaceid
+      path: /spaces/{spaceId}
+      operations:
+      - name: getspace
+        method: GET
+        description: Archbee Get Space
+        inputParameters:
+        - name: spaceId
+          in: path
+          type: string
+          required: true
+          description: Space identifier
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: deletespace
+        method: DELETE
+        description: Archbee Delete Space
+        inputParameters:
+        - name: spaceId
+          in: path
+          type: string
+          required: true
+          description: Space identifier
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: spaces-spaceid-pages
+      path: /spaces/{spaceId}/pages
+      operations:
+      - name: listpages
+        method: GET
+        description: Archbee List Pages
+        inputParameters:
+        - name: spaceId
+          in: path
+          type: string
+          required: true
+          description: Space identifier
+        - name: parentId
+          in: query
+          type: string
+          description: Filter by parent page ID
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createpage
+        method: POST
+        description: Archbee Create Page
+        inputParameters:
+        - name: spaceId
+          in: path
+          type: string
+          required: true
+          description: Space identifier
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: spaces-spaceid-members
+      path: /spaces/{spaceId}/members
+      operations:
+      - name: listmembers
+        method: GET
+        description: Archbee List Space Members
+        inputParameters:
+        - name: spaceId
+          in: path
+          type: string
+          required: true
+          description: Space identifier
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+  exposes:
+  - type: rest
+    port: 8080
+    namespace: archbee-rest
+    description: REST adapter for Archbee API.
+    resources:
+    - path: /spaces
+      name: listspaces
+      operations:
+      - method: GET
+        name: listspaces
+        description: Archbee List Spaces
+        call: archbee.listspaces
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /spaces
+      name: createspace
+      operations:
+      - method: POST
+        name: createspace
+        description: Archbee Create Space
+        call: archbee.createspace
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /spaces/{spaceId}
+      name: getspace
+      operations:
+      - method: GET
+        name: getspace
+        description: Archbee Get Space
+        call: archbee.getspace
+        with:
+          spaceId: rest.spaceId
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /spaces/{spaceId}
+      name: deletespace
+      operations:
+      - method: DELETE
+        name: deletespace
+        description: Archbee Delete Space
+        call: archbee.deletespace
+        with:
+          spaceId: rest.spaceId
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /spaces/{spaceId}/pages
+      name: listpages
+      operations:
+      - method: GET
+        name: listpages
+        description: Archbee List Pages
+        call: archbee.listpages
+        with:
+          spaceId: rest.spaceId
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /spaces/{spaceId}/pages
+      name: createpage
+      operations:
+      - method: POST
+        name: createpage
+        description: Archbee Create Page
+        call: archbee.createpage
+        with:
+          spaceId: rest.spaceId
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /spaces/{spaceId}/members
+      name: listmembers
+      operations:
+      - method: GET
+        name: listmembers
+        description: Archbee List Space Members
+        call: archbee.listmembers
+        with:
+          spaceId: rest.spaceId
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    port: 9090
+    namespace: archbee-mcp
+    transport: http
+    description: MCP adapter for Archbee API for AI agent use.
+    tools:
+    - name: listspaces
+      description: Archbee List Spaces
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: archbee.listspaces
+      with:
+        page: tools.page
+        limit: tools.limit
+      inputParameters:
+      - name: page
+        type: integer
+        description: Page number for pagination
+      - name: limit
+        type: integer
+        description: Results per page
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: createspace
+      description: Archbee Create Space
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: archbee.createspace
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getspace
+      description: Archbee Get Space
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: archbee.getspace
+      with:
+        spaceId: tools.spaceId
+      inputParameters:
+      - name: spaceId
+        type: string
+        description: Space identifier
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deletespace
+      description: Archbee Delete Space
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: archbee.deletespace
+      with:
+        spaceId: tools.spaceId
+      inputParameters:
+      - name: spaceId
+        type: string
+        description: Space identifier
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: listpages
+      description: Archbee List Pages
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: archbee.listpages
+      with:
+        spaceId: tools.spaceId
+        parentId: tools.parentId
+      inputParameters:
+      - name: spaceId
+        type: string
+        description: Space identifier
+        required: true
+      - name: parentId
+        type: string
+        description: Filter by parent page ID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: createpage
+      description: Archbee Create Page
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: archbee.createpage
+      with:
+        spaceId: tools.spaceId
+      inputParameters:
+      - name: spaceId
+        type: string
+        description: Space identifier
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: listmembers
+      description: Archbee List Space Members
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: archbee.listmembers
+      with:
+        spaceId: tools.spaceId
+      inputParameters:
+      - name: spaceId
+        type: string
+        description: Space identifier
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+binds:
+- namespace: env
+  keys:
+    ARCHBEE_TOKEN: ARCHBEE_TOKEN
