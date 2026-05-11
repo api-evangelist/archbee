@@ -112,6 +112,10 @@ common:
   url: https://raw.githubusercontent.com/api-evangelist/archbee/refs/heads/main/vocabulary/archbee-vocabulary.yaml
 - type: JSONLD
   url: https://raw.githubusercontent.com/api-evangelist/archbee/refs/heads/main/json-ld/archbee-api-context.jsonld
+- type: Integrations
+  url: https://www.archbee.com/integrations
+integrations:
+  - name: Xkcd Embed Webcomics View Integration →
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
