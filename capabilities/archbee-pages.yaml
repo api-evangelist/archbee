@@ -1,0 +1,130 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Archbee API — Pages
+  description: 'Archbee API — Pages. 2 operations. Lead operation: Archbee List Pages. Self-contained Naftiko capability covering
+    one Archbee business surface.'
+  tags:
+  - Archbee
+  - Pages
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ARCHBEE_API_KEY: ARCHBEE_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: archbee-pages
+    baseUri: https://api.archbee.com/v1
+    description: Archbee API — Pages business capability. Self-contained, no shared references.
+    resources:
+    - name: spaces-spaceId-pages
+      path: /spaces/{spaceId}/pages
+      operations:
+      - name: listpages
+        method: GET
+        description: Archbee List Pages
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: spaceId
+          in: path
+          type: string
+          description: Space identifier
+          required: true
+        - name: parentId
+          in: query
+          type: string
+          description: Filter by parent page ID
+      - name: createpage
+        method: POST
+        description: Archbee Create Page
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: spaceId
+          in: path
+          type: string
+          description: Space identifier
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: apikey
+      key: X-Api-Key
+      value: '{{env.ARCHBEE_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: archbee-pages-rest
+    port: 8080
+    description: REST adapter for Archbee API — Pages. One Spectral-compliant resource per consumed operation, prefixed with
+      /v1.
+    resources:
+    - path: /v1/spaces/{spaceid}/pages
+      name: spaces-spaceid-pages
+      description: REST surface for spaces-spaceId-pages.
+      operations:
+      - method: GET
+        name: listpages
+        description: Archbee List Pages
+        call: archbee-pages.listpages
+        with:
+          spaceId: rest.spaceId
+          parentId: rest.parentId
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createpage
+        description: Archbee Create Page
+        call: archbee-pages.createpage
+        with:
+          spaceId: rest.spaceId
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: archbee-pages-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Archbee API — Pages. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: archbee-list-pages
+      description: Archbee List Pages
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: archbee-pages.listpages
+      with:
+        spaceId: tools.spaceId
+        parentId: tools.parentId
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: archbee-create-page
+      description: Archbee Create Page
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: archbee-pages.createpage
+      with:
+        spaceId: tools.spaceId
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

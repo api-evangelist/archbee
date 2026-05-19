@@ -1,0 +1,199 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Archbee API — Spaces
+  description: 'Archbee API — Spaces. 4 operations. Lead operation: Archbee List Spaces. Self-contained Naftiko capability
+    covering one Archbee business surface.'
+  tags:
+  - Archbee
+  - Spaces
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ARCHBEE_API_KEY: ARCHBEE_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: archbee-spaces
+    baseUri: https://api.archbee.com/v1
+    description: Archbee API — Spaces business capability. Self-contained, no shared references.
+    resources:
+    - name: spaces
+      path: /spaces
+      operations:
+      - name: listspaces
+        method: GET
+        description: Archbee List Spaces
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: page
+          in: query
+          type: integer
+          description: Page number for pagination
+        - name: limit
+          in: query
+          type: integer
+          description: Results per page
+      - name: createspace
+        method: POST
+        description: Archbee Create Space
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: spaces-spaceId
+      path: /spaces/{spaceId}
+      operations:
+      - name: getspace
+        method: GET
+        description: Archbee Get Space
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: spaceId
+          in: path
+          type: string
+          description: Space identifier
+          required: true
+      - name: deletespace
+        method: DELETE
+        description: Archbee Delete Space
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: spaceId
+          in: path
+          type: string
+          description: Space identifier
+          required: true
+    authentication:
+      type: apikey
+      key: X-Api-Key
+      value: '{{env.ARCHBEE_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: archbee-spaces-rest
+    port: 8080
+    description: REST adapter for Archbee API — Spaces. One Spectral-compliant resource per consumed operation, prefixed with
+      /v1.
+    resources:
+    - path: /v1/spaces
+      name: spaces
+      description: REST surface for spaces.
+      operations:
+      - method: GET
+        name: listspaces
+        description: Archbee List Spaces
+        call: archbee-spaces.listspaces
+        with:
+          page: rest.page
+          limit: rest.limit
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createspace
+        description: Archbee Create Space
+        call: archbee-spaces.createspace
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/spaces/{spaceid}
+      name: spaces-spaceid
+      description: REST surface for spaces-spaceId.
+      operations:
+      - method: GET
+        name: getspace
+        description: Archbee Get Space
+        call: archbee-spaces.getspace
+        with:
+          spaceId: rest.spaceId
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deletespace
+        description: Archbee Delete Space
+        call: archbee-spaces.deletespace
+        with:
+          spaceId: rest.spaceId
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: archbee-spaces-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Archbee API — Spaces. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: archbee-list-spaces
+      description: Archbee List Spaces
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: archbee-spaces.listspaces
+      with:
+        page: tools.page
+        limit: tools.limit
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: archbee-create-space
+      description: Archbee Create Space
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: archbee-spaces.createspace
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: archbee-get-space
+      description: Archbee Get Space
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: archbee-spaces.getspace
+      with:
+        spaceId: tools.spaceId
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: archbee-delete-space
+      description: Archbee Delete Space
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: archbee-spaces.deletespace
+      with:
+        spaceId: tools.spaceId
+      outputParameters:
+      - type: object
+        mapping: $.

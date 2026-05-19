@@ -42,6 +42,8 @@ apis:
   - type: OpenAPI
     url: https://raw.githubusercontent.com/api-evangelist/archbee/refs/heads/main/openapi/archbee-api.yaml
 common:
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/archbee
 - type: Portal
   url: https://www.archbee.com/
 - type: Documentation

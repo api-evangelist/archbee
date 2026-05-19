@@ -1,0 +1,82 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Archbee API — Members
+  description: 'Archbee API — Members. 1 operations. Lead operation: Archbee List Space Members. Self-contained Naftiko capability
+    covering one Archbee business surface.'
+  tags:
+  - Archbee
+  - Members
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    ARCHBEE_API_KEY: ARCHBEE_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: archbee-members
+    baseUri: https://api.archbee.com/v1
+    description: Archbee API — Members business capability. Self-contained, no shared references.
+    resources:
+    - name: spaces-spaceId-members
+      path: /spaces/{spaceId}/members
+      operations:
+      - name: listmembers
+        method: GET
+        description: Archbee List Space Members
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: spaceId
+          in: path
+          type: string
+          description: Space identifier
+          required: true
+    authentication:
+      type: apikey
+      key: X-Api-Key
+      value: '{{env.ARCHBEE_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: archbee-members-rest
+    port: 8080
+    description: REST adapter for Archbee API — Members. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/spaces/{spaceid}/members
+      name: spaces-spaceid-members
+      description: REST surface for spaces-spaceId-members.
+      operations:
+      - method: GET
+        name: listmembers
+        description: Archbee List Space Members
+        call: archbee-members.listmembers
+        with:
+          spaceId: rest.spaceId
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: archbee-members-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Archbee API — Members. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: archbee-list-space-members
+      description: Archbee List Space Members
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: archbee-members.listmembers
+      with:
+        spaceId: tools.spaceId
+      outputParameters:
+      - type: object
+        mapping: $.
