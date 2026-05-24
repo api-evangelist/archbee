@@ -116,6 +116,8 @@ common:
     url: https://raw.githubusercontent.com/api-evangelist/archbee/refs/heads/main/json-ld/archbee-api-context.jsonld
   - type: Integrations
     url: https://www.archbee.com/integrations
+  - type: LLMsTxt
+    url: https://api.archbee.com/llms.txt
 integrations:
   - name: Xkcd Embed Webcomics View Integration →
 maintainers:
