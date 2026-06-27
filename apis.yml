@@ -50,7 +50,7 @@ common:
     url: https://docs.archbee.com/
   - type: Blog
     url: https://www.archbee.com/blog
-  - type: SignUp
+  - type: Signup
     url: https://app.archbee.com/signup
   - type: Login
     url: https://app.archbee.com/login
@@ -116,7 +116,7 @@ common:
     url: https://raw.githubusercontent.com/api-evangelist/archbee/refs/heads/main/json-ld/archbee-api-context.jsonld
   - type: Integrations
     url: https://www.archbee.com/integrations
-  - type: LLMsTxt
+  - type: LlmsText
     url: https://api.archbee.com/llms.txt
 integrations:
   - name: Xkcd Embed Webcomics View Integration →
