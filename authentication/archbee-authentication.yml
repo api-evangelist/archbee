@@ -1,0 +1,16 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/archbee-api.yaml
+summary:
+  types:
+  - apiKey
+  api_key_in:
+  - header
+schemes:
+- name: apiKey
+  type: apiKey
+  in: header
+  parameter: X-Api-Key
+  description: Archbee API key from the workspace settings
+  sources:
+  - openapi/archbee-api.yaml

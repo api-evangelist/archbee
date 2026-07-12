@@ -42,6 +42,14 @@ apis:
     - type: OpenAPI
       url: https://raw.githubusercontent.com/api-evangelist/archbee/refs/heads/main/openapi/archbee-api.yaml
 common:
+  - type: TrustCenter
+    url: security/archbee-trust-center.yml
+  - type: VulnerabilityDisclosure
+    url: security/archbee-vulnerability-disclosure.yml
+  - type: DomainSecurity
+    url: security/archbee-domain-security.yml
+  - type: Authentication
+    url: authentication/archbee-authentication.yml
   - type: LinkedIn
     url: https://www.linkedin.com/company/archbee
   - type: Portal
