@@ -1,0 +1,285 @@
+openapi: 3.0.3
+info:
+  title: Archbee Members Spaces API
+  description: The Archbee API enables programmatic management of documentation spaces, pages, and content within the Archbee documentation platform. Manage your docs, spaces, members, and settings through RESTful API endpoints.
+  version: '1.0'
+  x-generated-from: documentation
+  contact:
+    name: Archbee Support
+    url: https://www.archbee.com/contact
+servers:
+- url: https://api.archbee.com/v1
+  description: Archbee API Production
+security:
+- apiKey: []
+tags:
+- name: Spaces
+  description: Documentation space management
+paths:
+  /spaces:
+    get:
+      operationId: listSpaces
+      summary: Archbee List Spaces
+      description: List all documentation spaces accessible to the authenticated user.
+      tags:
+      - Spaces
+      parameters:
+      - name: page
+        in: query
+        description: Page number for pagination
+        schema:
+          type: integer
+          default: 1
+        example: 1
+      - name: limit
+        in: query
+        description: Results per page
+        schema:
+          type: integer
+          default: 20
+          maximum: 100
+        example: 20
+      responses:
+        '200':
+          description: List of spaces
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpaceList'
+              examples:
+                ListSpaces200Example:
+                  summary: Default listSpaces 200 response
+                  x-microcks-default: true
+                  value:
+                    spaces:
+                    - id: sp_abc123
+                      name: Developer Docs
+                      slug: developer-docs
+                      visibility: public
+                    totalCount: 3
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - apiKey: []
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+    post:
+      operationId: createSpace
+      summary: Archbee Create Space
+      description: Create a new documentation space.
+      tags:
+      - Spaces
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpaceRequest'
+            examples:
+              CreateSpaceRequestExample:
+                summary: Default createSpace request
+                x-microcks-default: true
+                value:
+                  name: API Reference
+                  visibility: public
+                  description: API reference documentation
+      responses:
+        '201':
+          description: Space created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Space'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - apiKey: []
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+  /spaces/{spaceId}:
+    get:
+      operationId: getSpace
+      summary: Archbee Get Space
+      description: Retrieve details for a specific documentation space.
+      tags:
+      - Spaces
+      parameters:
+      - name: spaceId
+        in: path
+        required: true
+        description: Space identifier
+        schema:
+          type: string
+        example: sp_abc123
+      responses:
+        '200':
+          description: Space details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Space'
+              examples:
+                GetSpace200Example:
+                  summary: Default getSpace 200 response
+                  x-microcks-default: true
+                  value:
+                    id: sp_abc123
+                    name: Developer Docs
+                    slug: developer-docs
+                    visibility: public
+                    description: Main developer documentation
+                    pageCount: 42
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Space not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - apiKey: []
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+    delete:
+      operationId: deleteSpace
+      summary: Archbee Delete Space
+      description: Delete a documentation space and all its content.
+      tags:
+      - Spaces
+      parameters:
+      - name: spaceId
+        in: path
+        required: true
+        description: Space identifier
+        schema:
+          type: string
+        example: sp_abc123
+      responses:
+        '204':
+          description: Space deleted
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Space not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - apiKey: []
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+components:
+  schemas:
+    SpaceRequest:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: Space name
+          example: API Reference
+        visibility:
+          type: string
+          description: Space visibility
+          enum:
+          - public
+          - private
+          - password-protected
+          example: public
+        description:
+          type: string
+          description: Space description
+          example: API reference documentation
+    SpaceList:
+      type: object
+      properties:
+        spaces:
+          type: array
+          items:
+            $ref: '#/components/schemas/Space'
+        totalCount:
+          type: integer
+          description: Total number of spaces
+          example: 3
+    Space:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique space identifier
+          example: sp_abc123
+        name:
+          type: string
+          description: Space display name
+          example: Developer Docs
+        slug:
+          type: string
+          description: URL-friendly space identifier
+          example: developer-docs
+        visibility:
+          type: string
+          description: Space visibility
+          enum:
+          - public
+          - private
+          - password-protected
+          example: public
+        description:
+          type: string
+          description: Space description
+          example: Main developer documentation
+        pageCount:
+          type: integer
+          description: Number of pages in the space
+          example: 42
+        createdAt:
+          type: string
+          format: date-time
+          description: Space creation timestamp
+          example: '2026-01-15T10:00:00Z'
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message
+          example: Unauthorized
+        code:
+          type: integer
+          description: Error code
+          example: 401
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+      description: Archbee API key from the workspace settings

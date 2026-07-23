@@ -1,0 +1,223 @@
+openapi: 3.0.3
+info:
+  title: Archbee Members Pages API
+  description: The Archbee API enables programmatic management of documentation spaces, pages, and content within the Archbee documentation platform. Manage your docs, spaces, members, and settings through RESTful API endpoints.
+  version: '1.0'
+  x-generated-from: documentation
+  contact:
+    name: Archbee Support
+    url: https://www.archbee.com/contact
+servers:
+- url: https://api.archbee.com/v1
+  description: Archbee API Production
+security:
+- apiKey: []
+tags:
+- name: Pages
+  description: Page content management
+paths:
+  /spaces/{spaceId}/pages:
+    get:
+      operationId: listPages
+      summary: Archbee List Pages
+      description: List all pages within a documentation space.
+      tags:
+      - Pages
+      parameters:
+      - name: spaceId
+        in: path
+        required: true
+        description: Space identifier
+        schema:
+          type: string
+        example: sp_abc123
+      - name: parentId
+        in: query
+        description: Filter by parent page ID
+        schema:
+          type: string
+        example: pg_parent123
+      responses:
+        '200':
+          description: List of pages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageList'
+              examples:
+                ListPages200Example:
+                  summary: Default listPages 200 response
+                  x-microcks-default: true
+                  value:
+                    pages:
+                    - id: pg_abc123
+                      title: Getting Started
+                      slug: getting-started
+                      status: published
+                    totalCount: 10
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - apiKey: []
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+    post:
+      operationId: createPage
+      summary: Archbee Create Page
+      description: Create a new page in a documentation space.
+      tags:
+      - Pages
+      parameters:
+      - name: spaceId
+        in: path
+        required: true
+        description: Space identifier
+        schema:
+          type: string
+        example: sp_abc123
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PageRequest'
+            examples:
+              CreatePageRequestExample:
+                summary: Default createPage request
+                x-microcks-default: true
+                value:
+                  title: Quick Start Guide
+                  content: '# Quick Start
+
+
+                    Welcome to our API...'
+                  status: draft
+      responses:
+        '201':
+          description: Page created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - apiKey: []
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+components:
+  schemas:
+    PageRequest:
+      type: object
+      required:
+      - title
+      properties:
+        title:
+          type: string
+          description: Page title
+          example: Quick Start Guide
+        content:
+          type: string
+          description: Page content in Markdown
+          example: '# Quick Start
+
+
+            Welcome to our API...'
+        status:
+          type: string
+          description: Page status
+          enum:
+          - draft
+          - published
+          example: draft
+        parentId:
+          type: string
+          description: Parent page ID for nested pages
+          example: pg_parent123
+    PageList:
+      type: object
+      properties:
+        pages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Page'
+        totalCount:
+          type: integer
+          description: Total number of pages
+          example: 10
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message
+          example: Unauthorized
+        code:
+          type: integer
+          description: Error code
+          example: 401
+    Page:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique page identifier
+          example: pg_abc123
+        title:
+          type: string
+          description: Page title
+          example: Getting Started
+        slug:
+          type: string
+          description: URL-friendly page identifier
+          example: getting-started
+        status:
+          type: string
+          description: Page publication status
+          enum:
+          - draft
+          - published
+          - archived
+          example: published
+        content:
+          type: string
+          description: Page content in Markdown
+          example: '# Getting Started
+
+
+            Welcome to our API...'
+        spaceId:
+          type: string
+          description: Parent space identifier
+          example: sp_abc123
+        parentId:
+          type: string
+          description: Parent page identifier (if nested)
+          example: pg_parent123
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last update timestamp
+          example: '2026-04-19T10:00:00Z'
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+      description: Archbee API key from the workspace settings

@@ -1,0 +1,118 @@
+openapi: 3.0.3
+info:
+  title: Archbee Members API
+  description: The Archbee API enables programmatic management of documentation spaces, pages, and content within the Archbee documentation platform. Manage your docs, spaces, members, and settings through RESTful API endpoints.
+  version: '1.0'
+  x-generated-from: documentation
+  contact:
+    name: Archbee Support
+    url: https://www.archbee.com/contact
+servers:
+- url: https://api.archbee.com/v1
+  description: Archbee API Production
+security:
+- apiKey: []
+tags:
+- name: Members
+  description: Team member and access management
+paths:
+  /spaces/{spaceId}/members:
+    get:
+      operationId: listMembers
+      summary: Archbee List Space Members
+      description: List all members with access to a documentation space.
+      tags:
+      - Members
+      parameters:
+      - name: spaceId
+        in: path
+        required: true
+        description: Space identifier
+        schema:
+          type: string
+        example: sp_abc123
+      responses:
+        '200':
+          description: List of members
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberList'
+              examples:
+                ListMembers200Example:
+                  summary: Default listMembers 200 response
+                  x-microcks-default: true
+                  value:
+                    members:
+                    - id: usr_abc123
+                      email: alice@example.com
+                      name: Alice Smith
+                      role: editor
+                    totalCount: 5
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - apiKey: []
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+components:
+  schemas:
+    MemberList:
+      type: object
+      properties:
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/Member'
+        totalCount:
+          type: integer
+          description: Total number of members
+          example: 5
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message
+          example: Unauthorized
+        code:
+          type: integer
+          description: Error code
+          example: 401
+    Member:
+      type: object
+      properties:
+        id:
+          type: string
+          description: User identifier
+          example: usr_abc123
+        email:
+          type: string
+          format: email
+          description: Member email address
+          example: alice@example.com
+        name:
+          type: string
+          description: Member display name
+          example: Alice Smith
+        role:
+          type: string
+          description: Member role in the space
+          enum:
+          - owner
+          - admin
+          - editor
+          - viewer
+          - commenter
+          example: editor
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+      description: Archbee API key from the workspace settings
