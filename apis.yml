@@ -7,7 +7,20 @@ description: >-
   documentation, and internal wikis with collaborative editing and version
   control.
 type: Index
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: freemium
+  onboarding: self-serve
+  trial: false
+  try_now: true
+  public: false
+  label: Freemium · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/archbee.png
 tags:
   - API Documentation
   - Documentation Platform
@@ -20,28 +33,57 @@ created: '2026-03-16'
 modified: '2026-04-19'
 specificationVersion: '0.19'
 apis:
-  - aid: archbee:archbee-api
-    name: Archbee API
-    description: >-
-      The Archbee API enables programmatic management of documentation spaces,
-      pages, and content within the Archbee documentation platform.
-    humanURL: https://www.archbee.com/
-    baseURL: https://api.archbee.com
-    tags:
-    - API Documentation
-    - Documentation Management
-    - Knowledge Base
-    - Technical Writing
-    properties:
-    - type: Documentation
-      url: https://docs.archbee.com/
-    - type: GettingStarted
-      url: https://docs.archbee.com/getting-started
-    - type: APIReference
-      url: https://docs.archbee.com/
-    - type: OpenAPI
-      url: https://raw.githubusercontent.com/api-evangelist/archbee/refs/heads/main/openapi/archbee-api.yaml
+- aid: archbee:archbee-members-api
+  name: Archbee Members API
+  description: Team member and access management
+  humanURL: https://www.archbee.com/
+  baseURL: https://api.archbee.com
+  tags:
+  - Members
+  properties:
+  - type: OpenAPI
+    url: openapi/archbee-members-api-openapi.yml
+  - type: Documentation
+    url: https://docs.archbee.com/
+  - type: GettingStarted
+    url: https://docs.archbee.com/getting-started
+  - type: APIReference
+    url: https://docs.archbee.com/
+- aid: archbee:archbee-pages-api
+  name: Archbee Pages API
+  description: Page content management
+  humanURL: https://www.archbee.com/
+  baseURL: https://api.archbee.com
+  tags:
+  - Pages
+  properties:
+  - type: OpenAPI
+    url: openapi/archbee-pages-api-openapi.yml
+  - type: Documentation
+    url: https://docs.archbee.com/
+  - type: GettingStarted
+    url: https://docs.archbee.com/getting-started
+  - type: APIReference
+    url: https://docs.archbee.com/
+- aid: archbee:archbee-spaces-api
+  name: Archbee Spaces API
+  description: Documentation space management
+  humanURL: https://www.archbee.com/
+  baseURL: https://api.archbee.com
+  tags:
+  - Spaces
+  properties:
+  - type: OpenAPI
+    url: openapi/archbee-spaces-api-openapi.yml
+  - type: Documentation
+    url: https://docs.archbee.com/
+  - type: GettingStarted
+    url: https://docs.archbee.com/getting-started
+  - type: APIReference
+    url: https://docs.archbee.com/
 common:
+  - type: PostmanWorkspace
+    url: https://www.postman.com/kinlaneapi/archbee/overview
   - type: AgenticAccess
     url: agentic-access/archbee-agentic-access.yml
   - type: TrustCenter
