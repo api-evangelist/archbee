@@ -1,0 +1,18 @@
+{
+  "provider": "archbee",
+  "sources": [
+    "archbee-members-api-openapi.yml",
+    "archbee-pages-api-openapi.yml",
+    "archbee-spaces-api-openapi.yml"
+  ],
+  "outputs": [
+    "archbee-members-api-openapi.yml",
+    "archbee-pages-api-openapi.yml",
+    "archbee-spaces-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

@@ -1,0 +1,536 @@
+openapi: 3.0.3
+info:
+  title: Archbee API
+  description: >-
+    The Archbee API enables programmatic management of documentation spaces, pages,
+    and content within the Archbee documentation platform. Manage your docs, spaces,
+    members, and settings through RESTful API endpoints.
+  version: "1.0"
+  x-generated-from: documentation
+  contact:
+    name: Archbee Support
+    url: https://www.archbee.com/contact
+servers:
+  - url: https://api.archbee.com/v1
+    description: Archbee API Production
+tags:
+  - name: Spaces
+    description: Documentation space management
+  - name: Pages
+    description: Page content management
+  - name: Members
+    description: Team member and access management
+  - name: Comments
+    description: Page commenting and feedback
+paths:
+  /spaces:
+    get:
+      operationId: listSpaces
+      summary: Archbee List Spaces
+      description: List all documentation spaces accessible to the authenticated user.
+      tags:
+        - Spaces
+      parameters:
+        - name: page
+          in: query
+          description: Page number for pagination
+          schema:
+            type: integer
+            default: 1
+          example: 1
+        - name: limit
+          in: query
+          description: Results per page
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+          example: 20
+      responses:
+        '200':
+          description: List of spaces
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpaceList'
+              examples:
+                ListSpaces200Example:
+                  summary: Default listSpaces 200 response
+                  x-microcks-default: true
+                  value:
+                    spaces:
+                      - id: sp_abc123
+                        name: Developer Docs
+                        slug: developer-docs
+                        visibility: public
+                    totalCount: 3
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - apiKey: []
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+    post:
+      operationId: createSpace
+      summary: Archbee Create Space
+      description: Create a new documentation space.
+      tags:
+        - Spaces
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpaceRequest'
+            examples:
+              CreateSpaceRequestExample:
+                summary: Default createSpace request
+                x-microcks-default: true
+                value:
+                  name: API Reference
+                  visibility: public
+                  description: API reference documentation
+      responses:
+        '201':
+          description: Space created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Space'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - apiKey: []
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+  /spaces/{spaceId}:
+    get:
+      operationId: getSpace
+      summary: Archbee Get Space
+      description: Retrieve details for a specific documentation space.
+      tags:
+        - Spaces
+      parameters:
+        - name: spaceId
+          in: path
+          required: true
+          description: Space identifier
+          schema:
+            type: string
+          example: sp_abc123
+      responses:
+        '200':
+          description: Space details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Space'
+              examples:
+                GetSpace200Example:
+                  summary: Default getSpace 200 response
+                  x-microcks-default: true
+                  value:
+                    id: sp_abc123
+                    name: Developer Docs
+                    slug: developer-docs
+                    visibility: public
+                    description: Main developer documentation
+                    pageCount: 42
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Space not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - apiKey: []
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+    delete:
+      operationId: deleteSpace
+      summary: Archbee Delete Space
+      description: Delete a documentation space and all its content.
+      tags:
+        - Spaces
+      parameters:
+        - name: spaceId
+          in: path
+          required: true
+          description: Space identifier
+          schema:
+            type: string
+          example: sp_abc123
+      responses:
+        '204':
+          description: Space deleted
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Space not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - apiKey: []
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+  /spaces/{spaceId}/pages:
+    get:
+      operationId: listPages
+      summary: Archbee List Pages
+      description: List all pages within a documentation space.
+      tags:
+        - Pages
+      parameters:
+        - name: spaceId
+          in: path
+          required: true
+          description: Space identifier
+          schema:
+            type: string
+          example: sp_abc123
+        - name: parentId
+          in: query
+          description: Filter by parent page ID
+          schema:
+            type: string
+          example: pg_parent123
+      responses:
+        '200':
+          description: List of pages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageList'
+              examples:
+                ListPages200Example:
+                  summary: Default listPages 200 response
+                  x-microcks-default: true
+                  value:
+                    pages:
+                      - id: pg_abc123
+                        title: Getting Started
+                        slug: getting-started
+                        status: published
+                    totalCount: 10
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - apiKey: []
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+    post:
+      operationId: createPage
+      summary: Archbee Create Page
+      description: Create a new page in a documentation space.
+      tags:
+        - Pages
+      parameters:
+        - name: spaceId
+          in: path
+          required: true
+          description: Space identifier
+          schema:
+            type: string
+          example: sp_abc123
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PageRequest'
+            examples:
+              CreatePageRequestExample:
+                summary: Default createPage request
+                x-microcks-default: true
+                value:
+                  title: Quick Start Guide
+                  content: "# Quick Start\n\nWelcome to our API..."
+                  status: draft
+      responses:
+        '201':
+          description: Page created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - apiKey: []
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+  /spaces/{spaceId}/members:
+    get:
+      operationId: listMembers
+      summary: Archbee List Space Members
+      description: List all members with access to a documentation space.
+      tags:
+        - Members
+      parameters:
+        - name: spaceId
+          in: path
+          required: true
+          description: Space identifier
+          schema:
+            type: string
+          example: sp_abc123
+      responses:
+        '200':
+          description: List of members
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberList'
+              examples:
+                ListMembers200Example:
+                  summary: Default listMembers 200 response
+                  x-microcks-default: true
+                  value:
+                    members:
+                      - id: usr_abc123
+                        email: alice@example.com
+                        name: Alice Smith
+                        role: editor
+                    totalCount: 5
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - apiKey: []
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+      description: Archbee API key from the workspace settings
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message
+          example: Unauthorized
+        code:
+          type: integer
+          description: Error code
+          example: 401
+    Space:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique space identifier
+          example: sp_abc123
+        name:
+          type: string
+          description: Space display name
+          example: Developer Docs
+        slug:
+          type: string
+          description: URL-friendly space identifier
+          example: developer-docs
+        visibility:
+          type: string
+          description: Space visibility
+          enum: [public, private, password-protected]
+          example: public
+        description:
+          type: string
+          description: Space description
+          example: Main developer documentation
+        pageCount:
+          type: integer
+          description: Number of pages in the space
+          example: 42
+        createdAt:
+          type: string
+          format: date-time
+          description: Space creation timestamp
+          example: "2026-01-15T10:00:00Z"
+    SpaceRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Space name
+          example: API Reference
+        visibility:
+          type: string
+          description: Space visibility
+          enum: [public, private, password-protected]
+          example: public
+        description:
+          type: string
+          description: Space description
+          example: API reference documentation
+    SpaceList:
+      type: object
+      properties:
+        spaces:
+          type: array
+          items:
+            $ref: '#/components/schemas/Space'
+        totalCount:
+          type: integer
+          description: Total number of spaces
+          example: 3
+    Page:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique page identifier
+          example: pg_abc123
+        title:
+          type: string
+          description: Page title
+          example: Getting Started
+        slug:
+          type: string
+          description: URL-friendly page identifier
+          example: getting-started
+        status:
+          type: string
+          description: Page publication status
+          enum: [draft, published, archived]
+          example: published
+        content:
+          type: string
+          description: Page content in Markdown
+          example: "# Getting Started\n\nWelcome to our API..."
+        spaceId:
+          type: string
+          description: Parent space identifier
+          example: sp_abc123
+        parentId:
+          type: string
+          description: Parent page identifier (if nested)
+          example: pg_parent123
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last update timestamp
+          example: "2026-04-19T10:00:00Z"
+    PageRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          description: Page title
+          example: Quick Start Guide
+        content:
+          type: string
+          description: Page content in Markdown
+          example: "# Quick Start\n\nWelcome to our API..."
+        status:
+          type: string
+          description: Page status
+          enum: [draft, published]
+          example: draft
+        parentId:
+          type: string
+          description: Parent page ID for nested pages
+          example: pg_parent123
+    PageList:
+      type: object
+      properties:
+        pages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Page'
+        totalCount:
+          type: integer
+          description: Total number of pages
+          example: 10
+    Member:
+      type: object
+      properties:
+        id:
+          type: string
+          description: User identifier
+          example: usr_abc123
+        email:
+          type: string
+          format: email
+          description: Member email address
+          example: alice@example.com
+        name:
+          type: string
+          description: Member display name
+          example: Alice Smith
+        role:
+          type: string
+          description: Member role in the space
+          enum: [owner, admin, editor, viewer, commenter]
+          example: editor
+    MemberList:
+      type: object
+      properties:
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/Member'
+        totalCount:
+          type: integer
+          description: Total number of members
+          example: 5
+security:
+  - apiKey: []
