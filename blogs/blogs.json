@@ -2,10 +2,6 @@
   "repo": "archbee",
   "feeds": [
     {
-      "source": "https://www.archbee.com/blog",
-      "error": "URLError"
-    },
-    {
       "source": "https://docs.archbee.com/feed.xml",
       "feed_url": "https://docs.archbee.com/feed.xml",
       "title": "",
@@ -20,6 +16,6 @@
       "method": "discovered"
     }
   ],
-  "post_count": 91,
-  "fetched": "2026-08-01T15:49:00Z"
+  "post_count": 92,
+  "fetched": "2026-08-06T14:08:46Z"
 }
