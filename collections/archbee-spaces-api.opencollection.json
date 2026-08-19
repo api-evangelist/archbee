@@ -1,0 +1,128 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Archbee Members Spaces API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-Api-Key",
+      "value": "{{X-Api-Key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Spaces",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Archbee List Spaces",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.archbee.com/v1/spaces",
+            "params": [
+              {
+                "name": "page",
+                "value": "1",
+                "type": "query",
+                "description": "Page number for pagination"
+              },
+              {
+                "name": "limit",
+                "value": "20",
+                "type": "query",
+                "description": "Results per page"
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "X-Api-Key",
+              "value": "{{X-Api-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "List all documentation spaces accessible to the authenticated user."
+        },
+        {
+          "info": {
+            "name": "Archbee Create Space",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.archbee.com/v1/spaces",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "X-Api-Key",
+              "value": "{{X-Api-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Create a new documentation space."
+        },
+        {
+          "info": {
+            "name": "Archbee Get Space",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.archbee.com/v1/spaces/:spaceId",
+            "params": [
+              {
+                "name": "spaceId",
+                "value": "sp_abc123",
+                "type": "path",
+                "description": "Space identifier"
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "X-Api-Key",
+              "value": "{{X-Api-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Retrieve details for a specific documentation space."
+        },
+        {
+          "info": {
+            "name": "Archbee Delete Space",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.archbee.com/v1/spaces/:spaceId",
+            "params": [
+              {
+                "name": "spaceId",
+                "value": "sp_abc123",
+                "type": "path",
+                "description": "Space identifier"
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "X-Api-Key",
+              "value": "{{X-Api-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Delete a documentation space and all its content."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

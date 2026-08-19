@@ -1,0 +1,86 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Archbee Members Pages API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-Api-Key",
+      "value": "{{X-Api-Key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Pages",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Archbee List Pages",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.archbee.com/v1/spaces/:spaceId/pages",
+            "params": [
+              {
+                "name": "spaceId",
+                "value": "sp_abc123",
+                "type": "path",
+                "description": "Space identifier"
+              },
+              {
+                "name": "parentId",
+                "value": "pg_parent123",
+                "type": "query",
+                "description": "Filter by parent page ID"
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "X-Api-Key",
+              "value": "{{X-Api-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "List all pages within a documentation space."
+        },
+        {
+          "info": {
+            "name": "Archbee Create Page",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.archbee.com/v1/spaces/:spaceId/pages",
+            "params": [
+              {
+                "name": "spaceId",
+                "value": "sp_abc123",
+                "type": "path",
+                "description": "Space identifier"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "X-Api-Key",
+              "value": "{{X-Api-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Create a new page in a documentation space."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
