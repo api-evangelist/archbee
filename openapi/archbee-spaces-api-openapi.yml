@@ -1,4 +1,4 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
   title: Archbee Members Spaces API
   description: The Archbee API enables programmatic management of documentation spaces, pages, and content within the Archbee documentation platform. Manage your docs, spaces, members, and settings through RESTful API endpoints.
@@ -198,38 +198,17 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
-    SpaceRequest:
-      type: object
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          description: Space name
-          example: API Reference
-        visibility:
-          type: string
-          description: Space visibility
-          enum:
-          - public
-          - private
-          - password-protected
-          example: public
-        description:
-          type: string
-          description: Space description
-          example: API reference documentation
-    SpaceList:
+    ErrorResponse:
       type: object
       properties:
-        spaces:
-          type: array
-          items:
-            $ref: '#/components/schemas/Space'
-        totalCount:
+        message:
+          type: string
+          description: Error message
+          example: Unauthorized
+        code:
           type: integer
-          description: Total number of spaces
-          example: 3
+          description: Error code
+          example: 401
     Space:
       type: object
       properties:
@@ -266,17 +245,38 @@ components:
           format: date-time
           description: Space creation timestamp
           example: '2026-01-15T10:00:00Z'
-    ErrorResponse:
+    SpaceRequest:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: Space name
+          example: API Reference
+        visibility:
+          type: string
+          description: Space visibility
+          enum:
+          - public
+          - private
+          - password-protected
+          example: public
+        description:
+          type: string
+          description: Space description
+          example: API reference documentation
+    SpaceList:
       type: object
       properties:
-        message:
-          type: string
-          description: Error message
-          example: Unauthorized
-        code:
+        spaces:
+          type: array
+          items:
+            $ref: '#/components/schemas/Space'
+        totalCount:
           type: integer
-          description: Error code
-          example: 401
+          description: Total number of spaces
+          example: 3
   securitySchemes:
     apiKey:
       type: apiKey

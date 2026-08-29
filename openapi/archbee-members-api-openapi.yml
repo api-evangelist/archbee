@@ -1,4 +1,4 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
   title: Archbee Members API
   description: The Archbee API enables programmatic management of documentation spaces, pages, and content within the Archbee documentation platform. Manage your docs, spaces, members, and settings through RESTful API endpoints.
@@ -62,28 +62,6 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
-    MemberList:
-      type: object
-      properties:
-        members:
-          type: array
-          items:
-            $ref: '#/components/schemas/Member'
-        totalCount:
-          type: integer
-          description: Total number of members
-          example: 5
-    ErrorResponse:
-      type: object
-      properties:
-        message:
-          type: string
-          description: Error message
-          example: Unauthorized
-        code:
-          type: integer
-          description: Error code
-          example: 401
     Member:
       type: object
       properties:
@@ -110,6 +88,28 @@ components:
           - viewer
           - commenter
           example: editor
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message
+          example: Unauthorized
+        code:
+          type: integer
+          description: Error code
+          example: 401
+    MemberList:
+      type: object
+      properties:
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/Member'
+        totalCount:
+          type: integer
+          description: Total number of members
+          example: 5
   securitySchemes:
     apiKey:
       type: apiKey
