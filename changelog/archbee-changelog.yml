@@ -1,0 +1,45 @@
+generated: '2026-09-04'
+method: searched
+source: >-
+  Probed https://www.archbee.com/changelog, https://docs.archbee.com/changelog,
+  https://www.archbee.com/whats-new and https://www.archbee.com/releases on 2026-09-04.
+published: false
+note: >-
+  Archbee publishes no product or API changelog. https://www.archbee.com/changelog returns HTTP 200
+  but renders a blog category page whose body reads "No posts found for the selected category";
+  /whats-new and /releases return 404; docs.archbee.com/changelog returns the portal's SPA 404 shell.
+  Archbee ships a Changelog editor BLOCK for its customers to publish their own release notes
+  (https://www.archbee.com/docs/changelog-reference) — that is a product feature, not Archbee's own
+  changelog, and it is the reason a naive search finds "changelog" all over this domain.
+  No ChangeLog pointer is emitted in apis.yml, because a pointer would assert a page Archbee does
+  not serve.
+probes:
+- url: https://www.archbee.com/changelog
+  status: 200
+  verdict: empty blog category, no entries
+- url: https://docs.archbee.com/changelog
+  status: 200
+  verdict: SPA 404 shell
+- url: https://www.archbee.com/whats-new
+  status: 404
+- url: https://www.archbee.com/releases
+  status: 404
+dated_change_surfaces:
+- name: documentation RSS
+  url: https://docs.archbee.com/feed.xml
+  scheme: per-document pubDate
+  last_build: '2026-08-29'
+  note: The nearest thing to a change stream — dated updates to individual doc pages, not releases.
+- name: npm release history
+  scheme: semver
+  packages:
+  - name: '@archbee/mcp'
+    version: 2.3.1
+    date: '2026-08-28'
+  - name: '@archbee/cli'
+    version: 0.1.38
+    date: '2026-08-25'
+  - name: '@archbee/app-widget'
+    version: 1.1.42
+    date: '2026-05-29'
+entries: []

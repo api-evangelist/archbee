@@ -1,0 +1,15 @@
+{
+  "status": "",
+  "data": {
+    "searchSessionId": "",
+    "docs": {
+      "id": "",
+      "name": "",
+      "urlKey": "",
+      "urlAlias": "",
+      "hidden": false,
+      "privacy": "",
+      "highlight": {}
+    }
+  }
+}

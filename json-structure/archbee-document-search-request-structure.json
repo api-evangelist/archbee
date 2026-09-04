@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://api-evangelist.github.io/archbee/json-schema/archbee-document-search-request-schema.json",
+  "title": "Document Search Request",
+  "x-generated": "2026-09-04",
+  "x-method": "derived",
+  "x-source": "openapi/archbee-public-api-openapi.yml",
+  "x-note": "Derived 2026-09-04 from openapi/archbee-public-api-openapi.yml, which is assembled from Archbee's own published api-oas-v2 documentation blocks. Replaces the 2026-05-03 set, which described Member/Page/Space shapes from a fabricated scaffold specification.",
+  "type": "object",
+  "properties": {
+    "query": {
+      "type": "string",
+      "description": "Filter text, question or document title"
+    },
+    "searchOnlyTitle": {
+      "type": "boolean",
+      "description": "OPTIONAL. Search only by title"
+    },
+    "persistSearch": {
+      "type": "boolean",
+      "description": "OPTIONAL. Wether to keep a SearchSession in our database and return its id."
+    },
+    "searchSessionId": {
+      "type": "string",
+      "description": "OPTIONAL. id for the SearchSession object to update. More useful for AI chat."
+    },
+    "docId": {
+      "type": "string",
+      "description": "OPTIONAL. Return only one document with this id, if there is one",
+      "example": "21-character__string0"
+    },
+    "dataTextFormat": {
+      "type": "string",
+      "enum": [
+        "markdown",
+        "html"
+      ],
+      "description": "OPTIONAL. Return documents with dataText in this format"
+    },
+    "parentDocId": {
+      "type": "string",
+      "description": "OPTIONAL. Return only child documents of the doc with this id, if there are any. Can be \"null\" for retrieving the root docs.",
+      "example": "21-character__string0"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "words",
+        "ai-chat",
+        "ai-retrieval"
+      ],
+      "description": "OPTIONAL. which type of search to use; default is word-based"
+    }
+  },
+  "required": [
+    "query"
+  ]
+}

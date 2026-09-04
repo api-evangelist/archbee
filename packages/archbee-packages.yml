@@ -1,0 +1,81 @@
+generated: '2026-09-04'
+method: searched
+source: >-
+  registry.npmjs.org metadata endpoints read 2026-09-04, cross-checked against the Archbee docs that
+  publish the install commands — https://www.archbee.com/docs/archbee-cli-installation-and-setup and
+  https://www.archbee.com/docs/app-documentation-widget-react — and the @archbee/mcp README.
+note: >-
+  All four packages are published by the same npm maintainer set (dragosbulugean, andrei.stetco,
+  ioan.maracineanu); dragosbulugean is Archbee's founder, which is why the unscoped `archbee` name is
+  recorded as first-party too. No Archbee client library exists on PyPI (404), RubyGems (404) or any
+  other registry probed. There is no first-party SDK for the REST Public API in any language — the
+  npm surface is a CLI, an embeddable widget and an MCP server, not a generated API client.
+packages:
+- name: '@archbee/mcp'
+  registry: npm
+  url: https://www.npmjs.com/package/@archbee/mcp
+  official: true
+  version: 2.3.1
+  published: '2026-08-28'
+  language: javascript
+  kind: mcp-server
+  install: npx -y @archbee/mcp
+  bin: archbee-mcp
+  description: >-
+    Model Context Protocol server for the Archbee API. 26 tools that read, search, create, update and
+    delete documents, spaces, space groups, categories, templates, content snippets and variables.
+  dependencies:
+  - '@modelcontextprotocol/sdk ^1.12.0'
+  - axios ^1.9.0
+  - zod ^3.25.30
+- name: '@archbee/cli'
+  registry: npm
+  url: https://www.npmjs.com/package/@archbee/cli
+  official: true
+  version: 0.1.38
+  published: '2026-08-25'
+  language: javascript
+  kind: cli
+  install: npm install -g @archbee/cli
+  bin: archbee
+  homepage: https://archbee.com/cli
+  description: >-
+    Archbee CLI — local documentation preview (archbee dev), validation, broken-link checking, and
+    Public API commands (get-doc, create-doc, delete-doc, search-docs, export, upload, list-files).
+  requires: Node.js 18 or newer
+- name: '@archbee/app-widget'
+  registry: npm
+  url: https://www.npmjs.com/package/@archbee/app-widget
+  official: true
+  version: 1.1.42
+  published: '2026-05-29'
+  language: javascript
+  kind: ui-component
+  install: npm install --save @archbee/app-widget
+  description: >-
+    React/Next.js wrapper for the Archbee contextual documentation widget. Exports ArchbeeAppWidget
+    and the AbWidgetRef imperative handle (open/close/instance).
+- name: archbee
+  registry: npm
+  url: https://www.npmjs.com/package/archbee
+  official: true
+  version: 0.0.2
+  published: '2025-09-12'
+  language: javascript
+  kind: cli
+  description: >-
+    Unscoped "Archbee CLI utility" placeholder published by the same founder account. Superseded by
+    @archbee/cli, which is the package the docs tell you to install; recorded for completeness, not
+    recommended.
+  status: superseded
+absent:
+- registry: pypi
+  probed: https://pypi.org/pypi/archbee/json
+  status: 404
+- registry: rubygems
+  probed: https://rubygems.org/api/v1/gems/archbee.json
+  status: 404
+- registry: crates.io
+  probed: https://crates.io/api/v1/crates/archbee
+  status: 403
+  note: crates.io rejects the probe user-agent; no Archbee crate is referenced anywhere in the docs.

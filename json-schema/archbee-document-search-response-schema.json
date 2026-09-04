@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api-evangelist.github.io/archbee/json-schema/archbee-document-search-response-schema.json",
+  "title": "Document Search Response",
+  "x-generated": "2026-09-04",
+  "x-method": "derived",
+  "x-source": "openapi/archbee-public-api-openapi.yml",
+  "x-note": "Derived 2026-09-04 from openapi/archbee-public-api-openapi.yml, which is assembled from Archbee's own published api-oas-v2 documentation blocks. Replaces the 2026-05-03 set, which described Member/Page/Space shapes from a fabricated scaffold specification.",
+  "type": "object",
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": [
+        "OK"
+      ],
+      "description": "Response Status"
+    },
+    "data": {
+      "type": "object",
+      "properties": {
+        "searchSessionId": {
+          "type": "string",
+          "description": "Search session id, can be used as input for next search calls."
+        },
+        "docs": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Archbee id, used for private access"
+            },
+            "name": {
+              "type": "string",
+              "description": "name of document"
+            },
+            "urlKey": {
+              "type": "string",
+              "description": "url of public document, used for public access (if published)"
+            },
+            "urlAlias": {
+              "type": "string",
+              "description": "In case you are migrating from another platform and you\u2019d like to get a redirecting url to your current url, you can use this url path."
+            },
+            "hidden": {
+              "type": "boolean",
+              "description": "indicates if document is hidden"
+            },
+            "privacy": {
+              "type": "string",
+              "enum": [
+                "private",
+                "shared with team",
+                "public-via-link",
+                "public"
+              ],
+              "description": "describes how to access the document via public url (if published)"
+            },
+            "highlight": {
+              "type": "object",
+              "description": "text from document, similar with query (word-based search only)"
+            }
+          },
+          "description": "Array of Doc responses"
+        }
+      },
+      "description": "Response Data"
+    }
+  },
+  "description": "Process status"
+}

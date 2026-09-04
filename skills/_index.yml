@@ -1,0 +1,32 @@
+generated: '2026-09-04'
+method: generated
+source: >-
+  Grounded in the operationIds of openapi/archbee-public-api-openapi.yml, which is assembled from
+  Archbee's own api-oas-v2 documentation blocks, plus the runtime rules recorded in
+  conventions/archbee-conventions.yml, errors/archbee-problem-types.yml and
+  rate-limits/archbee-rate-limits.yml.
+note: >-
+  Archbee publishes no skills, AGENTS.md or llms-full.txt of its own — searched the docs host and the
+  GitHub org on 2026-09-04. These four are API Evangelist packaged skills, written against real
+  operationIds only. Every rule stated in them is traceable to a fetched Archbee page or an observed
+  response header; where Archbee states nothing (an idempotency window, a reversal window, a 429
+  status code) the skill says so rather than filling the gap.
+api: archbee:archbee-public-api
+skills:
+- name: archbee-publish-a-document
+  file: archbee-publish-a-document.md
+  operations: [updateCreateDocument, getDocument, publishSpace]
+  risk: medium
+- name: archbee-manage-a-space
+  file: archbee-manage-a-space.md
+  operations: [createSpace, updateSpace, cloneSpace, deleteSpace, createSpaceGroup, deleteSpaceGroup]
+  risk: high
+  note: Contains deleteSpace, which is irreversible and invalidates the space API key.
+- name: archbee-sync-an-openapi-reference
+  file: archbee-sync-an-openapi-reference.md
+  operations: [uploadSingleFile, syncOpenApiDocument, infoOpenApiDocument, publishSpace]
+  risk: medium
+- name: archbee-triage-reader-suggestions
+  file: archbee-triage-reader-suggestions.md
+  operations: [searchDocument, getDocument, mergeSuggestionIntoMainDocument, discardSuggestionDocument, organizationExport]
+  risk: medium

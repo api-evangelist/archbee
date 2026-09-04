@@ -1,11 +1,16 @@
 aid: archbee
 name: Archbee
 description: >-
-  Archbee is a documentation platform for software teams that enables creating,
-  managing, and publishing technical documentation, API references, and
-  knowledge bases. It provides tools for writing developer docs, API
-  documentation, and internal wikis with collaborative editing and version
-  control.
+  Archbee is a documentation and knowledge-portal platform for software teams. It creates, manages
+  and publishes technical documentation, API references and internal wikis, with collaborative
+  editing, revision history, branching and review, custom-domain publishing, an embeddable in-product
+  docs widget, and AI-assisted search, writing and translation. Archbee imports and syncs OpenAPI and
+  Postman collections to generate rendered API reference documentation. Its own developer surface is a
+  24-operation REST Public API at https://api.archbee.com/api/public-api, a first-party CLI
+  (@archbee/cli), a React widget package (@archbee/app-widget), and a Model Context Protocol server
+  shipped in two deployments — a hosted OAuth endpoint at
+  https://api.archbee.com/api/public-mcp-ds/sse and a local stdio server on npm as @archbee/mcp —
+  exposing 26 tools over documents, spaces, templates, snippets and variables.
 type: Index
 deliveryModel:
   model: saas
@@ -20,19 +25,24 @@ deliveryModel:
   generated: '2026-08-28'
   method: derived
 accessModel:
-  pricing: freemium
+  pricing: paid
   onboarding: self-serve
-  trial: false
+  trial: true
+  trial_days: 14
   try_now: true
   public: false
-  label: Freemium · Self-serve signup
-  confidence: medium
+  label: Paid · 14-day free trial · Self-serve signup
+  confidence: high
   source:
   - plans
-  - authentication
-  - security
-  generated: '2026-09-03'
-  method: derived
+  - https://www.archbee.com/pricing
+  generated: '2026-09-04'
+  method: searched
+  note: >-
+    Corrected 2026-09-04. The previous derived value read freemium from a scaffold plans artifact that
+    invented a free tier. Archbee's pricing FAQ states "A free offering is not available at the
+    moment"; the entry point is a 14-day trial with no credit card, and the lowest paid plan starts
+    at $80 per month.
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/archbee.png
 tags:
   - API Documentation
@@ -40,61 +50,76 @@ tags:
   - Knowledge Base
   - Technical Writing
   - Developer Docs
+  - Developer Portal
+  - Docs as Code
+  - OpenAPI
+  - Model Context Protocol
+  - AI Agents
+  - Content Management
 url: >-
   https://raw.githubusercontent.com/api-evangelist/archbee/refs/heads/main/apis.yml
 created: '2026-03-16'
-modified: '2026-04-19'
+modified: '2026-09-04'
 specificationVersion: '0.23'
 apis:
-- aid: archbee:archbee-members-api
-  name: Archbee Members API
-  description: Team member and access management
-  humanURL: https://www.archbee.com/
-  baseURL: https://api.archbee.com
+- aid: archbee:archbee-public-api
+  name: Archbee Public API
+  description: >-
+    The Archbee Public API manages documentation spaces, documents, space groups, File Manager
+    files, reader-submitted suggestions, organization exports and imported OpenAPI references in an
+    Archbee workspace. 24 documented operations under https://api.archbee.com/api/public-api,
+    authenticated with an HTTP Bearer token whose value is base64(docSpaceId~apiKey), or an
+    organization key beginning abteam_.
+  humanURL: https://www.archbee.com/docs/get-document
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/archbee.png
+  baseURL: https://api.archbee.com/api/public-api
   tags:
-  - Members
-  properties:
-  - type: OpenAPI
-    url: openapi/archbee-members-api-openapi.yml
-  - type: Documentation
-    url: https://docs.archbee.com/
-  - type: GettingStarted
-    url: https://docs.archbee.com/getting-started
-  - type: APIReference
-    url: https://docs.archbee.com/
-- aid: archbee:archbee-pages-api
-  name: Archbee Pages API
-  description: Page content management
-  humanURL: https://www.archbee.com/
-  baseURL: https://api.archbee.com
-  tags:
-  - Pages
-  properties:
-  - type: OpenAPI
-    url: openapi/archbee-pages-api-openapi.yml
-  - type: Documentation
-    url: https://docs.archbee.com/
-  - type: GettingStarted
-    url: https://docs.archbee.com/getting-started
-  - type: APIReference
-    url: https://docs.archbee.com/
-- aid: archbee:archbee-spaces-api
-  name: Archbee Spaces API
-  description: Documentation space management
-  humanURL: https://www.archbee.com/
-  baseURL: https://api.archbee.com
-  tags:
+  - Documents
   - Spaces
+  - Space Groups
+  - File Manager
+  - Organization
+  - Suggestions
   properties:
   - type: OpenAPI
-    url: openapi/archbee-spaces-api-openapi.yml
+    url: openapi/archbee-public-api-openapi.yml
   - type: Documentation
     url: https://docs.archbee.com/
-  - type: GettingStarted
-    url: https://docs.archbee.com/getting-started
   - type: APIReference
-    url: https://docs.archbee.com/
+    url: https://www.archbee.com/docs/get-document
+  - type: Overlay
+    url: overlays/archbee-public-api-overlay.yaml
+  - type: ErrorCatalog
+    url: errors/archbee-problem-types.yml
+  - type: DataModel
+    url: data-model/archbee-data-model.yml
+- aid: archbee:archbee-mcp-server
+  name: Archbee MCP Server
+  description: >-
+    Archbee's Model Context Protocol server, shipped in two deployments: a hosted remote endpoint at
+    https://api.archbee.com/api/public-mcp-ds/sse that an MCP client connects to over OAuth 2.1
+    (dynamic client registration, PKCE, scopes read:docs and write:docs), and a local stdio server
+    published to npm as @archbee/mcp. 26 documented tools read, search, create, update and delete
+    documents, spaces, space groups, categories, templates, content snippets and variables.
+  humanURL: https://www.archbee.com/docs/anthropic-claude-connector
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/archbee.png
+  baseURL: https://api.archbee.com/api/public-mcp-ds/sse
+  tags:
+  - MCP
+  - AI Agents
+  - Documentation
+  properties:
+  - type: MCPServer
+    url: mcp/archbee-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/archbee-tool-crosswalk.yml
+  - type: Documentation
+    url: https://www.archbee.com/docs/anthropic-claude-connector
+  - type: OAuthScopes
+    url: scopes/archbee-scopes.yml
 common:
+  - type: Website
+    url: https://www.archbee.com/
   - type: PostmanWorkspace
     url: https://www.postman.com/kinlaneapi/archbee/overview
   - type: AgenticAccess
@@ -118,19 +143,19 @@ common:
   - type: Signup
     url: https://app.archbee.com/signup
   - type: Login
-    url: https://app.archbee.com/login
+    url: https://app.archbee.com/signin
   - type: Pricing
     url: https://www.archbee.com/pricing
   - type: GitHubOrganization
     url: https://github.com/archbee
   - type: TermsOfService
-    url: https://www.archbee.com/terms
+    url: https://www.archbee.com/terms-of-service
   - type: PrivacyPolicy
-    url: https://www.archbee.com/privacy
+    url: https://www.archbee.com/privacy-policy
   - type: StatusPage
     url: https://status.archbee.com/
   - type: Support
-    url: https://www.archbee.com/contact
+    url: mailto:support@archbee.com
   - type: Features
     data:
     - name: API Documentation
@@ -182,9 +207,62 @@ common:
   - type: Integrations
     url: https://www.archbee.com/integrations
   - type: LlmsText
-    url: https://api.archbee.com/llms.txt
+    url: https://docs.archbee.com/llms.txt
+  - type: LLMsTxt
+    url: llms/archbee-llms.txt
+  - type: MCPServer
+    url: mcp/archbee-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/archbee-tool-crosswalk.yml
+  - type: Packages
+    url: packages/archbee-packages.yml
+  - type: SDKs
+    url: packages/archbee-packages.yml
+  - type: CLI
+    url: cli/archbee-cli.yml
+  - type: Components
+    url: components/archbee-components.yml
+  - type: WellKnown
+    url: well-known/archbee-well-known.yml
+  - type: OAuthScopes
+    url: scopes/archbee-scopes.yml
+  - type: Conventions
+    url: conventions/archbee-conventions.yml
+  - type: ErrorCatalog
+    url: errors/archbee-problem-types.yml
+  - type: Lifecycle
+    url: lifecycle/archbee-lifecycle.yml
+  - type: Conformance
+    url: conformance/archbee-conformance.yml
+  - type: Compliance
+    url: security/archbee-trust-center.yml
+  - type: Security
+    url: security/archbee-vulnerability-disclosure.yml
+  - type: DataModel
+    url: data-model/archbee-data-model.yml
+  - type: Overlay
+    url: overlays/archbee-public-api-overlay.yaml
+  - type: AgentSkill
+    url: skills/_index.yml
+  - type: Plans
+    url: plans/archbee-plans-pricing.yml
+  - type: RateLimits
+    url: rate-limits/archbee-rate-limits.yml
+  - type: APIReference
+    url: https://www.archbee.com/docs/get-document
+  - type: DeveloperPortal
+    url: https://docs.archbee.com/
+  - type: GettingStarted
+    url: https://www.archbee.com/docs/how-to-get-started
+  - type: HelpCenter
+    url: https://docs.archbee.com/
 integrations:
   - name: Xkcd Embed Webcomics View Integration →
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
+x-enrichment:
+  date: '2026-09-04'
+  status: enriched
+  artifacts_added: 27
+  pass: local-v3

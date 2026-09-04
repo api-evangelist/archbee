@@ -1,0 +1,49 @@
+generated: '2026-09-04'
+method: probed
+source: >-
+  https://api.archbee.com/.well-known/oauth-authorization-server and
+  https://api.archbee.com/.well-known/oauth-protected-resource/api/public-mcp-ds/sse, both fetched
+  anonymously 2026-09-04 (HTTP 200). Saved verbatim under well-known/.
+docs: https://www.archbee.com/docs/anthropic-claude-connector
+note: >-
+  These scopes govern the remote MCP endpoint only. The REST Public API does not use OAuth — it
+  authenticates with a bearer value the caller assembles from a space id and an API key, and has no
+  scope concept at all. Archbee publishes no prose scopes reference page; the scope list below comes
+  from the machine-readable metadata documents, which is why the method is probed rather than
+  searched. Descriptions are inferred from the scope names and the tool categories in
+  mcp/archbee-mcp.yml and are marked as such — Archbee states no description for either scope.
+issuer: https://api.archbee.com
+authorization_endpoint: https://api.archbee.com/oauth/authorize
+token_endpoint: https://api.archbee.com/oauth/token
+registration_endpoint: https://api.archbee.com/oauth/register
+revocation_endpoint: https://api.archbee.com/oauth/revoke
+flows:
+- authorization_code
+- refresh_token
+pkce:
+  required_methods:
+  - S256
+dynamic_client_registration: true
+token_endpoint_auth_methods:
+- none
+applies_to:
+- https://api.archbee.com/api/public-mcp-ds/sse
+- https://api.archbee.com
+scopes:
+- name: read:docs
+  description_source: inferred
+  description: >-
+    Read access to documentation content. Covers the read-category MCP tools — get_doc,
+    get_all_docs, search_query, search_title, list_templates, list_content_snippets, list_variables.
+- name: write:docs
+  description_source: inferred
+  description: >-
+    Write and delete access to documentation content. Covers the write and destructive MCP tools —
+    create_doc, update_doc, delete_doc, the space, space-group, category, template, content-snippet
+    and variable mutations.
+gaps:
+- >-
+    Two scopes cover 26 tools, and one of them covers every destructive operation including
+    delete_doc_space, which permanently removes a space and every document in it. An agent granted
+    write:docs to create a page is granted the ability to delete the workspace. There is no
+    read-only-plus-create scope, no per-resource scope, and no scope reference page in the docs.

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api-evangelist.github.io/archbee/json-schema/archbee-error-response-schema.json",
+  "title": "Error Response",
+  "x-generated": "2026-09-04",
+  "x-method": "derived",
+  "x-source": "openapi/archbee-public-api-openapi.yml",
+  "x-note": "Derived 2026-09-04 from openapi/archbee-public-api-openapi.yml, which is assembled from Archbee's own published api-oas-v2 documentation blocks. Replaces the 2026-05-03 set, which described Member/Page/Space shapes from a fabricated scaffold specification.",
+  "type": "object",
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": [
+        "OK",
+        "Not OK"
+      ],
+      "description": "Response Status",
+      "example": "Not OK"
+    },
+    "messages": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "example": "Some error message"
+      },
+      "description": "Array of messages",
+      "example": "[\"Some error message\"]"
+    }
+  }
+}

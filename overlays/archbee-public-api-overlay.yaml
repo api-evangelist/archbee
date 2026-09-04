@@ -1,0 +1,125 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Archbee Public API
+  version: 1.0.0
+  x-generated: '2026-09-04'
+  x-method: generated
+  x-source: >-
+    Captures the enrichment API Evangelist adds on top of
+    openapi/archbee-public-api-openapi.yml — runtime semantics Archbee documents in prose or exposes
+    only on the wire, restated as machine-readable extensions. Every value here is traceable to a
+    fetched Archbee page or an observed response header; nothing is invented. Apply, never merge into
+    the base document.
+extends: ./../openapi/archbee-public-api-openapi.yml
+actions:
+- target: $.info
+  description: Runtime semantics observed on api.archbee.com and documented in the Archbee docs.
+  update:
+    x-rate-limit:
+      limit: 100
+      window: 1s
+      window_confidence: inferred
+      headers:
+      - x-ratelimit-limit
+      - x-ratelimit-remaining
+      - x-ratelimit-reset
+      reset_format: human-readable date string
+      retry_after: false
+      observed: '2026-09-04'
+      detail: rate-limits/archbee-rate-limits.yml
+    x-idempotency:
+      coverage: none
+      header: null
+      detail: conventions/archbee-conventions.yml
+    x-pagination:
+      style: none
+      detail: conventions/archbee-conventions.yml
+    x-error-envelope:
+      shape: '{"status":"Not OK","messages":["..."]}'
+      rfc9457: false
+      auth_failure_status: 400
+      detail: errors/archbee-problem-types.yml
+    x-versioning:
+      scheme: none
+      detail: lifecycle/archbee-lifecycle.yml
+    x-status-page: https://status.archbee.com/
+    x-platform-limits:
+      documents_per_space: 1000
+      blocks_per_document: 500
+      document_size_bytes: 1048576
+      file_upload_bytes: 8388608
+      source: https://www.archbee.com/docs/limits
+- target: $.components.securitySchemes.bearerAuth
+  description: How the bearer value is constructed, and which credentials are refused.
+  update:
+    x-token-construction: base64(docSpaceId + "~" + apiKey)
+    x-alternative-credential:
+      form: abteam_<organization key>
+      scope: every space in the organization
+      issued: Settings, Organization settings, Organization API key — shown once, never readable again
+    x-refused-credentials:
+    - PUBLISHED-<spaceId> for any write operation
+    - PREVIEW-<spaceId> for any write operation
+    - read-only organization keys for create, delete, update and publish operations
+    x-failure-status: 400
+    x-failure-body: '{"status":"Not OK","messages":["Api key or Space Id not found or not allowed!"]}'
+- target: $.paths['/doc'].get
+  description: >-
+    Flag the GET-with-a-body shape, which many HTTP clients, proxies and generated SDKs will silently
+    drop.
+  update:
+    x-request-body-on-get: true
+    x-interoperability-warning: >-
+      This GET carries a required JSON request body. Clients that strip bodies from GET requests will
+      receive HTTP 400. Verify your HTTP stack sends it before generating code from this operation.
+- target: $.paths['/doc'].delete
+  description: Reversibility — none.
+  update:
+    x-reversible: false
+    x-reversal-window: null
+    x-consequence: >-
+      Permanently deletes the document, its uploaded files and its images. With recursive true, every
+      nested child too. There is no restore operation in the API; a human can revert content through
+      Document Revision History only while the document still exists.
+- target: $.paths['/space/delete'].delete
+  description: Reversibility — none, and the credential dies with the space.
+  update:
+    x-reversible: false
+    x-reversal-window: null
+    x-consequence: >-
+      Permanently deletes the space and every document in it, and invalidates the space API key. The
+      highest-consequence operation on this API.
+- target: $.paths['/doc'].post
+  description: Upsert semantics and the one place replay is naturally safe.
+  update:
+    x-upsert: true
+    x-idempotent-by-shape: true
+    x-note: >-
+      POST /doc with a docId updates in place and is therefore safe to replay; without a docId it
+      creates and is not. Archbee documents no idempotency key either way.
+    x-reversal: >-
+      Content overwrites can be reverted by a human through Document Revision History (retention 1
+      year on Growing, 2 on Scaling, 5 on Enterprise). There is no API operation for it.
+- target: $.paths['/file-manager/replace'].post
+  description: URL-preserving replace.
+  update:
+    x-preserves-public-url: true
+    x-reversible: false
+    x-note: >-
+      Keeps the same public URL so published documentation does not break, which also means the prior
+      bytes are unrecoverable through the API.
+- target: $.paths['/space/publish'].post
+  description: Publishing changes world-readability with no documented inverse.
+  update:
+    x-reversible: not documented
+    x-consequence: No unpublish operation is documented in the Public API.
+- target: $.paths['/access-control/request'].post
+  description: Preconditions Archbee states in prose but not in the contract.
+  update:
+    x-preconditions:
+    - The space must have Magic Link access control enabled.
+    - The portal must be gating its content.
+    - The organization's plan must permit magic-link access.
+    x-effect: >-
+      Records a pending request only. It does not grant access; an admin must approve it. One request
+      per (email, space).

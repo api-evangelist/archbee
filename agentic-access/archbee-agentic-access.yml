@@ -1,22 +1,59 @@
-generated: '2026-07-15'
+generated: '2026-09-04'
 method: generated
-source: openapi/archbee-api.yaml
-description: Recommended x-agentic-access execution contracts, classified heuristically from
-  the OpenAPI. A governance starting point for exposing this API to AI agents — review and bind
-  audience per deployment. See research/curity/agentic-governance/.
+source: openapi/archbee-public-api-openapi.yml
+description: 'Recommended x-agentic-access execution contracts, classified from the Archbee Public API
+  contract. Regenerated 2026-09-04: the previous version was classified against a fabricated scaffold
+  spec describing operations Archbee does not ship (/spaces, /spaces/{spaceId}/pages). human-in-the-loop
+  is set to required, not conditional, on the six operations whose effects Archbee documents as permanent
+  — the API has no idempotency key, no dry-run mode and no reversal operation, so an agent cannot rehearse
+  or undo any of them. A governance starting point; review and bind audience per deployment.'
 summary:
-  operations: 7
+  operations: 24
   by_action_class:
-    connected: 4
-    acting: 3
+    connected: 5
+    acting: 19
   by_consequence:
-    read: 4
-    write: 3
-  human_in_the_loop_required: 0
+    read: 5
+    write: 19
+  human_in_the_loop_required: 6
 operations:
-- path: /spaces
+- path: /access-control/request
+  method: post
+  operationId: requestMagicLinkAccess
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+    reversible: not-documented
+- path: /doc
+  method: delete
+  operationId: deleteDocument
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: required
+      triggers:
+      - destructive
+      - irreversible
+    audit: required
+    reversible: false
+- path: /doc
   method: get
-  operationId: listSpaces
+  operationId: getDocument
   x-agentic-access:
     action-class: connected
     consequence: read
@@ -24,7 +61,180 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-- path: /spaces
+- path: /doc
+  method: post
+  operationId: updateCreateDocument
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+    reversible: not-documented
+- path: /docs/search
+  method: post
+  operationId: searchDocument
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+    reversible: not-documented
+- path: /file-manager/file
+  method: delete
+  operationId: deleteAFileManagerFile
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: required
+      triggers:
+      - destructive
+      - irreversible
+    audit: required
+    reversible: false
+- path: /file-manager/files
+  method: get
+  operationId: listFileManagerFiles
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /file-manager/move
+  method: post
+  operationId: moveAFileManagerFile
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+    reversible: not-documented
+- path: /file-manager/replace
+  method: post
+  operationId: overwriteAFileManagerFile
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: required
+      triggers:
+      - destructive
+      - irreversible
+    audit: required
+    reversible: false
+- path: /import-content
+  method: post
+  operationId: importContent
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+    reversible: not-documented
+- path: /info-api-reference
+  method: get
+  operationId: infoOpenApiDocument
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /space-group/create
+  method: post
+  operationId: createSpaceGroup
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+    reversible: not-documented
+- path: /space-group/delete
+  method: delete
+  operationId: deleteSpaceGroup
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: required
+      triggers:
+      - destructive
+      - irreversible
+    audit: required
+    reversible: false
+- path: /space/clone
+  method: post
+  operationId: cloneSpace
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+    reversible: not-documented
+- path: /space/create
   method: post
   operationId: createSpace
   x-agentic-access:
@@ -40,17 +250,8 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /spaces/{spaceId}
-  method: get
-  operationId: getSpace
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /spaces/{spaceId}
+    reversible: not-documented
+- path: /space/delete
   method: delete
   operationId: deleteSpace
   x-agentic-access:
@@ -61,24 +262,15 @@ operations:
     token:
       max-ttl: 900
     escalation:
-      human-in-the-loop: conditional
+      human-in-the-loop: required
       triggers:
-      - abnormal
-      - high-value
+      - destructive
+      - irreversible
     audit: required
-- path: /spaces/{spaceId}/pages
-  method: get
-  operationId: listPages
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /spaces/{spaceId}/pages
+    reversible: false
+- path: /space/publish
   method: post
-  operationId: createPage
+  operationId: publishSpace
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -92,9 +284,78 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /spaces/{spaceId}/members
+    reversible: not-documented
+- path: /space/update
+  method: post
+  operationId: updateSpace
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+    reversible: not-documented
+- path: /suggest-change/discard
+  method: post
+  operationId: discardSuggestionDocument
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: required
+      triggers:
+      - destructive
+      - irreversible
+    audit: required
+    reversible: false
+- path: /suggest-change/merge
+  method: post
+  operationId: mergeSuggestionIntoMainDocument
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+    reversible: not-documented
+- path: /sync-api-reference
+  method: post
+  operationId: syncOpenApiDocument
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+    reversible: not-documented
+- path: /team/display-rules
   method: get
-  operationId: listMembers
+  operationId: organizationDisplayRules
   x-agentic-access:
     action-class: connected
     consequence: read
@@ -102,3 +363,30 @@ operations:
     token:
       max-ttl: 3600
     audit: none
+- path: /team/export
+  method: get
+  operationId: organizationExport
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /upload/file
+  method: post
+  operationId: uploadSingleFile
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+    reversible: not-documented

@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api-evangelist.github.io/archbee/json-schema/archbee-space-update-request-schema.json",
+  "title": "Space Update Request",
+  "x-generated": "2026-09-04",
+  "x-method": "derived",
+  "x-source": "openapi/archbee-public-api-openapi.yml",
+  "x-note": "Derived 2026-09-04 from openapi/archbee-public-api-openapi.yml, which is assembled from Archbee's own published api-oas-v2 documentation blocks. Replaces the 2026-05-03 set, which described Member/Page/Space shapes from a fabricated scaffold specification.",
+  "type": "object",
+  "properties": {
+    "publicAccessControlPart": {
+      "type": "object",
+      "properties": {
+        "publicProtectionType": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Password",
+            "Guest accounts",
+            "Private Accounts",
+            "Private Link",
+            "Magic Link",
+            "JWT",
+            "SAML"
+          ],
+          "description": "Type of protection for the space",
+          "example": "Password"
+        },
+        "publicPassword": {
+          "type": "string",
+          "description": "Password required when publicProtectionType is 'Password'",
+          "example": "mySecurePassword123"
+        },
+        "publicGuestAccounts": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "enum": [
+                "email"
+              ],
+              "example": "guest@example.com"
+            },
+            "password": {
+              "type": "string",
+              "example": "guestPassword123"
+            }
+          },
+          "description": "Guest accounts required when publicProtectionType is 'Guest accounts'"
+        },
+        "publicMagicLinkAccounts": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "enum": [
+                "email"
+              ],
+              "example": "user@example.com"
+            }
+          },
+          "description": "Magic link accounts required when publicProtectionType is 'Magic Link'"
+        },
+        "publicPrivateAccounts": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "enum": [
+                "email"
+              ],
+              "example": "private@example.com"
+            }
+          },
+          "description": "Private accounts required when publicProtectionType is 'Private Accounts'"
+        },
+        "privateLinkTokens": {
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string",
+              "example": "API Access Token"
+            },
+            "env": {
+              "type": "string",
+              "example": "production"
+            },
+            "token": {
+              "type": "string",
+              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+            }
+          },
+          "description": "Private link tokens required when publicProtectionType is 'Private Link'"
+        },
+        "jwtValidationType": {
+          "type": "string",
+          "enum": [
+            "JWT-Secret",
+            "JWT-KeySet"
+          ],
+          "description": "JWT validation type required when publicProtectionType is 'JWT'",
+          "example": "JWT-Secret"
+        },
+        "jwtKeyUrl": {
+          "type": "string",
+          "description": "JWT key URL required when jwtValidationType is 'JWT-KeySet'",
+          "example": "https://example.com/.well-known/jwks.json"
+        },
+        "jwtSecret": {
+          "type": "string",
+          "description": "JWT secret required when jwtValidationType is 'JWT-Secret'",
+          "example": "myJwtSecret123"
+        },
+        "conditionalRuleId": {
+          "type": "string",
+          "description": "Conditional rule ID for advanced access control",
+          "example": "21-character__string0"
+        },
+        "jwtRedirectURL": {
+          "type": "string",
+          "description": "JWT redirect URL for authentication flow",
+          "example": "https://example.com/auth/callback"
+        },
+        "samlMetadata": {
+          "type": "string",
+          "description": "SAML metadata required when publicProtectionType is 'SAML'",
+          "example": "<EntityDescriptor>...</EntityDescriptor>"
+        }
+      },
+      "description": "Configuration for public access control and authentication"
+    },
+    "hostnamePart": {
+      "type": "object",
+      "properties": {
+        "hostname": {
+          "type": "string",
+          "description": "Custom hostname for the space",
+          "example": "docs.example.com"
+        },
+        "hostnamePath": {
+          "type": "string",
+          "description": "Path component for the hostname",
+          "example": "/api-docs"
+        }
+      },
+      "description": "Custom hostname configuration for the space"
+    },
+    "spaceLinks": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string",
+          "example": "Related Documentation"
+        },
+        "docSpaceId": {
+          "type": "string",
+          "example": "21-character__string0"
+        }
+      },
+      "description": "Links to other spaces. List should start with current space."
+    }
+  }
+}

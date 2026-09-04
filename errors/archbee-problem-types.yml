@@ -1,0 +1,82 @@
+generated: '2026-09-04'
+method: derived
+source: >-
+  Derived from the 24 operations in openapi/archbee-public-api-openapi.yml (every one of which
+  documents exactly a 200 and a 400), confirmed against live unauthenticated probes of
+  GET /doc, POST /docs/search and GET /team/display-rules on 2026-09-04, and against the
+  @archbee/mcp README for the MCP surface.
+format: proprietary
+rfc9457: false
+note: >-
+  Archbee does not use application/problem+json and does not use HTTP status to discriminate error
+  classes on the REST Public API. Every documented failure is HTTP 400 carrying a uniform envelope,
+  and an authentication failure is a 400 too — an agent cannot tell "bad credentials" from "bad
+  input" from the status line and must read messages[]. The MCP endpoint is the exception: it
+  answers a missing or invalid OAuth token with a real 401 and an RFC 6750 WWW-Authenticate header.
+envelope:
+  success:
+    shape: '{"status": "OK", "data": {...}}'
+    note: >-
+      Not universal. Some operations return a bare result object (getDocument returns
+      {content, format}); the {status, data} wrapper is used by the File Manager, upload and
+      organization operations.
+  error:
+    shape: '{"status": "Not OK", "messages": ["<message>", ...]}'
+    fields:
+    - name: status
+      type: string
+      enum: [OK, Not OK]
+    - name: messages
+      type: array
+      items: string
+      description: One or more human-readable error strings. There is no machine-readable error code.
+    schema_ref: '#/components/schemas/Response400 (named customType in the provider''s own blocks)'
+status_codes:
+- code: 400
+  count: 24
+  meaning: >-
+    The single documented failure code, used for invalid parameters, missing required fields,
+    unauthorized credentials, and refused operations alike.
+  observed: true
+- code: 401
+  scope: mcp
+  meaning: Missing or invalid OAuth bearer token on the remote MCP endpoint.
+  body: '{"error":"invalid_token"}'
+  headers:
+    WWW-Authenticate: >-
+      Bearer resource_metadata="https://api.archbee.com/.well-known/oauth-protected-resource/api/public-mcp-ds/sse"
+  observed: true
+- code: 429
+  scope: inferred
+  meaning: >-
+    Not documented and not observed. The API returns x-ratelimit-limit / x-ratelimit-remaining /
+    x-ratelimit-reset on every response, which implies a throttled response exists, but Archbee does
+    not publish the status code or the body. Recorded as unverified, not asserted.
+  observed: false
+problems:
+- id: credentials-not-found
+  status: 400
+  title: Api key or Space Id not found or not allowed!
+  detected: live probe
+  evidence: >-
+    GET https://api.archbee.com/api/public-api/doc with no Authorization header, and with an
+    invalid bearer token, both returned HTTP 400 and this exact message on 2026-09-04.
+  remediation: >-
+    Send Authorization: Bearer {base64(docSpaceId~apiKey)}, or an organization key beginning
+    abteam_. A PUBLISHED- or PREVIEW- snapshot space id reads but is refused for every write.
+  affects: all operations
+- id: invalid-request-parameters
+  status: 400
+  title: Invalid request parameters.
+  detected: openapi
+  remediation: Check the required body fields for the operation; messages[] names the offending field.
+  affects: all operations
+- id: magic-link-not-configured
+  status: 400
+  title: Magic link access is not available for this space
+  detected: documentation
+  evidence: https://www.archbee.com/docs/request-magic-link-access
+  remediation: >-
+    Enable Magic Link on the space, gate the portal, and confirm the organization's plan permits it
+    before calling requestMagicLinkAccess.
+  affects: [requestMagicLinkAccess]

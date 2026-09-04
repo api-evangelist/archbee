@@ -1,16 +1,15 @@
-generated: '2026-07-11'
+generated: '2026-09-04'
 method: derived
-source: openapi/archbee-api.yaml
+source: openapi/archbee-public-api-openapi.yml
 summary:
   types:
-  - apiKey
-  api_key_in:
-  - header
+  - http
 schemes:
-- name: apiKey
-  type: apiKey
-  in: header
-  parameter: X-Api-Key
-  description: Archbee API key from the workspace settings
+- name: bearerAuth
+  type: http
+  scheme: bearer
+  description: 'Requires the Authorization header in the form Authorization: Bearer {base64(docSpaceId~apiKey)}
+    — the base64 encoding of the docSpaceId, a tilde, and the apiKey. A team key beginning abteam_
+    may be used instead to reach every space in the organization.'
   sources:
-  - openapi/archbee-api.yaml
+  - openapi/archbee-public-api-openapi.yml

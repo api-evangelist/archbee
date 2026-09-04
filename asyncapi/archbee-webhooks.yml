@@ -1,0 +1,38 @@
+generated: '2026-09-04'
+method: searched
+source: >-
+  https://www.archbee.com/docs/webhook-endoint, plus a full-text search of all 210 published Archbee
+  doc pages for "webhook", "event" and "subscribe" on 2026-09-04.
+asyncapi_published: false
+webhook_catalog_published: false
+verdict: partial
+note: >-
+  Archbee ships no AsyncAPI document (probed /asyncapi.yaml on api.archbee.com and
+  docs.archbee.com — soft-404 and SPA shell respectively; /asyncapi.json on www 404) and publishes no
+  webhook catalogue. Exactly ONE of the 210 doc pages mentions webhooks — a slug with a typo,
+  "webhook-endoint" — and it contains only a receiver code sample showing how to verify the
+  signature. It names no event types, no subscription endpoint, no payload schema and no retry
+  policy, and there is no Public API operation for creating or listing webhook subscriptions. The
+  evidence that Archbee sends webhooks at all is the signing scheme in that sample. No Webhooks or
+  AsyncAPI pointer is emitted in apis.yml, because there is no catalogue for a consumer to read.
+signing:
+  algorithm: HMAC-SHA256
+  string_to_sign: '{x-timestamp}.{JSON.stringify(payload)}'
+  headers:
+  - name: x-signature
+    description: Hex-encoded HMAC-SHA256 of the string to sign, keyed with the signing key.
+  - name: x-timestamp
+    description: Timestamp prefixed to the payload before signing; also guards against replay.
+  key: signingKey, provided by Archbee (the docs do not say where it is issued)
+  source: https://www.archbee.com/docs/webhook-endoint
+events: []
+subscription_api: null
+probes:
+- url: https://api.archbee.com/asyncapi.yaml
+  status: 200
+  verdict: soft-404 body "Resource not found."
+- url: https://docs.archbee.com/asyncapi.yaml
+  status: 200
+  verdict: portal SPA shell
+- url: https://www.archbee.com/asyncapi.json
+  status: 404

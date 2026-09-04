@@ -1,0 +1,188 @@
+generated: '2026-09-04'
+method: searched
+source: >-
+  openapi/archbee-public-api-openapi.yml (derived from Archbee's own api-oas-v2 documentation
+  blocks), the @archbee/mcp README, https://www.archbee.com/docs/limits,
+  https://www.archbee.com/docs/document-history, https://www.archbee.com/docs/webhook-endoint, and
+  live unauthenticated probes of api.archbee.com on 2026-09-04.
+authentication:
+  style: http-bearer
+  header: 'Authorization: Bearer {base64(docSpaceId~apiKey)}'
+  alternative: 'Authorization: Bearer abteam_<organization key>'
+  note: >-
+    The bearer value is not an opaque token the provider issued — it is the base64 encoding of the
+    space id, a tilde, and the space API key, assembled by the caller. An organization key
+    (abteam_...) is used as-is and reaches every space, with the space travelling per request. A
+    PUBLISHED- or PREVIEW- snapshot space id reads but is refused for every write.
+  failure: HTTP 400 with {"status":"Not OK","messages":["Api key or Space Id not found or not allowed!"]}
+  observed: '2026-09-04'
+  detail: authentication/archbee-authentication.yml
+  mcp:
+    style: oauth2
+    flow: authorization_code with PKCE S256
+    dynamic_client_registration: true
+    scopes: [read:docs, write:docs]
+    detail: well-known/archbee-oauth-authorization-server.json
+http:
+  base: https://api.archbee.com/api/public-api
+  method_semantics: >-
+    Resource-per-path with a verb in the path for most mutations (/space/create, /space/update,
+    /space/delete, /space/clone, /space/publish, /file-manager/move, /file-manager/replace,
+    /suggest-change/merge, /suggest-change/discard). /doc is the exception and is verb-by-method:
+    GET reads, POST creates-or-updates, DELETE deletes.
+  request_body_on_get: true
+  request_body_on_get_note: >-
+    GET /doc takes a JSON request body ({docId, format}), which many HTTP clients, proxies and code
+    generators will not send. This is the single sharpest interoperability edge in the contract.
+  content_type: application/json, plus multipart/form-data on POST /upload/file
+idempotency:
+  coverage: none
+  header: null
+  scope: []
+  retention: null
+  note: >-
+    Archbee documents no idempotency mechanism. There is no Idempotency-Key header, no client-supplied
+    request id, and no documented replay window on any of the 14 mutating operations. Two identical
+    POST /space/create calls create two spaces. The one place replay is naturally safe is
+    POST /doc with a docId, which is an upsert and therefore idempotent by shape rather than by
+    contract; create_template and create_content_snippet in the MCP server return the existing id
+    with alreadyExists true instead of duplicating, which is a name-uniqueness guard, not
+    idempotency. An agent retrying a failed write on this API has no protection.
+reversibility:
+  grade: documented
+  note: >-
+    Archbee documents a reversal path for the surface that matters most — document content — and
+    states no window for it. Every other destructive operation is documented as permanent, which is
+    itself useful information and is recorded rather than left blank. No operation states a
+    time-bounded reversal window anywhere in the docs, so this grades `documented` and not
+    `verified`. Do not read a window into it: none is published.
+  surfaces:
+  - write: updateCreateDocument
+    reversal: Document Revision History — the ↩ Revert button restores the document to any saved version
+    operation: null
+    window: not stated
+    ui_only: true
+    retention: 1 year on Growing, 2 years on Scaling, 5 years on Enterprise
+    docs: https://www.archbee.com/docs/document-history
+    note: >-
+      Reversal exists but is a UI action; there is no Public API or MCP operation that reverts a
+      document to a prior revision, so an agent that overwrites a document cannot undo its own write
+      without a human. The retention figures bound how far back a human can go, which is the closest
+      thing to a window Archbee states.
+  - write: deleteDocument
+    reversal: none
+    window: none
+    docs: https://www.archbee.com/docs/get-document
+    note: >-
+      Documented as permanent. The MCP tool description is explicit: deletes the document, its
+      uploaded files and its images, and "cannot be undone". recursive:true extends that to every
+      nested child.
+  - write: deleteSpace
+    reversal: none
+    window: none
+    note: >-
+      Permanently deletes the space and every document in it, and invalidates the space API key with
+      it. The single highest-consequence call on the API.
+  - write: deleteSpaceGroup
+    reversal: none
+    window: none
+    note: Only an empty group can be deleted, which limits the blast radius.
+  - write: deleteAFileManagerFile
+    reversal: none
+    window: none
+  - write: overwriteAFileManagerFile
+    reversal: none
+    window: none
+    note: Replaces a File Manager file in place; the prior bytes are not recoverable through the API.
+  - write: delete_template (MCP)
+    reversal: >-
+      Moves the template to the organization's Archives space, where a person can restore it
+    operation: null
+    window: not stated
+    docs: https://www.npmjs.com/package/@archbee/mcp
+    note: The only genuinely soft delete in the surface, and it is MCP-only with no stated window.
+  - write: deleteVariable / deleteContentSnippet (MCP)
+    reversal: none
+    window: none
+    note: Permanent; references stop resolving in every document that embeds them.
+  - write: publishSpace
+    reversal: not documented
+    window: none
+    note: >-
+      No unpublish operation is documented in the Public API. Publishing changes what is world
+      readable and there is no API-level way to take it back.
+dry_run_mode:
+  supported: false
+  note: No preview, validate-only or dry-run parameter exists on any operation.
+pagination:
+  style: none
+  note: >-
+    No operation in the contract declares a limit, offset, page, cursor or after parameter, and no
+    response declares a next/cursor field. GET /file-manager/files and GET /team/export return their
+    full result set. Combined with the published 1000-documents-per-space ceiling, an unpaged listing
+    is bounded but not small.
+  params: []
+filtering:
+  supported: partial
+  note: POST /docs/search takes a free-text query; there is no structured filter, sort or field-selection syntax.
+field_expansion:
+  supported: false
+sparse_fields:
+  supported: false
+metadata:
+  supported: partial
+  note: >-
+    Documents carry title, slug, description, previewImgURL, hidden and icon; there is no arbitrary
+    key/value metadata bag on any resource.
+request_id:
+  header: null
+  supported: false
+  note: >-
+    No X-Request-Id, no correlation id echoed on responses. Observed response headers on
+    api.archbee.com are limited to the rate-limit trio plus a Cloudflare cf-ray, which is a CDN
+    trace, not a first-party request id.
+versioning:
+  scheme: none
+  detail: lifecycle/archbee-lifecycle.yml
+errors:
+  envelope: '{"status":"Not OK","messages":[...]}'
+  rfc9457: false
+  status_discrimination: false
+  note: Auth failure, validation failure and refused operations all return HTTP 400. See errors/archbee-problem-types.yml.
+  detail: errors/archbee-problem-types.yml
+rate_limit_signalling:
+  headers:
+  - x-ratelimit-limit
+  - x-ratelimit-remaining
+  - x-ratelimit-reset
+  reset_format: RFC-1123-style date string, e.g. "Fri Sep 04 2026 22:34:58 GMT+0000 (Coordinated Universal Time)"
+  retry_after: false
+  standard: non-standard
+  note: >-
+    Headers are present and useful, but x-ratelimit-reset is a human-readable date string rather than
+    a Unix timestamp or a delta-seconds value, so a client must date-parse it. No Retry-After. See
+    rate-limits/archbee-rate-limits.yml.
+  detail: rate-limits/archbee-rate-limits.yml
+webhooks:
+  supported: true
+  signing: HMAC-SHA256 over "{timestamp}.{payload}"
+  headers:
+  - x-signature
+  - x-timestamp
+  docs: https://www.archbee.com/docs/webhook-endoint
+  note: >-
+    Archbee publishes a receiver example showing the verification scheme but does not publish an
+    event catalogue, a subscription API, or a list of event types. See asyncapi/archbee-webhooks.yml.
+platform_limits:
+  docs: https://www.archbee.com/docs/limits
+  blocks_per_document: 500
+  document_size: 1MB excluding images and file uploads
+  documents_per_space: 1000
+  file_upload: 8MB
+  image_upload: 8MB
+  import_markdown: 1MB
+  import_docx: 2MB
+  import_openapi: 3MB
+  import_postman: 3MB
+  import_zip: 20MB
+  pdf_export_images: 100

@@ -1,0 +1,11 @@
+# Archbee GraphQL schema — fetched by anonymous introspection 2026-09-04
+# POST https://api.archbee.com/api/graphql  (HTTP 200, introspection enabled, no auth required)
+#
+# This is the COMPLETE schema. It is two String fields and no mutations. It is not a documented
+# product API, it appears nowhere in Archbee's docs, and it should not be treated as an integration
+# surface. Recorded because it was fetched, not because it is useful.
+
+type Query {
+  status: String
+  people: String
+}

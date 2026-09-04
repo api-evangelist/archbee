@@ -3,90 +3,71 @@ specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
 provider: Archbee
 providerId: archbee
+generated: '2026-09-04'
+method: probed
+source: >-
+  Live unauthenticated responses from api.archbee.com observed 2026-09-04 — GET /doc,
+  POST /docs/search, GET /team/display-rules and /.well-known/oauth-authorization-server all returned
+  the same rate-limit header set — plus https://www.archbee.com/docs/limits for the platform
+  content limits.
 created: '2026-05-04'
-# Provenance stamped 2026-08-11: this artifact was written by the API Evangelist
-# bulk sweep dated 2026-05-04, not harvested from the provider. See roadmap#35.
-method: generated
-modified: '2026-05-04'
-tags:
-  - API Documentation
-  - Documentation Platform
-  - Knowledge Base
-  - Technical Writing
-  - Developer Docs
-  - Rate Limiting
-  - Quotas
-  - Throttling
-description: Machine-readable rate limit definitions for the Archbee API surface. Captures per-tier quotas,
-  burst behavior, response signaling, and recovery semantics. Defaults are scaffold values to be replaced
-  with published provider limits.
+modified: '2026-09-04'
+note: >-
+  Replaces the 2026-05-04 scaffold, which invented per-tier limits (10 requests per minute on a free
+  tier that does not exist). Archbee publishes NO rate-limit documentation — the docs page titled
+  "Limits" covers document size, upload size and import size, not request rate. Everything in
+  limits[] below was read off live response headers, and everything not observable that way is
+  recorded as unknown rather than guessed.
+documented: false
+docs: null
+limit_count: 1
 headers:
-  limit: X-RateLimit-Limit
-  remaining: X-RateLimit-Remaining
-  reset: X-RateLimit-Reset
-  retryAfter: Retry-After
-  policy: RateLimit-Policy
+  limit: x-ratelimit-limit
+  remaining: x-ratelimit-remaining
+  reset: x-ratelimit-reset
+  retryAfter: null
+  policy: null
+  reset_format: >-
+    Human-readable date string, e.g. "Fri Sep 04 2026 22:34:58 GMT+0000 (Coordinated Universal Time)".
+    Not a Unix timestamp and not delta-seconds, so a client must date-parse it.
+  standard: legacy X-prefixed, not the IETF RateLimit-* draft fields
 responseCodes:
-  throttled: 429
-  quotaExceeded: 429
-  serviceUnavailable: 503
+  throttled: unknown
+  note: >-
+    Not documented and not observed — the probe never exhausted the window, and Archbee does not
+    publish the status code returned on exhaustion. Recorded as unknown rather than asserted as 429.
 limits:
-  - tier: free
-    name: Free Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 10
-    burst: 20
-    timeFrame: minute
-    applies:
-      - Archbee API
-  - tier: free
-    name: Free Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 1000
-    timeFrame: month
-    applies:
-      - Archbee API
-  - tier: professional
-    name: Professional Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 100
-    burst: 200
-    timeFrame: minute
-    applies:
-      - Archbee API
-  - tier: professional
-    name: Professional Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 100000
-    timeFrame: month
-    applies:
-      - Archbee API
-  - tier: enterprise
-    name: Enterprise Negotiated Limit
-    scope: contract
-    metric: requests_per_minute
-    limit: 1000
-    burst: 5000
-    timeFrame: minute
-    applies:
-      - Archbee API
-policies:
-  - name: Backoff Strategy
-    description: Clients should implement exponential backoff with jitter, honoring the Retry-After header
-      when present.
-  - name: Burst Handling
-    description: Short bursts above the steady-state limit are tolerated up to the documented burst ceiling
-      before throttling engages.
-  - name: Quota Reset
-    description: Monthly quotas reset at the start of each calendar month in UTC. Per-minute and per-second
-      windows reset on a sliding-window basis.
-  - name: Fair Use
-    description: Even on uncapped enterprise tiers, sustained usage that materially impacts shared infrastructure
-      may be subject to fair-use throttling.
-maintainers:
-  - FN: Kin Lane
-    email: kin@apievangelist.com
+- name: Observed API limiter
+  scope: unauthenticated caller
+  metric: requests
+  limit: 100
+  timeFrame: second
+  window_confidence: inferred
+  burst: unknown
+  observed: '2026-09-04'
+  evidence: >-
+    Two requests one second apart returned x-ratelimit-limit 100 with x-ratelimit-remaining 99 then
+    98 and an identical x-ratelimit-reset, then a later pair reset to 99 again. The reset value was
+    consistently about one second after the request, which is why the window is recorded as one
+    second — inferred from the reset delta, not stated by Archbee.
+  applies_to:
+  - https://api.archbee.com/api/public-api
+  - https://api.archbee.com/.well-known/
+  note: >-
+    The same limiter answered on the REST Public API and on the well-known documents, unauthenticated.
+    Whether an authenticated caller, a paid plan or the MCP endpoint gets a different ceiling is
+    unknown — none of it is published.
+platform_limits:
+  source: https://www.archbee.com/docs/limits
+  note: Content limits, not request limits. Repeated here because they bound what an API call can carry.
+  blocks_per_document: 500
+  document_size_bytes: 1048576
+  documents_per_space: 1000
+  file_upload_bytes: 8388608
+  image_upload_bytes: 8388608
+  import_markdown_bytes: 1048576
+  import_docx_bytes: 2097152
+  import_openapi_bytes: 3145728
+  import_postman_bytes: 3145728
+  import_zip_bytes: 20971520
+  pdf_export_images: 100

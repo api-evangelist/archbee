@@ -1,0 +1,1853 @@
+openapi: 3.1.0
+info:
+  title: Archbee Public API
+  description: The Archbee Public API manages documentation spaces, documents, space groups, File Manager
+    files, reader suggestions, organization exports and imported OpenAPI references in an Archbee workspace.
+    Authentication uses an HTTP Bearer token whose value is base64(docSpaceId~apiKey), or a team key beginning
+    abteam_.
+  version: '2026-09-04'
+  contact:
+    name: Archbee Support
+    email: support@archbee.com
+    url: https://www.archbee.com/
+  termsOfService: https://www.archbee.com/terms-of-service
+  x-generated-from: https://www.archbee.com/docs/<slug>.md api-oas-v2 blocks published by Archbee
+  x-generated-by: API Evangelist enrichment pipeline, local-v3
+  x-generated-date: '2026-09-04'
+servers:
+- url: https://api.archbee.com/api/public-api
+  description: Archbee API Server
+security:
+- bearerAuth: []
+tags:
+- name: API Reference
+  description: Sync and inspect an imported OpenAPI reference
+- name: Access Control
+  description: Magic-link access requests for gated portals
+- name: Documents
+  description: Create, read, update, delete and search documents
+- name: File Manager
+  description: Upload, list, move, replace and delete File Manager files
+- name: Organization
+  description: Organization-level export and display rules
+- name: Space Groups
+  description: Grouping of documentation spaces
+- name: Spaces
+  description: Documentation space lifecycle — create, update, clone, publish, delete
+- name: Suggestions
+  description: Reader-submitted suggested changes — merge or discard
+paths:
+  /access-control/request:
+    post:
+      operationId: requestMagicLinkAccess
+      summary: Request Magic Link Access
+      tags:
+      - Access Control
+      x-source-doc: https://www.archbee.com/docs/request-magic-link-access
+      description: 'Submit a reader''s email as a pending request to be added to the space''s magic-link
+        whitelist. The request does NOT grant access on its own — an admin must approve it. The space
+        must be configured for Magic Link (Magic Link enabled, the portal gating content, and the team''s
+        plan allowing it); otherwise the request is refused with 400. There is one request per (email,
+        space). A repeat request for the same email is idempotent per status: a Pending request returns
+        the existing row unchanged; an Accepted request whose email is still whitelisted also returns
+        it unchanged; but an Accepted request whose access was later revoked, or a previously Rejected
+        request, is put back into the Pending queue and re-notifies the admins — so a rejected or revoked
+        reader can always re-apply.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  enum:
+                  - email
+                  description: Email address requesting access
+                  example: reader@example.com
+              required:
+              - email
+      responses:
+        '200':
+          description: Process status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    description: Response Status
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: access control request id
+                      status:
+                        type: string
+                        enum:
+                        - Pending
+                        - Accepted
+                        - Rejected
+                        description: request status
+                description: Process status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /doc:
+    delete:
+      operationId: deleteDocument
+      summary: Delete document
+      tags:
+      - Documents
+      x-source-doc: https://www.archbee.com/docs/delete-document
+      description: Delete document by docId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                docId:
+                  type: string
+                  description: Document id that will be permanently deleted.
+                  example: 21-character__string0
+              required:
+              - docId
+      responses:
+        '200':
+          description: Delete status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    description: Response Status
+                  data:
+                    type: object
+                    properties:
+                      status:
+                        type: boolean
+                description: Delete status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+    get:
+      operationId: getDocument
+      summary: Get document
+      tags:
+      - Documents
+      x-source-doc: https://www.archbee.com/docs/get-document
+      description: Retrieve a document in markdown, html, json, or source format.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                docId:
+                  type: string
+                  description: The ID of the document to be returned.
+                  example: 21-character__string0
+                format:
+                  type: string
+                  enum:
+                  - markdown
+                  - html
+                  - json
+                  - source
+                  description: The format of the returned data. Default is markdown.
+                  example: markdown
+              required:
+              - docId
+      responses:
+        '200':
+          description: Successful response containing the document content.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: string
+                    description: The content of the document in the specified format.
+                  format:
+                    type: string
+                    description: The format of the returned document.
+        '400':
+          description: Invalid request parameters.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+    post:
+      operationId: updateCreateDocument
+      summary: Update / Create document
+      tags:
+      - Documents
+      x-source-doc: https://www.archbee.com/docs/update-create-document
+      description: Create / Update Doc by docId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  description: markdown, MDX or JSON content used to update the document.
+                  example: '# this is a h1 title
+
+                    And this is a paragraph
+
+                    - list item 1
+
+                    - list item 2'
+                format:
+                  type: string
+                  enum:
+                  - markdown
+                  - mdx
+                  - json
+                  description: OPTIONAL. Specify the format of the content. Default is markdown. Use mdx
+                    when the content contains JSX-style Archbee components (<hint>, <CtaButton />, <Tabs>);
+                    directive-style components (:::hint{type="info"}) work in both markdown and mdx.
+                  example: markdown
+                title:
+                  type: string
+                  description: OPTIONAL, set the name of the document.
+                description:
+                  type: string
+                  description: OPTIONAL, set the description of the document.
+                previewImgURL:
+                  type: string
+                  description: OPTIONAL, set the preview image URL of the document.
+                slug:
+                  type: string
+                  description: OPTIONAL, set the slug (url key) of the document.
+                alias:
+                  type: string
+                  description: OPTIONAL, set the url alias.
+                conditionalRuleId:
+                  type: string
+                  description: OPTIONAL, set the conditional rule id.
+                sorting:
+                  type: string
+                  enum:
+                  - alphabetical
+                  - chronological
+                  description: OPTIONAL. Specify the type of ordering for document insertion.
+                  example: alphabetical
+                hidden:
+                  type: boolean
+                  description: OPTIONAL, set document as hidden or not.
+                docId:
+                  type: string
+                  description: OPTIONAL, document id. If present and valid, the doc will be updated.
+                  example: 21-character__string0
+                parentDocId:
+                  type: string
+                  description: OPTIONAL, parent document id. If present and valid, the parent docId will
+                    be updated. If sent empty, the document will be moved to the root of the tree.
+                  example: 21-character__string0
+              required:
+              - content
+      responses:
+        '200':
+          description: Process status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    description: Response status.
+                  data:
+                    type: object
+                    properties:
+                      docId:
+                        type: string
+                      newRecord:
+                        type: boolean
+                description: Process status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /docs/search:
+    post:
+      operationId: searchDocument
+      summary: Search document
+      tags:
+      - Documents
+      x-source-doc: https://www.archbee.com/docs/search-document
+      description: 'Search Archbee documents in docSpace. Can perform one of the 3 types of search:
+
+
+        ai-chat to return ai generative answer accompanied by source docs;
+
+        ai-retrieval to return just similar docs with the query;
+
+        words to perform normal search aka. "word-based"; use empty query to return all docs
+
+        single-doc to return document info by id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query:
+                  type: string
+                  description: Filter text, question or document title
+                searchOnlyTitle:
+                  type: boolean
+                  description: OPTIONAL. Search only by title
+                persistSearch:
+                  type: boolean
+                  description: OPTIONAL. Wether to keep a SearchSession in our database and return its
+                    id.
+                searchSessionId:
+                  type: string
+                  description: OPTIONAL. id for the SearchSession object to update. More useful for AI
+                    chat.
+                docId:
+                  type: string
+                  description: OPTIONAL. Return only one document with this id, if there is one
+                  example: 21-character__string0
+                dataTextFormat:
+                  type: string
+                  enum:
+                  - markdown
+                  - html
+                  description: OPTIONAL. Return documents with dataText in this format
+                parentDocId:
+                  type: string
+                  description: OPTIONAL. Return only child documents of the doc with this id, if there
+                    are any. Can be "null" for retrieving the root docs.
+                  example: 21-character__string0
+                type:
+                  type: string
+                  enum:
+                  - words
+                  - ai-chat
+                  - ai-retrieval
+                  description: OPTIONAL. which type of search to use; default is word-based
+              required:
+              - query
+      responses:
+        '200':
+          description: Process status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    description: Response Status
+                  data:
+                    type: object
+                    properties:
+                      searchSessionId:
+                        type: string
+                        description: Search session id, can be used as input for next search calls.
+                      docs:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            description: Archbee id, used for private access
+                          name:
+                            type: string
+                            description: name of document
+                          urlKey:
+                            type: string
+                            description: url of public document, used for public access (if published)
+                          urlAlias:
+                            type: string
+                            description: In case you are migrating from another platform and you’d like
+                              to get a redirecting url to your current url, you can use this url path.
+                          hidden:
+                            type: boolean
+                            description: indicates if document is hidden
+                          privacy:
+                            type: string
+                            enum:
+                            - private
+                            - shared with team
+                            - public-via-link
+                            - public
+                            description: describes how to access the document via public url (if published)
+                          highlight:
+                            type: object
+                            description: text from document, similar with query (word-based search only)
+                        description: Array of Doc responses
+                    description: Response Data
+                description: Process status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /file-manager/file:
+    delete:
+      operationId: deleteAFileManagerFile
+      summary: Delete a File Manager file
+      tags:
+      - File Manager
+      x-source-doc: https://www.archbee.com/docs/delete-a-file-manager-file
+      description: Permanently delete a File Manager file or folder (folders delete their contents recursively).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fileId:
+                  type: string
+                  description: Id of the file or folder to delete.
+              required:
+              - fileId
+      responses:
+        '200':
+          description: Delete OK status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /file-manager/files:
+    get:
+      operationId: listFileManagerFiles
+      summary: List File Manager files
+      tags:
+      - File Manager
+      x-source-doc: https://www.archbee.com/docs/list-file-manager-files
+      description: List files and folders in the File Manager. Omitting parentId lists every entry across
+        all folders (use searchQuery/pagination to find one); pass a folder id to list that folder's direct
+        children. Filter with itemType (directory, image, or file).
+      parameters:
+      - name: parentId
+        in: query
+        required: false
+        schema:
+          type: string
+        description: OPTIONAL. Folder id to list the direct children of. Omit to list all entries across
+          every folder.
+      - name: itemType
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - directory
+          - image
+          - file
+        description: OPTIONAL. Filter by entry type.
+      - name: searchQuery
+        in: query
+        required: false
+        schema:
+          type: string
+        description: OPTIONAL. Case-insensitive filename filter.
+      - name: pageIndex
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: OPTIONAL. Zero-based page index (default 0).
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: OPTIONAL. Page size (1-200).
+      responses:
+        '200':
+          description: List OK status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /file-manager/move:
+    post:
+      operationId: moveAFileManagerFile
+      summary: Move a File Manager file
+      tags:
+      - File Manager
+      x-source-doc: https://www.archbee.com/docs/move-a-file-manager-file
+      description: Move a File Manager file or folder into another folder. Pass a null newParentId to
+        move it to the root.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fileId:
+                  type: string
+                  description: Id of the file or folder to move.
+                newParentId:
+                  type: string
+                  description: Destination folder id, or null for the root.
+              required:
+              - fileId
+              - newParentId
+      responses:
+        '200':
+          description: Move OK status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /file-manager/replace:
+    post:
+      operationId: overwriteAFileManagerFile
+      summary: Overwrite a File Manager file
+      tags:
+      - File Manager
+      x-source-doc: https://www.archbee.com/docs/overwrite-a-file-manager-file
+      description: Replace the contents of an existing File Manager file in place. The file keeps its
+        id and public URL, so existing document embeds update automatically.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                fileId:
+                  type: string
+                  description: Id of the existing file to overwrite.
+                file:
+                  type: string
+                  format: binary
+                  description: New file contents.
+              required:
+              - fileId
+              - file
+      responses:
+        '200':
+          description: Overwrite OK status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /import-content:
+    post:
+      operationId: importContent
+      summary: Import Content
+      tags:
+      - Documents
+      x-source-doc: https://www.archbee.com/docs/import-content
+      description: Create new Doc from imported markdown file. In case of zip file, create a new docTree
+        and keeps archived tree structure.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Markdown file (.md) or archive (.zip) containing multiple markdown files.
+                  example: upload file
+                  default: '@markdowns.zip'
+                type:
+                  type: string
+                  enum:
+                  - markdown
+                  description: Type of import file. Only markdown supported for now on this route.
+                  example: markdown
+                  default: markdown
+              required:
+              - file
+      responses:
+        '200':
+          description: Import OK status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    description: Response Status
+                    example: OK
+                  data:
+                    type: object
+                    properties:
+                      docId:
+                        type: string
+                        description: Created Doc id (first doc in case of archive tree).
+                        example: 21-character__string0
+                description: Import OK status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /info-api-reference:
+    get:
+      operationId: infoOpenApiDocument
+      summary: Info Open Api document
+      tags:
+      - API Reference
+      x-source-doc: https://www.archbee.com/docs/info-open-api-document
+      description: Get info of an existing Open Api tree
+      requestBody:
+        required: false
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                docTreeId:
+                  type: string
+                  description: DocTree id is main category id where open api was imported.
+                  example: 21-character__string0
+      responses:
+        '200':
+          description: Status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    description: Response Status
+                    example: OK
+                  data:
+                    type: object
+                    properties:
+                      result:
+                        type: string
+                      importedContent:
+                        type: string
+                description: Status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /space-group/create:
+    post:
+      operationId: createSpaceGroup
+      summary: Create Space Group
+      tags:
+      - Space Groups
+      x-source-doc: https://www.archbee.com/docs/create-space-group
+      description: Create a new space group with desired fields, return the space group.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: name of space group
+                isLlmEnabled:
+                  type: boolean
+                  description: whether AI will be enabled
+                isReviewSystemEnabled:
+                  type: boolean
+                  description: whether review system will be enabled
+                isBranchingSystemEnabled:
+                  type: boolean
+                  description: whether branching will be enabled
+              required:
+              - name
+      responses:
+        '200':
+          description: Process status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    description: Response Status
+                description: Process status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /space-group/delete:
+    delete:
+      operationId: deleteSpaceGroup
+      summary: Delete Space Group
+      tags:
+      - Space Groups
+      x-source-doc: https://www.archbee.com/docs/delete-space-group
+      description: Delete Archbee space group with given spaceGroupId.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                spaceGroupId:
+                  type: string
+                  description: Space group id to delete.
+                  example: 21-character__string0
+      responses:
+        '200':
+          description: Process status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    description: Response Status
+                description: Process status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /space/clone:
+    post:
+      operationId: cloneSpace
+      summary: Clone Space
+      tags:
+      - Spaces
+      x-source-doc: https://www.archbee.com/docs/clone-space
+      description: Clone Archbee space from given docSpaceId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                targetSpaceGroupId:
+                  type: string
+                  description: Space group id where space will be cloned.
+                  example: 21-character__string0
+      responses:
+        '200':
+          description: Process status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    description: Response Status
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: doc space id
+                    description: DocSpace id
+                description: Process status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /space/create:
+    post:
+      operationId: createSpace
+      summary: Create Space
+      tags:
+      - Spaces
+      x-source-doc: https://www.archbee.com/docs/create-space
+      description: Create a new space with desired fields, return its id. New space will inherit apiKey.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: name of space
+                isLlmEnabled:
+                  type: boolean
+                  description: wether AI will be enabled
+                isReviewSystemEnabled:
+                  type: boolean
+                  description: wether review system will be enaled
+                isBranchingSystemEnabled:
+                  type: boolean
+                  description: wether branching will be enabled
+                docSpaceGroupId:
+                  type: string
+                  description: id of space group to include this space in
+      responses:
+        '200':
+          description: Process status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    description: Response Status
+                  data:
+                    type: object
+                    properties:
+                      newDocSpaceId:
+                        type: string
+                        description: doc space id
+                    description: DocSpace id
+                description: Process status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /space/delete:
+    delete:
+      operationId: deleteSpace
+      summary: Delete Space
+      tags:
+      - Spaces
+      x-source-doc: https://www.archbee.com/docs/delete-space
+      description: Delete Archbee space with given docSpaceId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                targetSpaceId:
+                  type: string
+                  description: Space id to delete.
+                  example: 21-character__string0
+      responses:
+        '200':
+          description: Process status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    description: Response Status
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: doc space id
+                    description: DocSpace id
+                description: Process status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /space/publish:
+    post:
+      operationId: publishSpace
+      summary: Publish Space
+      tags:
+      - Spaces
+      x-source-doc: https://www.archbee.com/docs/publish-space
+      description: Publish Archbee documents from given docSpaceId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                environment:
+                  type: string
+                  description: can be PREVIEW or PUBLISHED
+              required:
+              - environment
+      responses:
+        '200':
+          description: Process status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    description: Response Status
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: doc space id
+                    description: DocSpace id
+                description: Process status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /space/update:
+    post:
+      operationId: updateSpace
+      summary: Update Space
+      tags:
+      - Spaces
+      x-source-doc: https://www.archbee.com/docs/update-space
+      description: Update space fields.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                publicAccessControlPart:
+                  type: object
+                  properties:
+                    publicProtectionType:
+                      type: string
+                      enum:
+                      - None
+                      - Password
+                      - Guest accounts
+                      - Private Accounts
+                      - Private Link
+                      - Magic Link
+                      - JWT
+                      - SAML
+                      description: Type of protection for the space
+                      example: Password
+                    publicPassword:
+                      type: string
+                      description: Password required when publicProtectionType is 'Password'
+                      example: mySecurePassword123
+                    publicGuestAccounts:
+                      type: object
+                      properties:
+                        email:
+                          type: string
+                          enum:
+                          - email
+                          example: guest@example.com
+                        password:
+                          type: string
+                          example: guestPassword123
+                      description: Guest accounts required when publicProtectionType is 'Guest accounts'
+                    publicMagicLinkAccounts:
+                      type: object
+                      properties:
+                        email:
+                          type: string
+                          enum:
+                          - email
+                          example: user@example.com
+                      description: Magic link accounts required when publicProtectionType is 'Magic Link'
+                    publicPrivateAccounts:
+                      type: object
+                      properties:
+                        email:
+                          type: string
+                          enum:
+                          - email
+                          example: private@example.com
+                      description: Private accounts required when publicProtectionType is 'Private Accounts'
+                    privateLinkTokens:
+                      type: object
+                      properties:
+                        description:
+                          type: string
+                          example: API Access Token
+                        env:
+                          type: string
+                          example: production
+                        token:
+                          type: string
+                          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+                      description: Private link tokens required when publicProtectionType is 'Private
+                        Link'
+                    jwtValidationType:
+                      type: string
+                      enum:
+                      - JWT-Secret
+                      - JWT-KeySet
+                      description: JWT validation type required when publicProtectionType is 'JWT'
+                      example: JWT-Secret
+                    jwtKeyUrl:
+                      type: string
+                      description: JWT key URL required when jwtValidationType is 'JWT-KeySet'
+                      example: https://example.com/.well-known/jwks.json
+                    jwtSecret:
+                      type: string
+                      description: JWT secret required when jwtValidationType is 'JWT-Secret'
+                      example: myJwtSecret123
+                    conditionalRuleId:
+                      type: string
+                      description: Conditional rule ID for advanced access control
+                      example: 21-character__string0
+                    jwtRedirectURL:
+                      type: string
+                      description: JWT redirect URL for authentication flow
+                      example: https://example.com/auth/callback
+                    samlMetadata:
+                      type: string
+                      description: SAML metadata required when publicProtectionType is 'SAML'
+                      example: <EntityDescriptor>...</EntityDescriptor>
+                  description: Configuration for public access control and authentication
+                hostnamePart:
+                  type: object
+                  properties:
+                    hostname:
+                      type: string
+                      description: Custom hostname for the space
+                      example: docs.example.com
+                    hostnamePath:
+                      type: string
+                      description: Path component for the hostname
+                      example: /api-docs
+                  description: Custom hostname configuration for the space
+                spaceLinks:
+                  type: object
+                  properties:
+                    label:
+                      type: string
+                      example: Related Documentation
+                    docSpaceId:
+                      type: string
+                      example: 21-character__string0
+                  description: Links to other spaces. List should start with current space.
+      responses:
+        '200':
+          description: Process status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    description: Response Status
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: doc space id
+                    description: DocSpace id
+                description: Process status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /suggest-change/discard:
+    post:
+      operationId: discardSuggestionDocument
+      summary: Discard suggestion document
+      tags:
+      - Suggestions
+      x-source-doc: https://www.archbee.com/docs/discard-suggestion-document
+      description: Discard and delete a suggestion document without merging it into the base document.
+        The suggestion document must have a docId starting with 'SUGGEST-'.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                docId:
+                  type: string
+                  description: The ID of the suggestion document to discard. Must start with 'SUGGEST-'.
+                  example: SUGGEST-21character_string
+              required:
+              - docId
+      responses:
+        '200':
+          description: Suggestion successfully discarded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /suggest-change/merge:
+    post:
+      operationId: mergeSuggestionIntoMainDocument
+      summary: Merge suggestion into main document
+      tags:
+      - Suggestions
+      x-source-doc: https://www.archbee.com/docs/merge-suggestion-into-main-document
+      description: Merge a suggestion document into the base document. The suggestion document must have
+        a docId starting with 'SUGGEST-'.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                docId:
+                  type: string
+                  description: The ID of the suggestion document to merge. Must start with 'SUGGEST-'.
+                  example: SUGGEST-21character_string
+              required:
+              - docId
+      responses:
+        '200':
+          description: Suggestion successfully merged
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /sync-api-reference:
+    post:
+      operationId: syncOpenApiDocument
+      summary: Sync Open Api document
+      tags:
+      - API Reference
+      x-source-doc: https://www.archbee.com/docs/sync-open-api-document
+      description: Sync Open Api document with a new or existing Open Api tree
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                docTreeId:
+                  type: string
+                  description: OPTIONAL, main category id where open api was imported; if undefined, a
+                    new docTree is created and its id is returned
+                  example: 21-character__string0
+                  default: 21-character__string0
+                file:
+                  type: string
+                  format: binary
+                  description: Open api file, .json or .yml or .yaml or .zip
+                  example: upload file
+                  default: '@swagger.json'
+                type:
+                  type: string
+                  enum:
+                  - openapi
+                  - postman
+                  description: Type of import file. Default openapi
+                  example: openapi
+                  default: openapi
+                openApiTryIt:
+                  type: string
+                  enum:
+                  - 'true'
+                  - 'false'
+                  description: OPTIONAL. You can now test your API's directly in the editor or on your
+                    published docs with the new API Try It!
+                  example: true
+                  default: true
+                openApiUseOwnBackend:
+                  type: string
+                  enum:
+                  - 'true'
+                  - 'false'
+                  description: OPTIONAL. When 'Try It' is enabled, send requests directly from the browser
+                    to the URL defined in the OpenAPI spec instead of proxying through Archbee. Requires
+                    CORS configured on your backend.
+                  example: false
+                  default: false
+                showDownloadOpenApiFile:
+                  type: string
+                  enum:
+                  - 'true'
+                  - 'false'
+                  description: OPTIONAL. You can show/hide the download link of the imported Open API
+                    file in the Open API tree.
+                  example: true
+                  default: false
+                shouldCreateSchemaCategory:
+                  type: string
+                  enum:
+                  - 'true'
+                  - 'false'
+                  description: OPTIONAL. You can create models category to display all your models.
+                  example: true
+                  default: false
+                shouldCreateIntro:
+                  type: string
+                  enum:
+                  - 'true'
+                  - 'false'
+                  description: OPTIONAL. You can create an additional document to display open api intro.
+                  example: true
+                  default: false
+                openApiLanguageExamples:
+                  type: string
+                  description: OPTIONAL. Add your custom language examples. Maximum 5 programming language
+                    examples are allowed!
+                  example: '["python","r","javascript"]'
+              required:
+              - file
+      responses:
+        '200':
+          description: Import OK status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    description: Response Status
+                    example: OK
+                  data:
+                    type: object
+                    properties:
+                      docTreeId:
+                        type: string
+                        description: Returned created/updated open api tree structure.
+                        example: 21-character__string0
+                description: Import OK status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /team/display-rules:
+    get:
+      operationId: organizationDisplayRules
+      summary: Organization Display Rules
+      tags:
+      - Organization
+      x-source-doc: https://www.archbee.com/docs/organization-display-rules
+      description: Export a list of display rules.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                teamId:
+                  type: string
+                  description: Team id for which display rules are computed.
+                  example: 21-character__string0
+              required:
+              - teamId
+      responses:
+        '200':
+          description: Successful export todo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  displayRules:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: Unique identifier for the display rule
+                        example: wRJ1O4ChAK_lioQj39bHk
+                      title:
+                        type: string
+                        description: Human-readable title for the display rule
+                        example: are gmail2
+                      combinator:
+                        type: string
+                        enum:
+                        - AND
+                        - OR
+                        description: Logical operator to combine multiple rules
+                        example: AND
+                      rules:
+                        type: object
+                        properties:
+                          field:
+                            type: string
+                            description: The field to evaluate the condition against
+                            example: email
+                          operator:
+                            type: string
+                            description: The comparison operator
+                            example: CONTAINS
+                          value:
+                            type: string
+                            description: The value to compare against
+                            example: gmail.com
+                        required:
+                        - field
+                        - operator
+                        - value
+                        description: Array of individual rules that define the conditions
+                    required:
+                    - id
+                    - title
+                    - combinator
+                    - rules
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /team/export:
+    get:
+      operationId: organizationExport
+      summary: Organization Export
+      tags:
+      - Organization
+      x-source-doc: https://www.archbee.com/docs/organization-export
+      description: Export assets, spaces with documents, team and user data from Archbee given teamId.
+        Use --output <export_file_path>
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                teamId:
+                  type: string
+                  description: Team id for which the export is computed.
+                  example: 21-character__string0
+                exportThisSpaceOnly:
+                  type: boolean
+                  description: OPTIONAL, use this if you want to export data only from the space with
+                    docSpaceId.
+                  example: true
+                exportAsLink:
+                  type: boolean
+                  description: OPTIONAL, use this if you want to get a link to the zip archive.
+                  example: true
+              required:
+              - teamId
+      responses:
+        '200':
+          description: Successful export
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /upload/file:
+    post:
+      operationId: uploadSingleFile
+      summary: Upload single file
+      tags:
+      - File Manager
+      x-source-doc: https://www.archbee.com/docs/upload-single-file
+      description: Upload a single file to the File Manager
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Open api file, .json or .yml or .yaml or .zip
+                  example: upload file
+                  default: '@swagger.json'
+                isPublic:
+                  type: string
+                  enum:
+                  - 'true'
+                  - 'false'
+                  description: OPTIONAL. Whether the uploaded file is public or not regarding AWS link.
+                  example: true
+                  default: true
+              required:
+              - file
+      responses:
+        '200':
+          description: Upload OK status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    description: Response Status
+                    example: OK
+                  data:
+                    type: object
+                    properties:
+                      src:
+                        type: string
+                        description: AWS link to the uploaded file
+                description: Upload OK status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Requires the Authorization header in the form Authorization: Bearer {base64(docSpaceId~apiKey)}
+        — the base64 encoding of the docSpaceId, a tilde, and the apiKey. A team key beginning abteam_
+        may be used instead to reach every space in the organization.'

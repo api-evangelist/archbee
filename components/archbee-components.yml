@@ -1,0 +1,80 @@
+generated: '2026-09-04'
+method: searched
+source: >-
+  https://www.archbee.com/docs/app-documentation-widget,
+  https://www.archbee.com/docs/app-documentation-widget-react, and the npm metadata for
+  @archbee/app-widget, read 2026-09-04.
+note: >-
+  Client-side embeddable surfaces, distinct from the SDK/CLI surface in packages/. Archbee ships one
+  component family — the contextual documentation widget — in two loaders, a script embed and a
+  React/Next.js package.
+families:
+- name: App documentation widget
+  description: >-
+    An in-product contextual documentation panel. Loads a whole published space or a single article
+    inside the customer's own application, so a reader never leaves the product. Also runs as a
+    search-only bar with AI answering when the subscription includes it.
+  weight: ~56KB, loaded asynchronously
+  loaders:
+  - name: script embed
+    type: html-snippet
+    source: Copied from Space settings, Widget integration
+    install: Paste the generated snippet into index.html or the application code.
+  - name: React / Next.js
+    type: npm
+    package: '@archbee/app-widget'
+    version: 1.1.42
+    published: '2026-05-29'
+    install: npm install --save @archbee/app-widget
+    exports:
+    - ArchbeeAppWidget
+    - AbWidgetRef
+    imperative_handle:
+    - open()
+    - close()
+    - instance()
+    callbacks:
+    - onWidgetOpen
+    - onWidgetClose
+  init_options:
+  - name: spaceId
+    type: string
+    required: true
+    description: >-
+      Published space id. Accepts a live id, PUBLISHED-{spaceId} to serve an unpublished space
+      straight into the app, or PREVIEW-{spaceId} for a preview-only publish.
+  - name: jwt
+    type: string
+    required: false
+    description: Token for JWT-protected documentation.
+  - name: shareableToken
+    type: string
+    required: false
+    description: Private-link token for link-gated documentation.
+  - name: widgetType
+    type: "'docs' | 'search'"
+    default: docs
+    required: false
+    description: docs opens the reader panel; search opens an AI-backed search bar.
+  - name: hideNavbar
+    type: boolean
+    required: false
+  - name: loadingStrategy
+    type: "'lazy' | 'eager'"
+    default: lazy
+    required: false
+  - name: bubble
+    type: "'invisible' | 'ask'"
+    default: invisible
+    required: false
+    description: ask renders a persistent bottom-right bubble that opens the search widget.
+  - name: bubblePlaceholder
+    type: string
+    default: Ask a question
+    required: false
+  - name: anchor
+    type: string
+    required: false
+    description: >-
+      CSS class, id or path of the DOM element to anchor to. The container must be
+      position: relative.

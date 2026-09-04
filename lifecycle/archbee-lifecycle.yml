@@ -1,0 +1,85 @@
+generated: '2026-09-04'
+method: searched
+source: >-
+  https://status.archbee.com/ (Atlassian Statuspage, fetched 2026-09-04, "All Systems Operational"),
+  https://docs.archbee.com/feed.xml (dated docs RSS), registry.npmjs.org release history for the
+  three first-party packages, and the Archbee docs and pricing pages.
+versioning:
+  scheme: none
+  in_url: false
+  in_header: false
+  note: >-
+    The Public API carries no version segment, no version header and no version query parameter. The
+    base is https://api.archbee.com/api/public-api and every operation sits directly under it. Archbee
+    publishes no API version number, so a consumer has no way to pin behaviour or to detect that the
+    contract moved. The specification file in this repo is stamped with the harvest date, not with a
+    provider-published version.
+deprecation:
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  deprecated_operations: []
+  note: >-
+    No deprecation policy, no Sunset or Deprecation response headers, and no operation in the
+    contract is marked deprecated. Searched the docs, the pricing FAQ and the terms of service on
+    2026-09-04 and found no statement of notice period for a breaking change.
+status_page:
+  published: true
+  url: https://status.archbee.com/
+  vendor: Atlassian Statuspage
+  http_status: 200
+  state_at_probe: All Systems Operational
+  subscriptions:
+  - email
+  - slack
+  - rss
+  - atom
+  feeds:
+  - https://status.archbee.com/history.rss
+  - https://status.archbee.com/history.atom
+sla:
+  published: false
+  note: >-
+    No public uptime SLA. The pricing FAQ commits to support response times (live chat or
+    support@archbee.com, "less than 30 minutes" typical, "up to 48 hours" depending on plan) and the
+    Enterprise tier lists Priority support, but neither is an availability guarantee. Cloud-Prem
+    Enterprise deployments are described as "high uptime similar to our own SaaS cloud" with no
+    number attached.
+support:
+  channels:
+  - type: email
+    value: support@archbee.com
+  - type: email
+    value: sales@archbee.com
+    scope: Enterprise and Cloud-Prem
+  - type: live-chat
+    value: in-app
+  first_response_target: under 30 minutes typical, up to 48 hours by plan
+  source: https://www.archbee.com/pricing
+release_streams:
+- name: '@archbee/mcp'
+  registry: npm
+  latest: 2.3.1
+  released: '2026-08-28'
+- name: '@archbee/cli'
+  registry: npm
+  latest: 0.1.38
+  released: '2026-08-25'
+- name: '@archbee/app-widget'
+  registry: npm
+  latest: 1.1.42
+  released: '2026-05-29'
+- name: documentation
+  feed: https://docs.archbee.com/feed.xml
+  last_build: '2026-08-29'
+  note: Dated RSS of doc-page updates — the only dated change stream Archbee publishes for the platform itself.
+data_retention:
+  document_revision_history:
+    growing: 1 year
+    scaling: 2 years
+    enterprise: 5 years
+    source: https://www.archbee.com/pricing
+  export_on_request: >-
+    "At any point in time, at your request, we will send you an exported file with any kind of data
+    we hold and/or destroy it and all of its backups." — pricing FAQ.

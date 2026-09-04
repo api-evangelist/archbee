@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api-evangelist.github.io/archbee/json-schema/archbee-document-request-schema.json",
+  "title": "Document Request",
+  "x-generated": "2026-09-04",
+  "x-method": "derived",
+  "x-source": "openapi/archbee-public-api-openapi.yml",
+  "x-note": "Derived 2026-09-04 from openapi/archbee-public-api-openapi.yml, which is assembled from Archbee's own published api-oas-v2 documentation blocks. Replaces the 2026-05-03 set, which described Member/Page/Space shapes from a fabricated scaffold specification.",
+  "type": "object",
+  "properties": {
+    "content": {
+      "type": "string",
+      "description": "markdown, MDX or JSON content used to update the document.",
+      "example": "# this is a h1 title\nAnd this is a paragraph\n- list item 1\n- list item 2"
+    },
+    "format": {
+      "type": "string",
+      "enum": [
+        "markdown",
+        "mdx",
+        "json"
+      ],
+      "description": "OPTIONAL. Specify the format of the content. Default is markdown. Use mdx when the content contains JSX-style Archbee components (<hint>, <CtaButton />, <Tabs>); directive-style components (:::hint{type=\"info\"}) work in both markdown and mdx.",
+      "example": "markdown"
+    },
+    "title": {
+      "type": "string",
+      "description": "OPTIONAL, set the name of the document."
+    },
+    "description": {
+      "type": "string",
+      "description": "OPTIONAL, set the description of the document."
+    },
+    "previewImgURL": {
+      "type": "string",
+      "description": "OPTIONAL, set the preview image URL of the document."
+    },
+    "slug": {
+      "type": "string",
+      "description": "OPTIONAL, set the slug (url key) of the document."
+    },
+    "alias": {
+      "type": "string",
+      "description": "OPTIONAL, set the url alias."
+    },
+    "conditionalRuleId": {
+      "type": "string",
+      "description": "OPTIONAL, set the conditional rule id."
+    },
+    "sorting": {
+      "type": "string",
+      "enum": [
+        "alphabetical",
+        "chronological"
+      ],
+      "description": "OPTIONAL. Specify the type of ordering for document insertion.",
+      "example": "alphabetical"
+    },
+    "hidden": {
+      "type": "boolean",
+      "description": "OPTIONAL, set document as hidden or not."
+    },
+    "docId": {
+      "type": "string",
+      "description": "OPTIONAL, document id. If present and valid, the doc will be updated.",
+      "example": "21-character__string0"
+    },
+    "parentDocId": {
+      "type": "string",
+      "description": "OPTIONAL, parent document id. If present and valid, the parent docId will be updated. If sent empty, the document will be moved to the root of the tree.",
+      "example": "21-character__string0"
+    }
+  },
+  "required": [
+    "content"
+  ]
+}

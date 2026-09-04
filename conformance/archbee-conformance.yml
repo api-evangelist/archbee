@@ -1,0 +1,138 @@
+generated: '2026-09-04'
+method: searched
+source: >-
+  Live probes of api.archbee.com (well-known documents, the MCP endpoint, the REST Public API) on
+  2026-09-04; openapi/archbee-public-api-openapi.yml; https://security.archbee.com/;
+  https://www.archbee.com/pricing; and the @archbee/mcp README.
+domain_standard:
+  market: developer documentation and knowledge portals
+  standard: none
+  note: >-
+    Documentation platforms have no interoperability standard for their own management API — there is
+    no equivalent of SCIM, FHIR or OpenRTB in this market — so no domain-standard conformance is
+    claimed or expected. Archbee's product does consume industry contract formats on its customers'
+    behalf (OpenAPI/Swagger import and sync, Postman collection import, an embedded GraphiQL
+    component, MDX), which is a product capability rather than a conformance of Archbee's own API.
+    Reward-only check: recorded as not applicable, not as a failure.
+conformance:
+- id: mcp
+  name: Model Context Protocol
+  conforms: true
+  evidence: >-
+    POST https://api.archbee.com/api/public-mcp-ds/sse returned HTTP 401 with
+    WWW-Authenticate: Bearer resource_metadata=... on 2026-09-04 — an MCP-shaped OAuth challenge from
+    a live server. Archbee also publishes the local stdio implementation as @archbee/mcp 2.3.1,
+    built on @modelcontextprotocol/sdk ^1.12.0.
+  version: SDK ^1.12.0
+- id: oauth2
+  name: OAuth 2.1 authorization code with PKCE
+  conforms: true
+  evidence: >-
+    https://api.archbee.com/.well-known/oauth-authorization-server declares
+    grant_types_supported [authorization_code, refresh_token], response_types_supported [code],
+    code_challenge_methods_supported [S256], token_endpoint_auth_methods_supported [none].
+- id: rfc8414
+  name: OAuth 2.0 Authorization Server Metadata
+  conforms: true
+  evidence: >-
+    https://api.archbee.com/.well-known/oauth-authorization-server — HTTP 200, valid JSON, issuer
+    matches the host. Saved to well-known/archbee-oauth-authorization-server.json.
+- id: rfc9728
+  name: OAuth 2.0 Protected Resource Metadata
+  conforms: true
+  evidence: >-
+    https://api.archbee.com/.well-known/oauth-protected-resource and the per-resource path
+    .../oauth-protected-resource/api/public-mcp-ds/sse both return HTTP 200 with resource,
+    authorization_servers, scopes_supported and bearer_methods_supported. The MCP endpoint's
+    WWW-Authenticate header points at the per-resource document, which is the RFC 9728 discovery
+    flow working end to end.
+- id: rfc7591
+  name: OAuth 2.0 Dynamic Client Registration
+  conforms: true
+  evidence: >-
+    registration_endpoint https://api.archbee.com/oauth/register is declared in the authorization
+    server metadata, and the connector instructions tell the user to leave the OAuth client id and
+    secret empty — registration happens dynamically.
+- id: rfc6750
+  name: OAuth 2.0 Bearer Token Usage
+  conforms: partial
+  evidence: >-
+    The MCP endpoint returns a correct 401 with a WWW-Authenticate: Bearer challenge. The REST Public
+    API uses an Authorization: Bearer header but answers a missing or invalid credential with HTTP
+    400 and no WWW-Authenticate header, which is not RFC 6750 behaviour.
+- id: rfc9457
+  name: Problem Details for HTTP APIs
+  conforms: false
+  evidence: >-
+    No operation declares application/problem+json. Errors use a proprietary
+    {"status":"Not OK","messages":[...]} envelope, confirmed live on 2026-09-04.
+- id: openapi
+  name: OpenAPI
+  conforms: partial
+  evidence: >-
+    Archbee documents each operation as an api-oas-v2 block carrying full OpenAPI-equivalent
+    parameter, schema, example and response data (its own docs product generates these from an
+    OpenAPI file), but it does not publish an assembled OpenAPI document at any probed location —
+    /openapi.json, /openapi.yaml, /swagger.json, /v1/openapi.json, /api-docs, /docs and /redoc on
+    api.archbee.com all return the 19-byte soft-404 "Resource not found.".
+    openapi/archbee-public-api-openapi.yml in this repo is assembled from those blocks by API
+    Evangelist and is marked as such; it is not a provider-published document.
+- id: rfc8594
+  name: Sunset HTTP Header
+  conforms: false
+  evidence: No Sunset or Deprecation headers and no deprecation policy. See lifecycle/archbee-lifecycle.yml.
+- id: idempotency
+  name: Idempotency-Key
+  conforms: false
+  evidence: >-
+    No idempotency header, request id or replay window on any of the 14 mutating operations. See
+    conventions/archbee-conventions.yml.
+- id: pagination
+  name: Paginated collection responses
+  conforms: false
+  evidence: >-
+    No limit/offset/cursor parameter and no next-page field on any listing operation in the contract.
+- id: rate-limit-headers
+  name: RateLimit header fields
+  conforms: partial
+  evidence: >-
+    x-ratelimit-limit, x-ratelimit-remaining and x-ratelimit-reset are returned on every response
+    (observed live 2026-09-04), but they are the legacy X-prefixed spelling, x-ratelimit-reset is a
+    human-readable date string rather than a delta or a Unix timestamp, and there is no Retry-After.
+    This is not the IETF draft RateLimit-* field set.
+- id: hsts
+  name: HTTP Strict Transport Security
+  conforms: true
+  evidence: >-
+    api.archbee.com max-age=31536000; includeSubDomains, www.archbee.com max-age=63072000. See
+    security/archbee-domain-security.yml.
+- id: soc2
+  name: SOC 2 Type 2
+  conforms: true
+  evidence: >-
+    https://security.archbee.com/ (trust portal, HTTP 200) and the pricing FAQ — "Archbee is SOC 2
+    Type 2 and GDPR certified"; the report itself is released under NDA via support@archbee.com.
+- id: gdpr
+  name: GDPR
+  conforms: true
+  evidence: >-
+    https://security.archbee.com/, the pricing FAQ, https://www.archbee.com/privacy-policy and the
+    published subprocessor list at https://www.archbee.com/docs/subprocessors.
+- id: pci-dss
+  name: PCI DSS
+  conforms: partial
+  evidence: >-
+    Inherited, not held. The pricing FAQ states Archbee uses "a PCI Service Provider Level 1 payment
+    processor (Stripe)" — Stripe holds the certification, Archbee does not process card data itself.
+- id: dnssec
+  name: DNSSEC
+  conforms: false
+  evidence: archbee.com is not DNSSEC signed. See security/archbee-domain-security.yml.
+- id: caa
+  name: CAA records
+  conforms: false
+  evidence: No CAA records on archbee.com. See security/archbee-domain-security.yml.
+- id: dmarc
+  name: DMARC
+  conforms: true
+  evidence: DMARC published with policy quarantine; SPF present. See security/archbee-domain-security.yml.

@@ -1,0 +1,635 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Archbee Public API",
+    "version": "2026-09-04",
+    "description": "Derived by API Evangelist from openapi/archbee-public-api-openapi.yml on 2026-09-04."
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "value": "{{ARCHBEE_BEARER}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "API Reference",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Info Open Api document",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.archbee.com/api/public-api/info-api-reference",
+            "auth": {
+              "type": "bearer",
+              "value": "{{ARCHBEE_BEARER}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Get info of an existing Open Api tree"
+        },
+        {
+          "info": {
+            "name": "Sync Open Api document",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.archbee.com/api/public-api/sync-api-reference",
+            "auth": {
+              "type": "bearer",
+              "value": "{{ARCHBEE_BEARER}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Sync Open Api document with a new or existing Open Api tree"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Access Control",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Request Magic Link Access",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.archbee.com/api/public-api/access-control/request",
+            "auth": {
+              "type": "bearer",
+              "value": "{{ARCHBEE_BEARER}}",
+              "placement": "header"
+            },
+            "body": {
+              "type": "json",
+              "content": {
+                "email": "reader@example.com"
+              }
+            }
+          },
+          "docs": "Submit a reader's email as a pending request to be added to the space's magic-link whitelist. The request does NOT grant access on its own \u2014 an admin must approve it. The space must be configured for Magic Link (Magic Link enabled, the portal gating content, and the team's plan allowing it); otherwise the request is refused with 400. There is one request per (email, space). A repeat request for the same email is idempotent per status: a Pending request returns the existing row unchanged; an Accepted request whose email is still whitelisted also returns it unchanged; but an Accepted request whose access was later revoked, or a previously Rejected request, is put back into the Pending queue and re-notifies the admins \u2014 so a rejected or revoked reader can always re-apply."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Documents",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Delete document",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.archbee.com/api/public-api/doc",
+            "auth": {
+              "type": "bearer",
+              "value": "{{ARCHBEE_BEARER}}",
+              "placement": "header"
+            },
+            "body": {
+              "type": "json",
+              "content": {
+                "docId": "21-character__string0"
+              }
+            }
+          },
+          "docs": "Delete document by docId"
+        },
+        {
+          "info": {
+            "name": "Get document",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.archbee.com/api/public-api/doc",
+            "auth": {
+              "type": "bearer",
+              "value": "{{ARCHBEE_BEARER}}",
+              "placement": "header"
+            },
+            "body": {
+              "type": "json",
+              "content": {
+                "docId": "21-character__string0",
+                "format": "markdown"
+              }
+            }
+          },
+          "docs": "Retrieve a document in markdown, html, json, or source format."
+        },
+        {
+          "info": {
+            "name": "Update / Create document",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.archbee.com/api/public-api/doc",
+            "auth": {
+              "type": "bearer",
+              "value": "{{ARCHBEE_BEARER}}",
+              "placement": "header"
+            },
+            "body": {
+              "type": "json",
+              "content": {
+                "content": "# this is a h1 title\nAnd this is a paragraph\n- list item 1\n- list item 2",
+                "format": "markdown",
+                "title": "",
+                "description": "",
+                "previewImgURL": "",
+                "slug": "",
+                "alias": "",
+                "conditionalRuleId": "",
+                "sorting": "alphabetical",
+                "hidden": "",
+                "docId": "21-character__string0",
+                "parentDocId": "21-character__string0"
+              }
+            }
+          },
+          "docs": "Create / Update Doc by docId"
+        },
+        {
+          "info": {
+            "name": "Search document",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.archbee.com/api/public-api/docs/search",
+            "auth": {
+              "type": "bearer",
+              "value": "{{ARCHBEE_BEARER}}",
+              "placement": "header"
+            },
+            "body": {
+              "type": "json",
+              "content": {
+                "query": "",
+                "searchOnlyTitle": "",
+                "persistSearch": "",
+                "searchSessionId": "",
+                "docId": "21-character__string0",
+                "dataTextFormat": "",
+                "parentDocId": "21-character__string0",
+                "type": ""
+              }
+            }
+          },
+          "docs": "Search Archbee documents in docSpace. Can perform one of the 3 types of search:\n\nai-chat to return ai generative answer accompanied by source docs;\nai-retrieval to return just similar docs with the query;\nwords to perform normal search aka. \"word-based\"; use empty query to return all docs\nsingle-doc to return document info by id"
+        },
+        {
+          "info": {
+            "name": "Import Content",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.archbee.com/api/public-api/import-content",
+            "auth": {
+              "type": "bearer",
+              "value": "{{ARCHBEE_BEARER}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Create new Doc from imported markdown file. In case of zip file, create a new docTree and keeps archived tree structure."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "File Manager",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Delete a File Manager file",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.archbee.com/api/public-api/file-manager/file",
+            "auth": {
+              "type": "bearer",
+              "value": "{{ARCHBEE_BEARER}}",
+              "placement": "header"
+            },
+            "body": {
+              "type": "json",
+              "content": {
+                "fileId": ""
+              }
+            }
+          },
+          "docs": "Permanently delete a File Manager file or folder (folders delete their contents recursively)."
+        },
+        {
+          "info": {
+            "name": "List File Manager files",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.archbee.com/api/public-api/file-manager/files",
+            "auth": {
+              "type": "bearer",
+              "value": "{{ARCHBEE_BEARER}}",
+              "placement": "header"
+            }
+          },
+          "docs": "List files and folders in the File Manager. Omitting parentId lists every entry across all folders (use searchQuery/pagination to find one); pass a folder id to list that folder's direct children. Filter with itemType (directory, image, or file)."
+        },
+        {
+          "info": {
+            "name": "Move a File Manager file",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.archbee.com/api/public-api/file-manager/move",
+            "auth": {
+              "type": "bearer",
+              "value": "{{ARCHBEE_BEARER}}",
+              "placement": "header"
+            },
+            "body": {
+              "type": "json",
+              "content": {
+                "fileId": "",
+                "newParentId": ""
+              }
+            }
+          },
+          "docs": "Move a File Manager file or folder into another folder. Pass a null newParentId to move it to the root."
+        },
+        {
+          "info": {
+            "name": "Overwrite a File Manager file",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.archbee.com/api/public-api/file-manager/replace",
+            "auth": {
+              "type": "bearer",
+              "value": "{{ARCHBEE_BEARER}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Replace the contents of an existing File Manager file in place. The file keeps its id and public URL, so existing document embeds update automatically."
+        },
+        {
+          "info": {
+            "name": "Upload single file",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.archbee.com/api/public-api/upload/file",
+            "auth": {
+              "type": "bearer",
+              "value": "{{ARCHBEE_BEARER}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Upload a single file to the File Manager"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Organization",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Organization Display Rules",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.archbee.com/api/public-api/team/display-rules",
+            "auth": {
+              "type": "bearer",
+              "value": "{{ARCHBEE_BEARER}}",
+              "placement": "header"
+            },
+            "body": {
+              "type": "json",
+              "content": {
+                "teamId": "21-character__string0"
+              }
+            }
+          },
+          "docs": "Export a list of display rules."
+        },
+        {
+          "info": {
+            "name": "Organization Export",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.archbee.com/api/public-api/team/export",
+            "auth": {
+              "type": "bearer",
+              "value": "{{ARCHBEE_BEARER}}",
+              "placement": "header"
+            },
+            "body": {
+              "type": "json",
+              "content": {
+                "teamId": "21-character__string0",
+                "exportThisSpaceOnly": true,
+                "exportAsLink": true
+              }
+            }
+          },
+          "docs": "Export assets, spaces with documents, team and user data from Archbee given teamId. Use --output <export_file_path>"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Space Groups",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create Space Group",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.archbee.com/api/public-api/space-group/create",
+            "auth": {
+              "type": "bearer",
+              "value": "{{ARCHBEE_BEARER}}",
+              "placement": "header"
+            },
+            "body": {
+              "type": "json",
+              "content": {
+                "name": "",
+                "isLlmEnabled": "",
+                "isReviewSystemEnabled": "",
+                "isBranchingSystemEnabled": ""
+              }
+            }
+          },
+          "docs": "Create a new space group with desired fields, return the space group."
+        },
+        {
+          "info": {
+            "name": "Delete Space Group",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.archbee.com/api/public-api/space-group/delete",
+            "auth": {
+              "type": "bearer",
+              "value": "{{ARCHBEE_BEARER}}",
+              "placement": "header"
+            },
+            "body": {
+              "type": "json",
+              "content": {
+                "spaceGroupId": "21-character__string0"
+              }
+            }
+          },
+          "docs": "Delete Archbee space group with given spaceGroupId."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Spaces",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Clone Space",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.archbee.com/api/public-api/space/clone",
+            "auth": {
+              "type": "bearer",
+              "value": "{{ARCHBEE_BEARER}}",
+              "placement": "header"
+            },
+            "body": {
+              "type": "json",
+              "content": {
+                "targetSpaceGroupId": "21-character__string0"
+              }
+            }
+          },
+          "docs": "Clone Archbee space from given docSpaceId"
+        },
+        {
+          "info": {
+            "name": "Create Space",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.archbee.com/api/public-api/space/create",
+            "auth": {
+              "type": "bearer",
+              "value": "{{ARCHBEE_BEARER}}",
+              "placement": "header"
+            },
+            "body": {
+              "type": "json",
+              "content": {
+                "name": "",
+                "isLlmEnabled": "",
+                "isReviewSystemEnabled": "",
+                "isBranchingSystemEnabled": "",
+                "docSpaceGroupId": ""
+              }
+            }
+          },
+          "docs": "Create a new space with desired fields, return its id. New space will inherit apiKey."
+        },
+        {
+          "info": {
+            "name": "Delete Space",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.archbee.com/api/public-api/space/delete",
+            "auth": {
+              "type": "bearer",
+              "value": "{{ARCHBEE_BEARER}}",
+              "placement": "header"
+            },
+            "body": {
+              "type": "json",
+              "content": {
+                "targetSpaceId": "21-character__string0"
+              }
+            }
+          },
+          "docs": "Delete Archbee space with given docSpaceId"
+        },
+        {
+          "info": {
+            "name": "Publish Space",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.archbee.com/api/public-api/space/publish",
+            "auth": {
+              "type": "bearer",
+              "value": "{{ARCHBEE_BEARER}}",
+              "placement": "header"
+            },
+            "body": {
+              "type": "json",
+              "content": {
+                "environment": ""
+              }
+            }
+          },
+          "docs": "Publish Archbee documents from given docSpaceId"
+        },
+        {
+          "info": {
+            "name": "Update Space",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.archbee.com/api/public-api/space/update",
+            "auth": {
+              "type": "bearer",
+              "value": "{{ARCHBEE_BEARER}}",
+              "placement": "header"
+            },
+            "body": {
+              "type": "json",
+              "content": {
+                "publicAccessControlPart": {
+                  "publicProtectionType": "Password",
+                  "publicPassword": "mySecurePassword123",
+                  "publicGuestAccounts": {
+                    "email": "guest@example.com",
+                    "password": "guestPassword123"
+                  },
+                  "publicMagicLinkAccounts": {
+                    "email": "user@example.com"
+                  },
+                  "publicPrivateAccounts": {
+                    "email": "private@example.com"
+                  },
+                  "privateLinkTokens": {
+                    "description": "API Access Token",
+                    "env": "production",
+                    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+                  },
+                  "jwtValidationType": "JWT-Secret",
+                  "jwtKeyUrl": "https://example.com/.well-known/jwks.json",
+                  "jwtSecret": "myJwtSecret123",
+                  "conditionalRuleId": "21-character__string0",
+                  "jwtRedirectURL": "https://example.com/auth/callback",
+                  "samlMetadata": "<EntityDescriptor>...</EntityDescriptor>"
+                },
+                "hostnamePart": {
+                  "hostname": "docs.example.com",
+                  "hostnamePath": "/api-docs"
+                },
+                "spaceLinks": {
+                  "label": "Related Documentation",
+                  "docSpaceId": "21-character__string0"
+                }
+              }
+            }
+          },
+          "docs": "Update space fields."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Suggestions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Discard suggestion document",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.archbee.com/api/public-api/suggest-change/discard",
+            "auth": {
+              "type": "bearer",
+              "value": "{{ARCHBEE_BEARER}}",
+              "placement": "header"
+            },
+            "body": {
+              "type": "json",
+              "content": {
+                "docId": "SUGGEST-21character_string"
+              }
+            }
+          },
+          "docs": "Discard and delete a suggestion document without merging it into the base document. The suggestion document must have a docId starting with 'SUGGEST-'."
+        },
+        {
+          "info": {
+            "name": "Merge suggestion into main document",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.archbee.com/api/public-api/suggest-change/merge",
+            "auth": {
+              "type": "bearer",
+              "value": "{{ARCHBEE_BEARER}}",
+              "placement": "header"
+            },
+            "body": {
+              "type": "json",
+              "content": {
+                "docId": "SUGGEST-21character_string"
+              }
+            }
+          },
+          "docs": "Merge a suggestion document into the base document. The suggestion document must have a docId starting with 'SUGGEST-'."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

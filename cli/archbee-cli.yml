@@ -1,0 +1,124 @@
+generated: '2026-09-04'
+method: searched
+source: >-
+  https://www.archbee.com/docs/archbee-cli-installation-and-setup,
+  https://www.archbee.com/docs/archbee-cli-authentication-guide,
+  https://www.archbee.com/docs/archbee-cli-command-examples,
+  https://www.archbee.com/docs/archbee-cli-troubleshooting, and the npm registry metadata for
+  @archbee/cli, all read 2026-09-04.
+name: Archbee CLI
+binary: archbee
+package: '@archbee/cli'
+version: 0.1.38
+published: '2026-08-25'
+official: true
+requires: Node.js 18 or newer
+install:
+- method: npm
+  command: npm install -g @archbee/cli
+verify: archbee version
+help: archbee <command> --help
+config_files:
+- format: Archbee
+  file: archbee.json
+- format: Docusaurus
+  file: docusaurus.config.js or docusaurus.config.ts
+  note: The CLI auto-detects and serves an existing Docusaurus project.
+authentication:
+  flags:
+  - --api-key
+  - --doc-space-id
+  key_types:
+  - name: space key
+    scope: one documentation space
+    issued_at: Space Settings, API keys
+  - name: organization key
+    prefix: abteam_
+    scope: every space in the organization
+    issued_at: Settings, Developer
+  note: >-
+    Most commands need --doc-space-id even with an organization key. Read-only keys are refused by
+    create-doc, delete-doc, publish-space and update-space.
+  no_space_id_required:
+  - export
+  - display-rules
+  - create-space
+  - upload
+  - list-files
+  - delete-file
+  - move-file
+  - replace-file
+command_groups:
+- name: Local development
+  note: Runs without authentication.
+  commands:
+  - name: new
+    usage: archbee new <project>
+    description: Scaffolds a new documentation project.
+  - name: dev
+    usage: archbee dev
+    description: Local preview server with live reload, on http://localhost:3000.
+  - name: validate
+    usage: archbee validate
+    description: Validates documentation structure and configuration.
+  - name: broken-links
+    usage: archbee broken-links
+    description: Scans the documentation for broken internal links.
+  - name: version
+    usage: archbee version
+    description: Prints the installed CLI version.
+- name: Documents
+  commands:
+  - name: search-docs
+    usage: archbee search-docs --api-key KEY --doc-space-id SPACE
+    rest: searchDocument
+  - name: get-doc
+    usage: archbee get-doc DOC_ID --format markdown --api-key KEY --doc-space-id SPACE
+    rest: getDocument
+    note: --format accepts markdown, html, json, source.
+  - name: create-doc
+    usage: archbee create-doc ./doc.md --api-key KEY --doc-space-id SPACE
+    rest: updateCreateDocument
+    note: Creates a new document or updates an existing one from a local markdown file.
+  - name: delete-doc
+    usage: archbee delete-doc DOC_ID --api-key KEY --doc-space-id SPACE
+    rest: deleteDocument
+    destructive: true
+- name: OpenAPI
+  commands:
+  - name: sync-openapi
+    usage: archbee sync-openapi openapi.yaml --api-key KEY --doc-space-id SPACE
+    rest: syncOpenApiDocument
+  - name: info-openapi
+    usage: archbee info-openapi TREE_ID --api-key KEY --doc-space-id SPACE
+    rest: infoOpenApiDocument
+- name: File Manager
+  commands:
+  - name: upload
+    usage: archbee upload ./logo.png --api-key KEY
+    rest: uploadSingleFile
+  - name: list-files
+    usage: archbee list-files --api-key KEY
+    rest: listFileManagerFiles
+  - name: replace-file
+    usage: archbee replace-file FILE_ID ./new-logo.png --api-key KEY
+    rest: overwriteAFileManagerFile
+    note: Keeps the same public URL, which is how the CLI avoids breaking links in published docs.
+  - name: delete-file
+    rest: deleteAFileManagerFile
+    destructive: true
+  - name: move-file
+    rest: moveAFileManagerFile
+- name: Organization
+  commands:
+  - name: export
+    rest: organizationExport
+  - name: display-rules
+    rest: organizationDisplayRules
+  - name: create-space
+    rest: createSpace
+  - name: update-space
+    rest: updateSpace
+  - name: publish-space
+    usage: archbee publish-space --api-key KEY --doc-space-id SPACE
+    rest: publishSpace

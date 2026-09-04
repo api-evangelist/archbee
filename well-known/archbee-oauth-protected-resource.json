@@ -1,0 +1,1 @@
+{"resource":"https://api.archbee.com","authorization_servers":["https://api.archbee.com"],"scopes_supported":["read:docs","write:docs"],"bearer_methods_supported":["header"]}

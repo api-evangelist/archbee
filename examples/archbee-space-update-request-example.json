@@ -1,0 +1,35 @@
+{
+  "publicAccessControlPart": {
+    "publicProtectionType": "Password",
+    "publicPassword": "mySecurePassword123",
+    "publicGuestAccounts": {
+      "email": "guest@example.com",
+      "password": "guestPassword123"
+    },
+    "publicMagicLinkAccounts": {
+      "email": "user@example.com"
+    },
+    "publicPrivateAccounts": {
+      "email": "private@example.com"
+    },
+    "privateLinkTokens": {
+      "description": "API Access Token",
+      "env": "production",
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+    },
+    "jwtValidationType": "JWT-Secret",
+    "jwtKeyUrl": "https://example.com/.well-known/jwks.json",
+    "jwtSecret": "myJwtSecret123",
+    "conditionalRuleId": "21-character__string0",
+    "jwtRedirectURL": "https://example.com/auth/callback",
+    "samlMetadata": "<EntityDescriptor>...</EntityDescriptor>"
+  },
+  "hostnamePart": {
+    "hostname": "docs.example.com",
+    "hostnamePath": "/api-docs"
+  },
+  "spaceLinks": {
+    "label": "Related Documentation",
+    "docSpaceId": "21-character__string0"
+  }
+}

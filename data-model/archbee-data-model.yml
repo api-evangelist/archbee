@@ -1,0 +1,190 @@
+generated: '2026-09-04'
+method: derived
+source: >-
+  Derived from the request and response schemas of the 24 operations in
+  openapi/archbee-public-api-openapi.yml (itself assembled from Archbee's own api-oas-v2
+  documentation blocks), cross-checked against the resource vocabulary in the @archbee/mcp README
+  and https://www.archbee.com/docs/archbee-concepts.
+note: >-
+  Archbee's API has no id-prefix scheme — identifiers are opaque 21-character nanoid strings and the
+  contract's own examples use the literal placeholder "21-character__string0". A caller cannot tell
+  a docId from a docSpaceId by looking at it, which is a real integration hazard on operations that
+  take both.
+identifiers:
+  scheme: nanoid
+  length: 21
+  prefixed: false
+  example_placeholder: 21-character__string0
+  note: >-
+    The one exception is the organization API key, which carries the prefix abteam_. Snapshot space
+    ids carry the prefixes PUBLISHED- and PREVIEW-, and those read but are refused for every write.
+entities:
+- name: Organization
+  aka: [Team]
+  id_field: teamId
+  description: >-
+    The billing and identity root. Owns spaces, space groups, organization API keys, and the
+    organization-level reusable resources (templates, content snippets, variables, glossary terms).
+  operations: [organizationExport, organizationDisplayRules]
+- name: SpaceGroup
+  id_field: docSpaceGroupId
+  aka: [spaceGroupId, targetSpaceGroupId]
+  description: A grouping of documentation spaces inside an organization. Must be empty to delete.
+  operations: [createSpaceGroup, deleteSpaceGroup]
+- name: Space
+  aka: [DocSpace]
+  id_field: docSpaceId
+  aka_fields: [newDocSpaceId, targetSpaceId]
+  description: >-
+    The top-level container for documents, and the unit an API key is scoped to. Carries the public
+    access control configuration (password, guest accounts, magic link, private accounts, private
+    links, JWT, SAML), the hostname configuration, and the space links used for multi-product docs.
+  operations: [createSpace, updateSpace, deleteSpace, cloneSpace, publishSpace]
+- name: Document
+  aka: [Doc]
+  id_field: docId
+  description: >-
+    A page of content. Holds content in markdown, MDX, json or source form, plus title, slug,
+    description, previewImgURL, hidden and icon. Documents nest through parentDocId, forming the
+    document tree; a space is capped at 1000 documents and a document at 500 blocks or 1MB.
+  operations: [getDocument, updateCreateDocument, deleteDocument, searchDocument, importContent]
+- name: DocTree
+  id_field: docTreeId
+  description: >-
+    A generated API-reference subtree inside a space, produced by syncing a customer's OpenAPI file.
+    Distinct from an ordinary document because Archbee regenerates it on sync.
+  operations: [syncOpenApiDocument, infoOpenApiDocument]
+- name: File
+  aka: [FileManagerFile]
+  id_field: fileId
+  description: >-
+    An uploaded asset in the space File Manager, addressed by an S3-backed public or private URL.
+    Replace preserves the public URL, which is how a customer swaps an asset without breaking links.
+  operations: [uploadSingleFile, listFileManagerFiles, moveAFileManagerFile, overwriteAFileManagerFile, deleteAFileManagerFile]
+- name: Suggestion
+  aka: [SuggestChange]
+  id_field: docId
+  description: >-
+    A reader-submitted proposed edit to a document, held pending until an editor merges or discards
+    it. Modelled against the target document rather than carrying its own public id in the contract.
+  operations: [mergeSuggestionIntoMainDocument, discardSuggestionDocument]
+- name: DisplayRule
+  id_field: conditionalRuleId
+  description: >-
+    An organization-level conditional-content rule that decides which readers see which content.
+  operations: [organizationDisplayRules]
+- name: AccessRequest
+  id_field: email
+  description: >-
+    A pending magic-link access request for a gated space, keyed by reader email. One request per
+    (email, space).
+  operations: [requestMagicLinkAccess]
+- name: SearchSession
+  id_field: searchSessionId
+  description: >-
+    A correlation handle returned by document search so consecutive queries can be grouped in search
+    analytics. The only session-shaped object in the API.
+  operations: [searchDocument]
+- name: Template
+  id_field: templateId
+  surface: mcp-only
+  description: >-
+    A saved document template belonging to the organization. No Public API operation exists; reachable
+    only through the MCP server.
+- name: ContentSnippet
+  id_field: snippetId
+  surface: mcp-only
+  description: >-
+    Reusable content embedded across documents. Requires a Scaling or Enterprise subscription. MCP-only.
+- name: Variable
+  id_field: variableId
+  surface: mcp-only
+  description: >-
+    A content variable or glossary term, referenced in documents as {{name}}, with optional per-space
+    and per-language overrides. MCP-only.
+- name: Category
+  id_field: categoryId
+  surface: mcp-only
+  description: A folder in the space navigation. MCP-only; must be empty to delete.
+relationships:
+- from: Organization
+  to: SpaceGroup
+  type: has_many
+  via: teamId
+- from: Organization
+  to: Space
+  type: has_many
+  via: teamId
+- from: Organization
+  to: Template
+  type: has_many
+- from: Organization
+  to: ContentSnippet
+  type: has_many
+- from: Organization
+  to: Variable
+  type: has_many
+- from: Organization
+  to: DisplayRule
+  type: has_many
+  via: conditionalRuleId
+- from: SpaceGroup
+  to: Space
+  type: has_many
+  via: docSpaceGroupId
+- from: Space
+  to: Document
+  type: has_many
+  via: docSpaceId
+- from: Space
+  to: File
+  type: has_many
+  via: docSpaceId
+- from: Space
+  to: DocTree
+  type: has_many
+  via: docTreeId
+- from: Space
+  to: Category
+  type: has_many
+- from: Space
+  to: AccessRequest
+  type: has_many
+  via: email
+- from: Document
+  to: Document
+  type: has_many
+  via: parentDocId
+  label: nested children
+- from: Document
+  to: Document
+  type: belongs_to
+  via: parentDocId
+  label: parent
+- from: Document
+  to: Suggestion
+  type: has_many
+  via: docId
+- from: DocTree
+  to: Document
+  type: has_many
+  label: generated API reference pages
+- from: Category
+  to: Document
+  type: has_many
+  via: parentDocId
+cascades:
+- operation: deleteSpace
+  deletes: [Document, File, DocTree, Category]
+  invalidates: [space API key]
+  reversible: false
+- operation: deleteDocument
+  deletes: [Document, File, Suggestion]
+  condition: recursive true also deletes every nested child Document
+  reversible: false
+- operation: deleteSpaceGroup
+  deletes: []
+  condition: refused unless the group is empty
+- operation: deleteVariable
+  breaks: '{{name}} references in every document that embeds them'
+  reversible: false

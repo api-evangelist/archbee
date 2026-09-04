@@ -4,98 +4,115 @@
     "archbee": "https://api.archbee.com/schema/",
     "schema": "https://schema.org/",
     "xsd": "http://www.w3.org/2001/XMLSchema#",
-    "ErrorResponse": "archbee:ErrorResponse",
-    "message": {
-      "@id": "archbee:message",
-      "@type": "xsd:string"
-    },
-    "code": {
-      "@id": "archbee:code",
-      "@type": "xsd:integer"
-    },
+    "Organization": "archbee:Organization",
+    "SpaceGroup": "archbee:SpaceGroup",
     "Space": "archbee:Space",
-    "id": {
-      "@id": "archbee:id",
+    "Document": "archbee:Document",
+    "DocTree": "archbee:DocTree",
+    "File": "archbee:File",
+    "Suggestion": "archbee:Suggestion",
+    "DisplayRule": "archbee:DisplayRule",
+    "AccessRequest": "archbee:AccessRequest",
+    "SearchSession": "archbee:SearchSession",
+    "docId": {
+      "@id": "archbee:docId",
       "@type": "xsd:string"
     },
-    "name": {
-      "@id": "archbee:name",
+    "docSpaceId": {
+      "@id": "archbee:docSpaceId",
+      "@type": "xsd:string"
+    },
+    "docSpaceGroupId": {
+      "@id": "archbee:docSpaceGroupId",
+      "@type": "xsd:string"
+    },
+    "fileId": {
+      "@id": "archbee:fileId",
+      "@type": "xsd:string"
+    },
+    "docTreeId": {
+      "@id": "archbee:docTreeId",
+      "@type": "xsd:string"
+    },
+    "teamId": {
+      "@id": "archbee:teamId",
+      "@type": "xsd:string"
+    },
+    "conditionalRuleId": {
+      "@id": "archbee:conditionalRuleId",
+      "@type": "xsd:string"
+    },
+    "searchSessionId": {
+      "@id": "archbee:searchSessionId",
+      "@type": "xsd:string"
+    },
+    "parentDocId": {
+      "@id": "archbee:parentDocId",
+      "@type": "xsd:string"
+    },
+    "title": {
+      "@id": "archbee:title",
       "@type": "xsd:string"
     },
     "slug": {
       "@id": "archbee:slug",
       "@type": "xsd:string"
     },
-    "visibility": {
-      "@id": "archbee:visibility",
-      "@type": "xsd:string"
-    },
     "description": {
       "@id": "archbee:description",
-      "@type": "xsd:string"
-    },
-    "pageCount": {
-      "@id": "archbee:pageCount",
-      "@type": "xsd:integer"
-    },
-    "createdAt": {
-      "@id": "archbee:createdAt",
-      "@type": "xsd:dateTime"
-    },
-    "SpaceRequest": "archbee:SpaceRequest",
-    "SpaceList": "archbee:SpaceList",
-    "spaces": {
-      "@id": "archbee:spaces",
-      "@type": "xsd:string"
-    },
-    "totalCount": {
-      "@id": "archbee:totalCount",
-      "@type": "xsd:integer"
-    },
-    "Page": "archbee:Page",
-    "title": {
-      "@id": "archbee:title",
-      "@type": "xsd:string"
-    },
-    "status": {
-      "@id": "archbee:status",
       "@type": "xsd:string"
     },
     "content": {
       "@id": "archbee:content",
       "@type": "xsd:string"
     },
-    "spaceId": {
-      "@id": "archbee:spaceId",
+    "format": {
+      "@id": "archbee:format",
       "@type": "xsd:string"
     },
-    "parentId": {
-      "@id": "archbee:parentId",
+    "previewImgURL": {
+      "@id": "archbee:previewImgURL",
       "@type": "xsd:string"
     },
-    "updatedAt": {
-      "@id": "archbee:updatedAt",
-      "@type": "xsd:dateTime"
-    },
-    "PageRequest": "archbee:PageRequest",
-    "PageList": "archbee:PageList",
-    "pages": {
-      "@id": "archbee:pages",
+    "icon": {
+      "@id": "archbee:icon",
       "@type": "xsd:string"
     },
-    "Member": "archbee:Member",
+    "name": {
+      "@id": "archbee:name",
+      "@type": "xsd:string"
+    },
     "email": {
       "@id": "archbee:email",
       "@type": "xsd:string"
     },
-    "role": {
-      "@id": "archbee:role",
+    "hidden": {
+      "@id": "archbee:hidden",
+      "@type": "xsd:boolean"
+    },
+    "isLlmEnabled": {
+      "@id": "archbee:isLlmEnabled",
+      "@type": "xsd:boolean"
+    },
+    "isReviewSystemEnabled": {
+      "@id": "archbee:isReviewSystemEnabled",
+      "@type": "xsd:boolean"
+    },
+    "isBranchingSystemEnabled": {
+      "@id": "archbee:isBranchingSystemEnabled",
+      "@type": "xsd:boolean"
+    },
+    "status": {
+      "@id": "archbee:status",
       "@type": "xsd:string"
     },
-    "MemberList": "archbee:MemberList",
-    "members": {
-      "@id": "archbee:members",
+    "messages": {
+      "@id": "archbee:messages",
       "@type": "xsd:string"
     }
-  }
+  },
+  "archbee:generated": "2026-09-04",
+  "archbee:method": "derived",
+  "archbee:source": "openapi/archbee-public-api-openapi.yml",
+  "archbee:note": "Regenerated 2026-09-04. The previous context described Space/Page/Member terms from a fabricated scaffold specification; Archbee has no Page or Member resource in its Public API."
 }

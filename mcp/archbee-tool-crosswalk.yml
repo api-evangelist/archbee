@@ -1,0 +1,163 @@
+generated: '2026-09-04'
+method: derived
+source: >-
+  Bound the 26 tools published in the @archbee/mcp README to the 24 operations in
+  openapi/archbee-public-api-openapi.yml, which itself is derived from Archbee's own api-oas-v2
+  documentation blocks. The live MCP tools/list is OAuth-gated (HTTP 401 invalid_token on
+  2026-09-04), so bindings are by name and documented semantics, not by a fetched inputSchema —
+  confidence is set accordingly.
+surfaces:
+  openapi:
+    url: openapi/archbee-public-api-openapi.yml
+    base: https://api.archbee.com/api/public-api
+    gated: false
+    note: Contract published as api-oas-v2 blocks in the Archbee docs; anonymous to read, keyed to call.
+  mcp:
+    remote: https://api.archbee.com/api/public-mcp-ds/sse
+    stdio: npx -y @archbee/mcp
+    gated: true
+    note: Remote endpoint requires OAuth; stdio server requires a space or organization API key.
+  graphql: null
+coverage:
+  tools_total: 26
+  tools_bound_to_rest: 12
+  tools_mcp_only: 14
+  rest_operations_total: 24
+  rest_operations_covered: 9
+  rest_operations_uncovered: 15
+crosswalk:
+- tool: get_doc
+  category: read
+  rest:
+  - getDocument
+  binding: 'GET /doc with body {docId, format}'
+  confidence: high
+- tool: search_query
+  category: read
+  rest:
+  - searchDocument
+  binding: 'POST /docs/search'
+  confidence: high
+- tool: search_title
+  category: read
+  rest:
+  - searchDocument
+  binding: 'POST /docs/search, title-scoped'
+  confidence: medium
+  note: The REST search operation is one endpoint; the MCP server splits content and title search into two tools.
+- tool: get_all_docs
+  category: read
+  rest:
+  - searchDocument
+  binding: 'POST /docs/search with an empty query'
+  confidence: medium
+  note: The README states an empty query returns all documents, which is how this tool is served.
+- tool: create_doc
+  category: write
+  rest:
+  - updateCreateDocument
+  binding: 'POST /doc without a docId'
+  confidence: high
+- tool: update_doc
+  category: write
+  rest:
+  - updateCreateDocument
+  binding: 'POST /doc with a docId'
+  confidence: high
+  note: One REST operation backs both create and update; the MCP server splits it into two tools.
+- tool: delete_doc
+  category: destructive
+  rest:
+  - deleteDocument
+  binding: 'DELETE /doc'
+  confidence: high
+- tool: create_doc_space
+  category: write
+  rest:
+  - createSpace
+  binding: 'POST /space/create'
+  confidence: high
+- tool: update_doc_space
+  category: write
+  rest:
+  - updateSpace
+  binding: 'POST /space/update'
+  confidence: high
+- tool: delete_doc_space
+  category: destructive
+  rest:
+  - deleteSpace
+  binding: 'DELETE /space/delete'
+  confidence: high
+- tool: create_space_group
+  category: write
+  rest:
+  - createSpaceGroup
+  binding: 'POST /space-group/create'
+  confidence: high
+- tool: delete_space_group
+  category: destructive
+  rest:
+  - deleteSpaceGroup
+  binding: 'DELETE /space-group/delete'
+  confidence: high
+mcp_only:
+- tool: create_category
+  reason: No public REST operation for categories is documented; the MCP server composes it over the document tree.
+- tool: delete_category
+  reason: No public REST operation for categories is documented.
+- tool: list_templates
+  reason: Document templates are an organization-level resource with no documented Public API operation.
+- tool: create_template
+  reason: No documented Public API operation.
+- tool: apply_template
+  reason: No documented Public API operation; composes template read plus document create.
+- tool: delete_template
+  reason: No documented Public API operation.
+- tool: list_content_snippets
+  reason: Reusable content snippets have no documented Public API operation.
+- tool: create_content_snippet
+  reason: No documented Public API operation.
+- tool: update_content_snippet
+  reason: No documented Public API operation.
+- tool: delete_content_snippet
+  reason: No documented Public API operation.
+- tool: list_variables
+  reason: Content variables and glossary terms have no documented Public API operation.
+- tool: create_variable
+  reason: No documented Public API operation.
+- tool: update_variable
+  reason: No documented Public API operation.
+- tool: delete_variable
+  reason: No documented Public API operation.
+rest_only:
+- operationId: cloneSpace
+  reason: No MCP tool clones a space.
+- operationId: publishSpace
+  reason: No MCP tool publishes a space to its domain.
+- operationId: importContent
+  reason: Bulk content import is REST-only.
+- operationId: uploadSingleFile
+  reason: File Manager upload is REST-only; the MCP server exposes no file tools.
+- operationId: listFileManagerFiles
+  reason: File Manager is REST-only.
+- operationId: moveAFileManagerFile
+  reason: File Manager is REST-only.
+- operationId: overwriteAFileManagerFile
+  reason: File Manager is REST-only.
+- operationId: deleteAFileManagerFile
+  reason: File Manager is REST-only.
+- operationId: organizationExport
+  reason: Organization export is REST-only.
+- operationId: organizationDisplayRules
+  reason: Display rules are REST-only.
+- operationId: syncOpenApiDocument
+  reason: Syncing a customer's imported OpenAPI reference is REST-only.
+- operationId: infoOpenApiDocument
+  reason: Inspecting a customer's imported OpenAPI reference is REST-only.
+- operationId: mergeSuggestionIntoMainDocument
+  reason: The reader-suggestion workflow is REST-only.
+- operationId: discardSuggestionDocument
+  reason: The reader-suggestion workflow is REST-only.
+- operationId: requestMagicLinkAccess
+  reason: Magic-link access requests are a reader-facing REST operation with no agent tool.

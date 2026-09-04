@@ -1,0 +1,184 @@
+generated: '2026-09-04'
+method: searched
+source: >-
+  https://www.archbee.com/docs/anthropic-claude-connector (the remote endpoint, published by Archbee),
+  the @archbee/mcp README on registry.npmjs.org (the tool list and the stdio configurations), and a
+  live probe of the remote endpoint 2026-09-04.
+name: Archbee MCP Server
+status: published
+deployment:
+  mode: both
+  endpoint: https://api.archbee.com/api/public-mcp-ds/sse
+  install: npx -y @archbee/mcp
+  package: https://www.npmjs.com/package/@archbee/mcp
+  auth: oauth
+  verified: probed
+  note: >-
+    Two genuinely different products. The REMOTE endpoint is what Archbee tells you to paste into
+    Claude as a custom connector, leaving the OAuth client id and secret empty — the server supports
+    RFC 7591 dynamic client registration, so no pre-registration is needed. The LOCAL stdio server is
+    the npm package @archbee/mcp, which authenticates with a space API key or an organization key
+    (abteam_...) instead of OAuth and talks to https://api.archbee.com/api/public-mcp by default
+    (overridable with ARCHBEE_API_URL). The remote endpoint also answers at
+    https://api.archbee.com/api/public-mcp-ds/mcp (Streamable HTTP) with the same auth challenge.
+probe:
+  fetched: '2026-09-04'
+  url: https://api.archbee.com/api/public-mcp-ds/sse
+  method: 'POST {"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+  http_status: 401
+  body: '{"error":"invalid_token"}'
+  www_authenticate: >-
+    Bearer resource_metadata="https://api.archbee.com/.well-known/oauth-protected-resource/api/public-mcp-ds/sse"
+  verdict: >-
+    The live tool schemas are OAuth-gated, so tools[] below is transcribed from the provider's own
+    @archbee/mcp README rather than from tools/list. Names and input field names are the provider's;
+    full JSON Schemas would need an authenticated introspection.
+  rfc9728: true
+  rfc8414: true
+authorization:
+  issuer: https://api.archbee.com
+  authorization_endpoint: https://api.archbee.com/oauth/authorize
+  token_endpoint: https://api.archbee.com/oauth/token
+  registration_endpoint: https://api.archbee.com/oauth/register
+  revocation_endpoint: https://api.archbee.com/oauth/revoke
+  grant_types:
+  - authorization_code
+  - refresh_token
+  code_challenge_methods:
+  - S256
+  scopes:
+  - read:docs
+  - write:docs
+  source: well-known/archbee-oauth-authorization-server.json
+local_configurations:
+- name: public portal (read-only)
+  env:
+    API_BASE: URL of a public Archbee space with no access control
+  grants: read tools only
+- name: space key
+  env:
+    SPACE_ID: live space id from the app URL
+    API_KEY: space API key from Space Settings
+  grants: read and write, scoped to that one space
+- name: organization key
+  env:
+    API_KEY: organization key beginning abteam_
+  grants: >-
+    read and write across every space in the organization; space-scoped tools then take a docSpaceId
+    argument per call. Created by the super-admin in Settings, Organization settings, Organization
+    API key — shown once and never readable again.
+tool_count: 26
+tools:
+- name: get_doc
+  category: read
+  inputs: [docId]
+  description: Gets the content of a document, returned as markdown.
+- name: get_all_docs
+  category: read
+  inputs: []
+  description: Gets the content of every document in the space.
+- name: search_query
+  category: read
+  inputs: [query]
+  description: Searches documents by content; an empty query returns all documents.
+- name: search_title
+  category: read
+  inputs: [query]
+  description: Searches documents by title.
+- name: create_doc
+  category: write
+  inputs: [content, format, title, parentDocId, slug, description, previewImgURL, hidden, icon]
+  description: Creates a document from Markdown or MDX content.
+- name: update_doc
+  category: write
+  inputs: [docId, content, format, title, parentDocId, slug, description, previewImgURL, hidden, icon]
+  description: Updates a document; only the fields sent are changed.
+- name: delete_doc
+  category: destructive
+  inputs: [docId, recursive]
+  description: >-
+    Permanently deletes a document, its uploaded files and its images. Cannot be undone. recursive is
+    required to delete a document that has nested children, which deletes them too.
+- name: create_doc_space
+  category: write
+  inputs: [name, isReviewSystemEnabled, isBranchingSystemEnabled, docSpaceGroupId, icon]
+  description: Creates a doc space in the organization.
+- name: update_doc_space
+  category: write
+  inputs: [name, icon, hostnamePart, spaceLinks, publicAccessControlPart]
+  description: Updates settings of the configured space; only the parts sent are changed.
+- name: delete_doc_space
+  category: destructive
+  inputs: []
+  description: >-
+    Permanently deletes the configured space and every document in it. Cannot be undone, and the
+    API_KEY dies with it.
+- name: create_space_group
+  category: write
+  inputs: [name, isAiEnabled, isReviewSystemEnabled, isBranchingSystemEnabled]
+  description: Creates a space group. Requires an organization admin.
+- name: delete_space_group
+  category: destructive
+  inputs: [docSpaceGroupId]
+  description: Deletes an empty space group. Requires an organization admin.
+- name: create_category
+  category: write
+  inputs: [categoryName, parentDocId]
+  description: Creates a category — a folder in the space navigation.
+- name: delete_category
+  category: destructive
+  inputs: [categoryId]
+  description: Deletes an empty category. Documents are never deleted.
+- name: list_templates
+  category: read
+  inputs: []
+  description: Lists the saved document templates with their content as markdown.
+- name: create_template
+  category: write
+  inputs: [name, content, format, icon]
+  description: >-
+    Saves a new document template. A taken name returns the existing template id with
+    alreadyExists true instead of creating a duplicate.
+- name: apply_template
+  category: write
+  inputs: [templateId, title, parentDocId, slug, icon]
+  description: Creates a document from a template, copying its content verbatim.
+- name: delete_template
+  category: write
+  inputs: [templateId]
+  description: >-
+    Deletes a template by moving it to the organization's Archives space, where a person can restore
+    it. Reversible.
+- name: list_content_snippets
+  category: read
+  inputs: []
+  description: Lists the reusable content snippets with their content as markdown.
+- name: create_content_snippet
+  category: write
+  inputs: [name, content, format]
+  description: Creates a content snippet. Requires a Scaling or Enterprise subscription.
+- name: update_content_snippet
+  category: write
+  inputs: [snippetId, name, content, format]
+  description: Renames a snippet, replaces its content, or both — reaching every document that embeds it.
+- name: delete_content_snippet
+  category: destructive
+  inputs: [snippetId]
+  description: Permanently deletes a content snippet. Cannot be undone.
+- name: list_variables
+  category: read
+  inputs: [variableType]
+  description: Lists content variables and glossary terms with their values and overrides.
+- name: create_variable
+  category: write
+  inputs: [name, variableContent, description, variableType, spaceTargetMap]
+  description: >-
+    Creates a content variable or glossary term. Requires a Scaling or Enterprise subscription.
+- name: update_variable
+  category: write
+  inputs: [variableId, name, variableContent, description, variableType, spaceTargetMap]
+  description: Updates a variable or glossary term; only the fields sent are changed.
+- name: delete_variable
+  category: destructive
+  inputs: [variableId]
+  description: Permanently deletes a variable or glossary term. References to it stop resolving.
