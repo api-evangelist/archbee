@@ -53,6 +53,19 @@ tags:
   - Developer Portal
   - Docs as Code
   - OpenAPI
+  - MCP
+  - AI Agents
+  - Content Management
+  - Developer Tools
+tags_raw:
+  - API Documentation
+  - Documentation Platform
+  - Knowledge Base
+  - Technical Writing
+  - Developer Docs
+  - Developer Portal
+  - Docs as Code
+  - OpenAPI
   - Model Context Protocol
   - AI Agents
   - Content Management
@@ -63,45 +76,14 @@ created: '2026-03-16'
 modified: '2026-09-04'
 specificationVersion: '0.23'
 apis:
-- aid: archbee:archbee-public-api
-  name: Archbee Public API
-  description: >-
-    The Archbee Public API manages documentation spaces, documents, space groups, File Manager
-    files, reader-submitted suggestions, organization exports and imported OpenAPI references in an
-    Archbee workspace. 24 documented operations under https://api.archbee.com/api/public-api,
-    authenticated with an HTTP Bearer token whose value is base64(docSpaceId~apiKey), or an
-    organization key beginning abteam_.
-  humanURL: https://www.archbee.com/docs/get-document
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/archbee.png
-  baseURL: https://api.archbee.com/api/public-api
-  tags:
-  - Documents
-  - Spaces
-  - Space Groups
-  - File Manager
-  - Organization
-  - Suggestions
-  properties:
-  - type: OpenAPI
-    url: openapi/archbee-public-api-openapi.yml
-  - type: Documentation
-    url: https://docs.archbee.com/
-  - type: APIReference
-    url: https://www.archbee.com/docs/get-document
-  - type: Overlay
-    url: overlays/archbee-public-api-overlay.yaml
-  - type: ErrorCatalog
-    url: errors/archbee-problem-types.yml
-  - type: DataModel
-    url: data-model/archbee-data-model.yml
 - aid: archbee:archbee-mcp-server
   name: Archbee MCP Server
   description: >-
-    Archbee's Model Context Protocol server, shipped in two deployments: a hosted remote endpoint at
-    https://api.archbee.com/api/public-mcp-ds/sse that an MCP client connects to over OAuth 2.1
-    (dynamic client registration, PKCE, scopes read:docs and write:docs), and a local stdio server
-    published to npm as @archbee/mcp. 26 documented tools read, search, create, update and delete
-    documents, spaces, space groups, categories, templates, content snippets and variables.
+    Archbee's Model Context Protocol server, shipped in two deployments: a hosted remote endpoint at https://api.archbee.com/api/public-mcp-ds/sse
+    that an MCP client connects to over OAuth 2.1 (dynamic client registration, PKCE, scopes read:docs
+    and write:docs), and a local stdio server published to npm as @archbee/mcp. 26 documented tools read,
+    search, create, update and delete documents, spaces, space groups, categories, templates, content
+    snippets and variables.
   humanURL: https://www.archbee.com/docs/anthropic-claude-connector
   image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/archbee.png
   baseURL: https://api.archbee.com/api/public-mcp-ds/sse
@@ -118,6 +100,186 @@ apis:
     url: https://www.archbee.com/docs/anthropic-claude-connector
   - type: OAuthScopes
     url: scopes/archbee-scopes.yml
+- aid: archbee:archbee-access-control-api
+  name: Archbee Access Control API
+  description: Magic-link access requests for gated portals
+  humanURL: https://www.archbee.com/docs/get-document
+  baseURL: https://api.archbee.com/api/public-api
+  tags:
+  - Access Control
+  properties:
+  - type: OpenAPI
+    url: openapi/archbee-access-control-api-openapi.yml
+  - type: Documentation
+    url: https://docs.archbee.com/
+  - type: APIReference
+    url: https://www.archbee.com/docs/get-document
+  - type: ErrorCatalog
+    url: errors/archbee-problem-types.yml
+  - type: DataModel
+    url: data-model/archbee-data-model.yml
+- aid: archbee:archbee-api-reference-api
+  name: Archbee API Reference API
+  description: Sync and inspect an imported OpenAPI reference
+  humanURL: https://www.archbee.com/docs/get-document
+  baseURL: https://api.archbee.com/api/public-api
+  tags:
+  - API Reference
+  properties:
+  - type: OpenAPI
+    url: openapi/archbee-api-reference-api-openapi.yml
+  - type: Documentation
+    url: https://docs.archbee.com/
+  - type: APIReference
+    url: https://www.archbee.com/docs/get-document
+  - type: ErrorCatalog
+    url: errors/archbee-problem-types.yml
+  - type: DataModel
+    url: data-model/archbee-data-model.yml
+- aid: archbee:archbee-documents-api
+  name: Archbee Documents API
+  description: Create, read, update, delete and search documents
+  humanURL: https://www.archbee.com/docs/get-document
+  baseURL: https://api.archbee.com/api/public-api
+  tags:
+  - Documents
+  properties:
+  - type: OpenAPI
+    url: openapi/archbee-documents-api-openapi.yml
+  - type: Documentation
+    url: https://docs.archbee.com/
+  - type: APIReference
+    url: https://www.archbee.com/docs/get-document
+  - type: ErrorCatalog
+    url: errors/archbee-problem-types.yml
+  - type: DataModel
+    url: data-model/archbee-data-model.yml
+- aid: archbee:archbee-file-manager-api
+  name: Archbee File Manager API
+  description: Upload, list, move, replace and delete File Manager files
+  humanURL: https://www.archbee.com/docs/get-document
+  baseURL: https://api.archbee.com/api/public-api
+  tags:
+  - File Manager
+  properties:
+  - type: OpenAPI
+    url: openapi/archbee-file-manager-api-openapi.yml
+  - type: Documentation
+    url: https://docs.archbee.com/
+  - type: APIReference
+    url: https://www.archbee.com/docs/get-document
+  - type: ErrorCatalog
+    url: errors/archbee-problem-types.yml
+  - type: DataModel
+    url: data-model/archbee-data-model.yml
+- aid: archbee:archbee-members-api
+  name: Archbee Members API
+  description: Team member and access management
+  humanURL: https://www.archbee.com/docs/get-document
+  baseURL: https://api.archbee.com/api/public-api
+  tags:
+  - Members
+  properties:
+  - type: OpenAPI
+    url: openapi/archbee-members-api-openapi.yml
+  - type: Documentation
+    url: https://docs.archbee.com/
+  - type: APIReference
+    url: https://www.archbee.com/docs/get-document
+  - type: ErrorCatalog
+    url: errors/archbee-problem-types.yml
+  - type: DataModel
+    url: data-model/archbee-data-model.yml
+- aid: archbee:archbee-organization-api
+  name: Archbee Organization API
+  description: Organization-level export and display rules
+  humanURL: https://www.archbee.com/docs/get-document
+  baseURL: https://api.archbee.com/api/public-api
+  tags:
+  - Organization
+  properties:
+  - type: OpenAPI
+    url: openapi/archbee-organization-api-openapi.yml
+  - type: Documentation
+    url: https://docs.archbee.com/
+  - type: APIReference
+    url: https://www.archbee.com/docs/get-document
+  - type: ErrorCatalog
+    url: errors/archbee-problem-types.yml
+  - type: DataModel
+    url: data-model/archbee-data-model.yml
+- aid: archbee:archbee-pages-api
+  name: Archbee Pages API
+  description: Page content management
+  humanURL: https://www.archbee.com/docs/get-document
+  baseURL: https://api.archbee.com/api/public-api
+  tags:
+  - Pages
+  properties:
+  - type: OpenAPI
+    url: openapi/archbee-pages-api-openapi.yml
+  - type: Documentation
+    url: https://docs.archbee.com/
+  - type: APIReference
+    url: https://www.archbee.com/docs/get-document
+  - type: ErrorCatalog
+    url: errors/archbee-problem-types.yml
+  - type: DataModel
+    url: data-model/archbee-data-model.yml
+- aid: archbee:archbee-space-groups-api
+  name: Archbee Space Groups API
+  description: Grouping of documentation spaces
+  humanURL: https://www.archbee.com/docs/get-document
+  baseURL: https://api.archbee.com/api/public-api
+  tags:
+  - Space Groups
+  properties:
+  - type: OpenAPI
+    url: openapi/archbee-space-groups-api-openapi.yml
+  - type: Documentation
+    url: https://docs.archbee.com/
+  - type: APIReference
+    url: https://www.archbee.com/docs/get-document
+  - type: ErrorCatalog
+    url: errors/archbee-problem-types.yml
+  - type: DataModel
+    url: data-model/archbee-data-model.yml
+- aid: archbee:archbee-spaces-api
+  name: Archbee Spaces API
+  description: Documentation space management
+  humanURL: https://www.archbee.com/docs/get-document
+  baseURL: https://api.archbee.com/api/public-api
+  tags:
+  - Spaces
+  properties:
+  - type: OpenAPI
+    url: openapi/archbee-spaces-api-openapi.yml
+  - type: Documentation
+    url: https://docs.archbee.com/
+  - type: APIReference
+    url: https://www.archbee.com/docs/get-document
+  - type: ErrorCatalog
+    url: errors/archbee-problem-types.yml
+  - type: DataModel
+    url: data-model/archbee-data-model.yml
+- aid: archbee:archbee-suggestions-api
+  name: Archbee Suggestions API
+  description: Reader-submitted suggested changes — merge or discard
+  humanURL: https://www.archbee.com/docs/get-document
+  baseURL: https://api.archbee.com/api/public-api
+  tags:
+  - Suggestions
+  properties:
+  - type: OpenAPI
+    url: openapi/archbee-suggestions-api-openapi.yml
+  - type: Documentation
+    url: https://docs.archbee.com/
+  - type: APIReference
+    url: https://www.archbee.com/docs/get-document
+  - type: ErrorCatalog
+    url: errors/archbee-problem-types.yml
+  - type: DataModel
+    url: data-model/archbee-data-model.yml
 common:
   - type: Website
     url: https://www.archbee.com/
