@@ -1,18 +1,22 @@
-generated: '2026-09-04'
+generated: '2026-09-19'
 method: probed
-source: >-
-  Anonymous HTTPS probes of /.well-known/ on every host this record knows — the registrable domain and
-  www, the API base host, the MCP endpoint host, the docs host and the app/console host — run
-  2026-09-04. Two RFC 8414 / RFC 9728 documents are served, on api.archbee.com and app.archbee.com;
-  everything else is absent.
-note: >-
-  api.archbee.com and app.archbee.com answer every unknown path with HTTP 200 and the 19-byte body
+source: Anonymous HTTPS probes of /.well-known/ on every host this record knows — the registrable domain
+  and www, the API base host, the MCP endpoint host, the docs host and the app/console host — run 2026-09-04.
+  Two RFC 8414 / RFC 9728 documents are served, on api.archbee.com and app.archbee.com; everything else
+  is absent.
+note: 'api.archbee.com and app.archbee.com answer every unknown path with HTTP 200 and the 19-byte body
   "Resource not found." — a soft-404. Those rows are recorded as misses, not hits, because a 200 that
   carries no document is not a document. docs.archbee.com is an Archbee-hosted portal whose catch-all
-  answers /.well-known/agent-card.json, /.well-known/agent.json and /.well-known/ai-plugin.json with
-  HTTP 200 and the portal's own doc-tree JSON ({"status":"OK","data":{...,"statusCode":"404"}}) — a
-  catch-all false positive, NOT an agent card or a plugin manifest. No agent card is published, so no
-  AgentCard pointer is emitted.
+  answers /.well-known/agent-card.json, /.well-known/agent.json and /.well-known/ai-plugin.json with HTTP
+  200 and the portal''s own doc-tree JSON ({"status":"OK","data":{...,"statusCode":"404"}}) — a catch-all
+  false positive, NOT an agent card or a plugin manifest. No agent card is published, so no AgentCard
+  pointer is emitted.
+
+
+  MCP-host OAuth discovery added 2026-09-19 (roadmap#321/#337): the harvest visits a provider''s primary
+  hosts, and RFC 9728 protected-resource metadata lives on the MCP host, so these documents existed and
+  were invisible to the scorer. Fetched live and validated on `resource`/`issuer`; one negative control
+  per host.'
 hosts:
 - host: api.archbee.com
   documents:
@@ -20,9 +24,8 @@ hosts:
     status: 200
     file: archbee-oauth-authorization-server.json
     content_type: application/json
-    note: >-
-      RFC 8414 authorization server metadata. issuer https://api.archbee.com, PKCE S256, dynamic
-      client registration at /oauth/register, scopes read:docs and write:docs.
+    note: RFC 8414 authorization server metadata. issuer https://api.archbee.com, PKCE S256, dynamic client
+      registration at /oauth/register, scopes read:docs and write:docs.
   - path: /.well-known/oauth-protected-resource
     status: 200
     file: archbee-oauth-protected-resource.json
@@ -32,8 +35,7 @@ hosts:
     status: 200
     file: archbee-oauth-protected-resource-mcp-sse.json
     content_type: application/json
-    note: >-
-      RFC 9728 metadata for the remote MCP endpoint, advertised by the WWW-Authenticate header the
+    note: RFC 9728 metadata for the remote MCP endpoint, advertised by the WWW-Authenticate header the
       MCP endpoint returns on an unauthenticated request.
   - path: /.well-known/security.txt
     status: 200
@@ -59,15 +61,23 @@ hosts:
     status: 200
     file: null
     note: soft-404 — HTTP 200 with the 19-byte body "Resource not found.". Not served.
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    file: archbee-api-oauth-protected-resource.json
+    bytes: 196
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    file: archbee-api-oauth-authorization-server.json
+    bytes: 559
+  path_echo_control: passed
 - host: app.archbee.com
   documents:
   - path: /.well-known/oauth-authorization-server
     status: 200
     file: archbee-oauth-authorization-server.json
     content_type: application/json
-    note: >-
-      Same RFC 8414 document as api.archbee.com, byte-identical, issuer https://api.archbee.com.
-      Saved once.
+    note: Same RFC 8414 document as api.archbee.com, byte-identical, issuer https://api.archbee.com. Saved
+      once.
   - path: /.well-known/security.txt
     status: 200
     file: null
@@ -159,17 +169,26 @@ hosts:
   - path: /.well-known/ai-plugin.json
     status: 200
     file: null
-    note: >-
-      Portal doc-tree JSON with an embedded "statusCode":"404", not an ai-plugin manifest. Catch-all
+    note: Portal doc-tree JSON with an embedded "statusCode":"404", not an ai-plugin manifest. Catch-all
       false positive. Treated as a miss.
   - path: /.well-known/agent-card.json
     status: 200
     file: null
-    note: >-
-      Portal doc-tree JSON with an embedded "statusCode":"404", not an A2A AgentCard — none of
-      name/url/version/protocolVersion/capabilities/skills is present. Catch-all false positive.
-      Treated as a miss; no AgentCard pointer emitted.
+    note: Portal doc-tree JSON with an embedded "statusCode":"404", not an A2A AgentCard — none of name/url/version/protocolVersion/capabilities/skills
+      is present. Catch-all false positive. Treated as a miss; no AgentCard pointer emitted.
   - path: /.well-known/agent.json
     status: 200
     file: null
     note: Same portal doc-tree JSON as agent-card.json. Catch-all false positive. Treated as a miss.
+x-mcp-probe:
+  probed: '2026-09-19'
+  issue: roadmap#321, roadmap#337
+  documents:
+  - host: https://api.archbee.com
+    path: /.well-known/oauth-protected-resource
+    file: archbee-api-oauth-protected-resource.json
+  - host: https://api.archbee.com
+    path: /.well-known/oauth-authorization-server
+    file: archbee-api-oauth-authorization-server.json
+  validated_on: resource (RFC 9728) / issuer (RFC 8414, OIDC)
+  negative_control: one per host; a 2xx JSON object at an impossible path discards the host

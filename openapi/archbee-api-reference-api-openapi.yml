@@ -1,0 +1,213 @@
+openapi: 3.2.0
+info:
+  title: Archbee Public API Reference API
+  description: The Archbee Public API manages documentation spaces, documents, space groups, File Manager files, reader suggestions, organization exports and imported OpenAPI references in an Archbee workspace. Authentication uses an HTTP Bearer token whose value is base64(docSpaceId~apiKey), or a team key beginning abteam_.
+  version: '2026-09-04'
+  contact:
+    name: Archbee Support
+    email: support@archbee.com
+    url: https://www.archbee.com/
+  termsOfService: https://www.archbee.com/terms-of-service
+  x-generated-from: https://www.archbee.com/docs/<slug>.md api-oas-v2 blocks published by Archbee
+  x-generated-by: API Evangelist enrichment pipeline, local-v3
+  x-generated-date: '2026-09-04'
+servers:
+- url: https://api.archbee.com/api/public-api
+  description: Archbee API Server
+security:
+- bearerAuth: []
+tags:
+- name: API Reference
+  description: Sync and inspect an imported OpenAPI reference
+paths:
+  /info-api-reference:
+    get:
+      operationId: infoOpenApiDocument
+      summary: Info Open Api document
+      tags:
+      - API Reference
+      x-source-doc: https://www.archbee.com/docs/info-open-api-document
+      description: Get info of an existing Open Api tree
+      requestBody:
+        required: false
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                docTreeId:
+                  type: string
+                  description: DocTree id is main category id where open api was imported.
+                  example: 21-character__string0
+      responses:
+        '200':
+          description: Status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    description: Response Status
+                    example: OK
+                  data:
+                    type: object
+                    properties:
+                      result:
+                        type: string
+                      importedContent:
+                        type: string
+                description: Status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /sync-api-reference:
+    post:
+      operationId: syncOpenApiDocument
+      summary: Sync Open Api document
+      tags:
+      - API Reference
+      x-source-doc: https://www.archbee.com/docs/sync-open-api-document
+      description: Sync Open Api document with a new or existing Open Api tree
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                docTreeId:
+                  type: string
+                  description: OPTIONAL, main category id where open api was imported; if undefined, a new docTree is created and its id is returned
+                  example: 21-character__string0
+                  default: 21-character__string0
+                file:
+                  type: string
+                  format: binary
+                  description: Open api file, .json or .yml or .yaml or .zip
+                  example: upload file
+                  default: '@swagger.json'
+                type:
+                  type: string
+                  enum:
+                  - openapi
+                  - postman
+                  description: Type of import file. Default openapi
+                  example: openapi
+                  default: openapi
+                openApiTryIt:
+                  type: string
+                  enum:
+                  - 'true'
+                  - 'false'
+                  description: OPTIONAL. You can now test your API's directly in the editor or on your published docs with the new API Try It!
+                  example: true
+                  default: true
+                openApiUseOwnBackend:
+                  type: string
+                  enum:
+                  - 'true'
+                  - 'false'
+                  description: OPTIONAL. When 'Try It' is enabled, send requests directly from the browser to the URL defined in the OpenAPI spec instead of proxying through Archbee. Requires CORS configured on your backend.
+                  example: false
+                  default: false
+                showDownloadOpenApiFile:
+                  type: string
+                  enum:
+                  - 'true'
+                  - 'false'
+                  description: OPTIONAL. You can show/hide the download link of the imported Open API file in the Open API tree.
+                  example: true
+                  default: false
+                shouldCreateSchemaCategory:
+                  type: string
+                  enum:
+                  - 'true'
+                  - 'false'
+                  description: OPTIONAL. You can create models category to display all your models.
+                  example: true
+                  default: false
+                shouldCreateIntro:
+                  type: string
+                  enum:
+                  - 'true'
+                  - 'false'
+                  description: OPTIONAL. You can create an additional document to display open api intro.
+                  example: true
+                  default: false
+                openApiLanguageExamples:
+                  type: string
+                  description: OPTIONAL. Add your custom language examples. Maximum 5 programming language examples are allowed!
+                  example: '["python","r","javascript"]'
+              required:
+              - file
+      responses:
+        '200':
+          description: Import OK status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    description: Response Status
+                    example: OK
+                  data:
+                    type: object
+                    properties:
+                      docTreeId:
+                        type: string
+                        description: Returned created/updated open api tree structure.
+                        example: 21-character__string0
+                description: Import OK status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Requires the Authorization header in the form Authorization: Bearer {base64(docSpaceId~apiKey)} — the base64 encoding of the docSpaceId, a tilde, and the apiKey. A team key beginning abteam_ may be used instead to reach every space in the organization.'

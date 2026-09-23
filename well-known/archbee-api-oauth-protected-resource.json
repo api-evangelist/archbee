@@ -1,0 +1,1 @@
+{"resource":"https://api.archbee.com/api/public-mcp-ds/sse","authorization_servers":["https://api.archbee.com"],"scopes_supported":["read:docs","write:docs"],"bearer_methods_supported":["header"]}

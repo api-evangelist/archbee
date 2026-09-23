@@ -1,0 +1,469 @@
+openapi: 3.2.0
+info:
+  title: Archbee Public Documents API
+  description: The Archbee Public API manages documentation spaces, documents, space groups, File Manager files, reader suggestions, organization exports and imported OpenAPI references in an Archbee workspace. Authentication uses an HTTP Bearer token whose value is base64(docSpaceId~apiKey), or a team key beginning abteam_.
+  version: '2026-09-04'
+  contact:
+    name: Archbee Support
+    email: support@archbee.com
+    url: https://www.archbee.com/
+  termsOfService: https://www.archbee.com/terms-of-service
+  x-generated-from: https://www.archbee.com/docs/<slug>.md api-oas-v2 blocks published by Archbee
+  x-generated-by: API Evangelist enrichment pipeline, local-v3
+  x-generated-date: '2026-09-04'
+servers:
+- url: https://api.archbee.com/api/public-api
+  description: Archbee API Server
+security:
+- bearerAuth: []
+tags:
+- name: Documents
+  description: Create, read, update, delete and search documents
+paths:
+  /doc:
+    delete:
+      operationId: deleteDocument
+      summary: Delete document
+      tags:
+      - Documents
+      x-source-doc: https://www.archbee.com/docs/delete-document
+      description: Delete document by docId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                docId:
+                  type: string
+                  description: Document id that will be permanently deleted.
+                  example: 21-character__string0
+              required:
+              - docId
+      responses:
+        '200':
+          description: Delete status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    description: Response Status
+                  data:
+                    type: object
+                    properties:
+                      status:
+                        type: boolean
+                description: Delete status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+    get:
+      operationId: getDocument
+      summary: Get document
+      tags:
+      - Documents
+      x-source-doc: https://www.archbee.com/docs/get-document
+      description: Retrieve a document in markdown, html, json, or source format.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                docId:
+                  type: string
+                  description: The ID of the document to be returned.
+                  example: 21-character__string0
+                format:
+                  type: string
+                  enum:
+                  - markdown
+                  - html
+                  - json
+                  - source
+                  description: The format of the returned data. Default is markdown.
+                  example: markdown
+              required:
+              - docId
+      responses:
+        '200':
+          description: Successful response containing the document content.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: string
+                    description: The content of the document in the specified format.
+                  format:
+                    type: string
+                    description: The format of the returned document.
+        '400':
+          description: Invalid request parameters.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+    post:
+      operationId: updateCreateDocument
+      summary: Update / Create document
+      tags:
+      - Documents
+      x-source-doc: https://www.archbee.com/docs/update-create-document
+      description: Create / Update Doc by docId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  description: markdown, MDX or JSON content used to update the document.
+                  example: '# this is a h1 title
+
+                    And this is a paragraph
+
+                    - list item 1
+
+                    - list item 2'
+                format:
+                  type: string
+                  enum:
+                  - markdown
+                  - mdx
+                  - json
+                  description: OPTIONAL. Specify the format of the content. Default is markdown. Use mdx when the content contains JSX-style Archbee components (<hint>, <CtaButton />, <Tabs>); directive-style components (:::hint{type="info"}) work in both markdown and mdx.
+                  example: markdown
+                title:
+                  type: string
+                  description: OPTIONAL, set the name of the document.
+                description:
+                  type: string
+                  description: OPTIONAL, set the description of the document.
+                previewImgURL:
+                  type: string
+                  description: OPTIONAL, set the preview image URL of the document.
+                slug:
+                  type: string
+                  description: OPTIONAL, set the slug (url key) of the document.
+                alias:
+                  type: string
+                  description: OPTIONAL, set the url alias.
+                conditionalRuleId:
+                  type: string
+                  description: OPTIONAL, set the conditional rule id.
+                sorting:
+                  type: string
+                  enum:
+                  - alphabetical
+                  - chronological
+                  description: OPTIONAL. Specify the type of ordering for document insertion.
+                  example: alphabetical
+                hidden:
+                  type: boolean
+                  description: OPTIONAL, set document as hidden or not.
+                docId:
+                  type: string
+                  description: OPTIONAL, document id. If present and valid, the doc will be updated.
+                  example: 21-character__string0
+                parentDocId:
+                  type: string
+                  description: OPTIONAL, parent document id. If present and valid, the parent docId will be updated. If sent empty, the document will be moved to the root of the tree.
+                  example: 21-character__string0
+              required:
+              - content
+      responses:
+        '200':
+          description: Process status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    description: Response status.
+                  data:
+                    type: object
+                    properties:
+                      docId:
+                        type: string
+                      newRecord:
+                        type: boolean
+                description: Process status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /docs/search:
+    post:
+      operationId: searchDocument
+      summary: Search document
+      tags:
+      - Documents
+      x-source-doc: https://www.archbee.com/docs/search-document
+      description: 'Search Archbee documents in docSpace. Can perform one of the 3 types of search:
+
+
+        ai-chat to return ai generative answer accompanied by source docs;
+
+        ai-retrieval to return just similar docs with the query;
+
+        words to perform normal search aka. "word-based"; use empty query to return all docs
+
+        single-doc to return document info by id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query:
+                  type: string
+                  description: Filter text, question or document title
+                searchOnlyTitle:
+                  type: boolean
+                  description: OPTIONAL. Search only by title
+                persistSearch:
+                  type: boolean
+                  description: OPTIONAL. Wether to keep a SearchSession in our database and return its id.
+                searchSessionId:
+                  type: string
+                  description: OPTIONAL. id for the SearchSession object to update. More useful for AI chat.
+                docId:
+                  type: string
+                  description: OPTIONAL. Return only one document with this id, if there is one
+                  example: 21-character__string0
+                dataTextFormat:
+                  type: string
+                  enum:
+                  - markdown
+                  - html
+                  description: OPTIONAL. Return documents with dataText in this format
+                parentDocId:
+                  type: string
+                  description: OPTIONAL. Return only child documents of the doc with this id, if there are any. Can be "null" for retrieving the root docs.
+                  example: 21-character__string0
+                type:
+                  type: string
+                  enum:
+                  - words
+                  - ai-chat
+                  - ai-retrieval
+                  description: OPTIONAL. which type of search to use; default is word-based
+              required:
+              - query
+      responses:
+        '200':
+          description: Process status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    description: Response Status
+                  data:
+                    type: object
+                    properties:
+                      searchSessionId:
+                        type: string
+                        description: Search session id, can be used as input for next search calls.
+                      docs:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            description: Archbee id, used for private access
+                          name:
+                            type: string
+                            description: name of document
+                          urlKey:
+                            type: string
+                            description: url of public document, used for public access (if published)
+                          urlAlias:
+                            type: string
+                            description: In case you are migrating from another platform and you’d like to get a redirecting url to your current url, you can use this url path.
+                          hidden:
+                            type: boolean
+                            description: indicates if document is hidden
+                          privacy:
+                            type: string
+                            enum:
+                            - private
+                            - shared with team
+                            - public-via-link
+                            - public
+                            description: describes how to access the document via public url (if published)
+                          highlight:
+                            type: object
+                            description: text from document, similar with query (word-based search only)
+                        description: Array of Doc responses
+                    description: Response Data
+                description: Process status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /import-content:
+    post:
+      operationId: importContent
+      summary: Import Content
+      tags:
+      - Documents
+      x-source-doc: https://www.archbee.com/docs/import-content
+      description: Create new Doc from imported markdown file. In case of zip file, create a new docTree and keeps archived tree structure.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Markdown file (.md) or archive (.zip) containing multiple markdown files.
+                  example: upload file
+                  default: '@markdowns.zip'
+                type:
+                  type: string
+                  enum:
+                  - markdown
+                  description: Type of import file. Only markdown supported for now on this route.
+                  example: markdown
+                  default: markdown
+              required:
+              - file
+      responses:
+        '200':
+          description: Import OK status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    description: Response Status
+                    example: OK
+                  data:
+                    type: object
+                    properties:
+                      docId:
+                        type: string
+                        description: Created Doc id (first doc in case of archive tree).
+                        example: 21-character__string0
+                description: Import OK status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Requires the Authorization header in the form Authorization: Bearer {base64(docSpaceId~apiKey)} — the base64 encoding of the docSpaceId, a tilde, and the apiKey. A team key beginning abteam_ may be used instead to reach every space in the organization.'

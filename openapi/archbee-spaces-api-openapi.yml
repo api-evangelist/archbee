@@ -1,0 +1,748 @@
+openapi: 3.2.0
+info:
+  title: Archbee Spaces API
+  version: '1.0'
+  x-refined-note:
+  - x-generated-from differs across the merged source definitions and was not carried
+  - x-refined-note differs across the merged source definitions and was not carried
+  description: 'Operations tagged Spaces across 2 of this provider''s published API definitions: archbee-api.yaml, archbee-spaces-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.archbee.com/v1
+  description: Archbee API Production
+- url: https://api.archbee.com/api/public-api
+  description: Archbee API Server
+tags:
+- name: Spaces
+  description: Documentation space management
+paths:
+  /spaces:
+    get:
+      operationId: listSpaces
+      summary: Archbee List Spaces
+      description: List all documentation spaces accessible to the authenticated user.
+      tags:
+      - Spaces
+      parameters:
+      - name: page
+        in: query
+        description: Page number for pagination
+        schema:
+          type: integer
+          default: 1
+        example: 1
+      - name: limit
+        in: query
+        description: Results per page
+        schema:
+          type: integer
+          default: 20
+          maximum: 100
+        example: 20
+      responses:
+        '200':
+          description: List of spaces
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpaceList'
+              examples:
+                ListSpaces200Example:
+                  summary: Default listSpaces 200 response
+                  x-microcks-default: true
+                  value:
+                    spaces:
+                    - id: sp_abc123
+                      name: Developer Docs
+                      slug: developer-docs
+                      visibility: public
+                    totalCount: 3
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - apiKey: []
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+    post:
+      operationId: createSpace
+      summary: Archbee Create Space
+      description: Create a new documentation space.
+      tags:
+      - Spaces
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpaceRequest'
+            examples:
+              CreateSpaceRequestExample:
+                summary: Default createSpace request
+                x-microcks-default: true
+                value:
+                  name: API Reference
+                  visibility: public
+                  description: API reference documentation
+      responses:
+        '201':
+          description: Space created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Space'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - apiKey: []
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+    servers:
+    - url: https://api.archbee.com/v1
+      description: Archbee API Production
+  /spaces/{spaceId}:
+    get:
+      operationId: getSpace
+      summary: Archbee Get Space
+      description: Retrieve details for a specific documentation space.
+      tags:
+      - Spaces
+      parameters:
+      - name: spaceId
+        in: path
+        required: true
+        description: Space identifier
+        schema:
+          type: string
+        example: sp_abc123
+      responses:
+        '200':
+          description: Space details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Space'
+              examples:
+                GetSpace200Example:
+                  summary: Default getSpace 200 response
+                  x-microcks-default: true
+                  value:
+                    id: sp_abc123
+                    name: Developer Docs
+                    slug: developer-docs
+                    visibility: public
+                    description: Main developer documentation
+                    pageCount: 42
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Space not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - apiKey: []
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+    delete:
+      operationId: deleteSpace
+      summary: Archbee Delete Space
+      description: Delete a documentation space and all its content.
+      tags:
+      - Spaces
+      parameters:
+      - name: spaceId
+        in: path
+        required: true
+        description: Space identifier
+        schema:
+          type: string
+        example: sp_abc123
+      responses:
+        '204':
+          description: Space deleted
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Space not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - apiKey: []
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+    servers:
+    - url: https://api.archbee.com/v1
+      description: Archbee API Production
+  /space/clone:
+    servers:
+    - url: https://api.archbee.com/api/public-api
+      description: Archbee API Server
+    post:
+      operationId: cloneSpace
+      summary: Clone Space
+      tags:
+      - Spaces
+      x-source-doc: https://www.archbee.com/docs/clone-space
+      description: Clone Archbee space from given docSpaceId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                targetSpaceGroupId:
+                  type: string
+                  description: Space group id where space will be cloned.
+                  example: 21-character__string0
+      responses:
+        '200':
+          description: Process status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    description: Response Status
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: doc space id
+                    description: DocSpace id
+                description: Process status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+      security:
+      - bearerAuth: []
+  /space/create:
+    servers:
+    - url: https://api.archbee.com/api/public-api
+      description: Archbee API Server
+    post:
+      operationId: createSpace
+      summary: Create Space
+      tags:
+      - Spaces
+      x-source-doc: https://www.archbee.com/docs/create-space
+      description: Create a new space with desired fields, return its id. New space will inherit apiKey.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: name of space
+                isLlmEnabled:
+                  type: boolean
+                  description: wether AI will be enabled
+                isReviewSystemEnabled:
+                  type: boolean
+                  description: wether review system will be enaled
+                isBranchingSystemEnabled:
+                  type: boolean
+                  description: wether branching will be enabled
+                docSpaceGroupId:
+                  type: string
+                  description: id of space group to include this space in
+      responses:
+        '200':
+          description: Process status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    description: Response Status
+                  data:
+                    type: object
+                    properties:
+                      newDocSpaceId:
+                        type: string
+                        description: doc space id
+                    description: DocSpace id
+                description: Process status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+      security:
+      - bearerAuth: []
+  /space/delete:
+    servers:
+    - url: https://api.archbee.com/api/public-api
+      description: Archbee API Server
+    delete:
+      operationId: deleteSpace
+      summary: Delete Space
+      tags:
+      - Spaces
+      x-source-doc: https://www.archbee.com/docs/delete-space
+      description: Delete Archbee space with given docSpaceId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                targetSpaceId:
+                  type: string
+                  description: Space id to delete.
+                  example: 21-character__string0
+      responses:
+        '200':
+          description: Process status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    description: Response Status
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: doc space id
+                    description: DocSpace id
+                description: Process status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+      security:
+      - bearerAuth: []
+  /space/publish:
+    servers:
+    - url: https://api.archbee.com/api/public-api
+      description: Archbee API Server
+    post:
+      operationId: publishSpace
+      summary: Publish Space
+      tags:
+      - Spaces
+      x-source-doc: https://www.archbee.com/docs/publish-space
+      description: Publish Archbee documents from given docSpaceId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                environment:
+                  type: string
+                  description: can be PREVIEW or PUBLISHED
+              required:
+              - environment
+      responses:
+        '200':
+          description: Process status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    description: Response Status
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: doc space id
+                    description: DocSpace id
+                description: Process status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+      security:
+      - bearerAuth: []
+  /space/update:
+    servers:
+    - url: https://api.archbee.com/api/public-api
+      description: Archbee API Server
+    post:
+      operationId: updateSpace
+      summary: Update Space
+      tags:
+      - Spaces
+      x-source-doc: https://www.archbee.com/docs/update-space
+      description: Update space fields.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                publicAccessControlPart:
+                  type: object
+                  properties:
+                    publicProtectionType:
+                      type: string
+                      enum:
+                      - None
+                      - Password
+                      - Guest accounts
+                      - Private Accounts
+                      - Private Link
+                      - Magic Link
+                      - JWT
+                      - SAML
+                      description: Type of protection for the space
+                      example: Password
+                    publicPassword:
+                      type: string
+                      description: Password required when publicProtectionType is 'Password'
+                      example: mySecurePassword123
+                    publicGuestAccounts:
+                      type: object
+                      properties:
+                        email:
+                          type: string
+                          enum:
+                          - email
+                          example: guest@example.com
+                        password:
+                          type: string
+                          example: guestPassword123
+                      description: Guest accounts required when publicProtectionType is 'Guest accounts'
+                    publicMagicLinkAccounts:
+                      type: object
+                      properties:
+                        email:
+                          type: string
+                          enum:
+                          - email
+                          example: user@example.com
+                      description: Magic link accounts required when publicProtectionType is 'Magic Link'
+                    publicPrivateAccounts:
+                      type: object
+                      properties:
+                        email:
+                          type: string
+                          enum:
+                          - email
+                          example: private@example.com
+                      description: Private accounts required when publicProtectionType is 'Private Accounts'
+                    privateLinkTokens:
+                      type: object
+                      properties:
+                        description:
+                          type: string
+                          example: API Access Token
+                        env:
+                          type: string
+                          example: production
+                        token:
+                          type: string
+                          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+                      description: Private link tokens required when publicProtectionType is 'Private Link'
+                    jwtValidationType:
+                      type: string
+                      enum:
+                      - JWT-Secret
+                      - JWT-KeySet
+                      description: JWT validation type required when publicProtectionType is 'JWT'
+                      example: JWT-Secret
+                    jwtKeyUrl:
+                      type: string
+                      description: JWT key URL required when jwtValidationType is 'JWT-KeySet'
+                      example: https://example.com/.well-known/jwks.json
+                    jwtSecret:
+                      type: string
+                      description: JWT secret required when jwtValidationType is 'JWT-Secret'
+                      example: myJwtSecret123
+                    conditionalRuleId:
+                      type: string
+                      description: Conditional rule ID for advanced access control
+                      example: 21-character__string0
+                    jwtRedirectURL:
+                      type: string
+                      description: JWT redirect URL for authentication flow
+                      example: https://example.com/auth/callback
+                    samlMetadata:
+                      type: string
+                      description: SAML metadata required when publicProtectionType is 'SAML'
+                      example: <EntityDescriptor>...</EntityDescriptor>
+                  description: Configuration for public access control and authentication
+                hostnamePart:
+                  type: object
+                  properties:
+                    hostname:
+                      type: string
+                      description: Custom hostname for the space
+                      example: docs.example.com
+                    hostnamePath:
+                      type: string
+                      description: Path component for the hostname
+                      example: /api-docs
+                  description: Custom hostname configuration for the space
+                spaceLinks:
+                  type: object
+                  properties:
+                    label:
+                      type: string
+                      example: Related Documentation
+                    docSpaceId:
+                      type: string
+                      example: 21-character__string0
+                  description: Links to other spaces. List should start with current space.
+      responses:
+        '200':
+          description: Process status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    description: Response Status
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: doc space id
+                    description: DocSpace id
+                description: Process status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+      security:
+      - bearerAuth: []
+components:
+  schemas:
+    SpaceRequest:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: Space name
+          example: API Reference
+        visibility:
+          type: string
+          description: Space visibility
+          enum:
+          - public
+          - private
+          - password-protected
+          example: public
+        description:
+          type: string
+          description: Space description
+          example: API reference documentation
+    SpaceList:
+      type: object
+      properties:
+        spaces:
+          type: array
+          items:
+            $ref: '#/components/schemas/Space'
+        totalCount:
+          type: integer
+          description: Total number of spaces
+          example: 3
+    Space:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique space identifier
+          example: sp_abc123
+        name:
+          type: string
+          description: Space display name
+          example: Developer Docs
+        slug:
+          type: string
+          description: URL-friendly space identifier
+          example: developer-docs
+        visibility:
+          type: string
+          description: Space visibility
+          enum:
+          - public
+          - private
+          - password-protected
+          example: public
+        description:
+          type: string
+          description: Space description
+          example: Main developer documentation
+        pageCount:
+          type: integer
+          description: Number of pages in the space
+          example: 42
+        createdAt:
+          type: string
+          format: date-time
+          description: Space creation timestamp
+          example: '2026-01-15T10:00:00Z'
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message
+          example: Unauthorized
+        code:
+          type: integer
+          description: Error code
+          example: 401
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+      description: Archbee API key from the workspace settings
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Requires the Authorization header in the form Authorization: Bearer {base64(docSpaceId~apiKey)} — the base64 encoding of the docSpaceId, a tilde, and the apiKey. A team key beginning abteam_ may be used instead to reach every space in the organization.'
+x-refined-from:
+- archbee-api.yaml
+- archbee-spaces-api-openapi.yml

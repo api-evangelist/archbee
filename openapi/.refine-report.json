@@ -1,23 +1,52 @@
 {
   "provider": "archbee",
   "sources": [
-    "archbee-members-api-openapi.yml",
-    "archbee-pages-api-openapi.yml",
-    "archbee-spaces-api-openapi.yml"
+    "_ae-authored/archbee-api.yaml",
+    "archbee-access-control-api-openapi.yml",
+    "archbee-api-reference-api-openapi.yml",
+    "archbee-documents-api-openapi.yml",
+    "archbee-file-manager-api-openapi.yml",
+    "archbee-organization-api-openapi.yml",
+    "archbee-space-groups-api-openapi.yml",
+    "archbee-spaces-api-openapi.yml",
+    "archbee-suggestions-api-openapi.yml"
   ],
   "outputs": [
     "archbee-members-api-openapi.yml",
     "archbee-pages-api-openapi.yml",
-    "archbee-spaces-api-openapi.yml"
+    "archbee-spaces-api-openapi.yml",
+    "archbee-access-control-api-openapi.yml",
+    "archbee-api-reference-api-openapi.yml",
+    "archbee-documents-api-openapi.yml",
+    "archbee-file-manager-api-openapi.yml",
+    "archbee-organization-api-openapi.yml",
+    "archbee-space-groups-api-openapi.yml",
+    "archbee-suggestions-api-openapi.yml"
   ],
   "archived": [],
   "errors": [],
-  "warnings": [],
+  "warnings": [
+    "archbee-access-control-api-openapi.yml: previously refined output kept for 1 operation(s) no archived document covers (e.g. /access-control/request post); its other 0 operation(s) came from the archive and were dropped from it. The archive is incomplete for this provider \u2014 re-harvest to restore _original/ as the full source of truth.",
+    "archbee-api-reference-api-openapi.yml: previously refined output kept for 2 operation(s) no archived document covers (e.g. /info-api-reference get, /sync-api-reference post); its other 0 operation(s) came from the archive and were dropped from it. The archive is incomplete for this provider \u2014 re-harvest to restore _original/ as the full source of truth.",
+    "archbee-documents-api-openapi.yml: previously refined output kept for 5 operation(s) no archived document covers (e.g. /doc delete, /doc get, /doc post); its other 0 operation(s) came from the archive and were dropped from it. The archive is incomplete for this provider \u2014 re-harvest to restore _original/ as the full source of truth.",
+    "archbee-file-manager-api-openapi.yml: previously refined output kept for 5 operation(s) no archived document covers (e.g. /file-manager/file delete, /file-manager/files get, /file-manager/move post); its other 0 operation(s) came from the archive and were dropped from it. The archive is incomplete for this provider \u2014 re-harvest to restore _original/ as the full source of truth.",
+    "archbee-organization-api-openapi.yml: previously refined output kept for 2 operation(s) no archived document covers (e.g. /team/display-rules get, /team/export get); its other 0 operation(s) came from the archive and were dropped from it. The archive is incomplete for this provider \u2014 re-harvest to restore _original/ as the full source of truth.",
+    "archbee-space-groups-api-openapi.yml: previously refined output kept for 2 operation(s) no archived document covers (e.g. /space-group/create post, /space-group/delete delete); its other 0 operation(s) came from the archive and were dropped from it. The archive is incomplete for this provider \u2014 re-harvest to restore _original/ as the full source of truth.",
+    "archbee-spaces-api-openapi.yml: previously refined output kept for 5 operation(s) no archived document covers (e.g. /space/clone post, /space/create post, /space/delete delete); its other 4 operation(s) came from the archive and were dropped from it. The archive is incomplete for this provider \u2014 re-harvest to restore _original/ as the full source of truth.",
+    "archbee-suggestions-api-openapi.yml: previously refined output kept for 2 operation(s) no archived document covers (e.g. /suggest-change/discard post, /suggest-change/merge post); its other 0 operation(s) came from the archive and were dropped from it. The archive is incomplete for this provider \u2014 re-harvest to restore _original/ as the full source of truth."
+  ],
   "notes": [
-    "archbee-members-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
-    "archbee-pages-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
-    "archbee-spaces-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "3 archived document(s) dropped as subsets of other archived documents",
+    "sourced from openapi/_original/ (0 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "archbee-api.yaml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "tag 'Spaces' spans 2 source specs (archbee-api.yaml, archbee-spaces-api-openapi.yml): per-path servers applied",
     "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "_ae-authored/archbee-spaces-api-openapi.yml: archived document superseded by a larger archived document",
+    "_ae-authored/archbee-pages-api-openapi.yml: archived document superseded by a larger archived document",
+    "_ae-authored/archbee-members-api-openapi.yml: archived document superseded by a larger archived document",
+    "archbee-members-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "archbee-pages-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

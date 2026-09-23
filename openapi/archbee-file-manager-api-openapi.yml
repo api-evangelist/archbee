@@ -1,0 +1,309 @@
+openapi: 3.2.0
+info:
+  title: Archbee Public File Manager API
+  description: The Archbee Public API manages documentation spaces, documents, space groups, File Manager files, reader suggestions, organization exports and imported OpenAPI references in an Archbee workspace. Authentication uses an HTTP Bearer token whose value is base64(docSpaceId~apiKey), or a team key beginning abteam_.
+  version: '2026-09-04'
+  contact:
+    name: Archbee Support
+    email: support@archbee.com
+    url: https://www.archbee.com/
+  termsOfService: https://www.archbee.com/terms-of-service
+  x-generated-from: https://www.archbee.com/docs/<slug>.md api-oas-v2 blocks published by Archbee
+  x-generated-by: API Evangelist enrichment pipeline, local-v3
+  x-generated-date: '2026-09-04'
+servers:
+- url: https://api.archbee.com/api/public-api
+  description: Archbee API Server
+security:
+- bearerAuth: []
+tags:
+- name: File Manager
+  description: Upload, list, move, replace and delete File Manager files
+paths:
+  /file-manager/file:
+    delete:
+      operationId: deleteAFileManagerFile
+      summary: Delete a File Manager file
+      tags:
+      - File Manager
+      x-source-doc: https://www.archbee.com/docs/delete-a-file-manager-file
+      description: Permanently delete a File Manager file or folder (folders delete their contents recursively).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fileId:
+                  type: string
+                  description: Id of the file or folder to delete.
+              required:
+              - fileId
+      responses:
+        '200':
+          description: Delete OK status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /file-manager/files:
+    get:
+      operationId: listFileManagerFiles
+      summary: List File Manager files
+      tags:
+      - File Manager
+      x-source-doc: https://www.archbee.com/docs/list-file-manager-files
+      description: List files and folders in the File Manager. Omitting parentId lists every entry across all folders (use searchQuery/pagination to find one); pass a folder id to list that folder's direct children. Filter with itemType (directory, image, or file).
+      parameters:
+      - name: parentId
+        in: query
+        required: false
+        schema:
+          type: string
+        description: OPTIONAL. Folder id to list the direct children of. Omit to list all entries across every folder.
+      - name: itemType
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - directory
+          - image
+          - file
+        description: OPTIONAL. Filter by entry type.
+      - name: searchQuery
+        in: query
+        required: false
+        schema:
+          type: string
+        description: OPTIONAL. Case-insensitive filename filter.
+      - name: pageIndex
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: OPTIONAL. Zero-based page index (default 0).
+      - name: pageSize
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: OPTIONAL. Page size (1-200).
+      responses:
+        '200':
+          description: List OK status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /file-manager/move:
+    post:
+      operationId: moveAFileManagerFile
+      summary: Move a File Manager file
+      tags:
+      - File Manager
+      x-source-doc: https://www.archbee.com/docs/move-a-file-manager-file
+      description: Move a File Manager file or folder into another folder. Pass a null newParentId to move it to the root.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fileId:
+                  type: string
+                  description: Id of the file or folder to move.
+                newParentId:
+                  type: string
+                  description: Destination folder id, or null for the root.
+              required:
+              - fileId
+              - newParentId
+      responses:
+        '200':
+          description: Move OK status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /file-manager/replace:
+    post:
+      operationId: overwriteAFileManagerFile
+      summary: Overwrite a File Manager file
+      tags:
+      - File Manager
+      x-source-doc: https://www.archbee.com/docs/overwrite-a-file-manager-file
+      description: Replace the contents of an existing File Manager file in place. The file keeps its id and public URL, so existing document embeds update automatically.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                fileId:
+                  type: string
+                  description: Id of the existing file to overwrite.
+                file:
+                  type: string
+                  format: binary
+                  description: New file contents.
+              required:
+              - fileId
+              - file
+      responses:
+        '200':
+          description: Overwrite OK status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /upload/file:
+    post:
+      operationId: uploadSingleFile
+      summary: Upload single file
+      tags:
+      - File Manager
+      x-source-doc: https://www.archbee.com/docs/upload-single-file
+      description: Upload a single file to the File Manager
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Open api file, .json or .yml or .yaml or .zip
+                  example: upload file
+                  default: '@swagger.json'
+                isPublic:
+                  type: string
+                  enum:
+                  - 'true'
+                  - 'false'
+                  description: OPTIONAL. Whether the uploaded file is public or not regarding AWS link.
+                  example: true
+                  default: true
+              required:
+              - file
+      responses:
+        '200':
+          description: Upload OK status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    description: Response Status
+                    example: OK
+                  data:
+                    type: object
+                    properties:
+                      src:
+                        type: string
+                        description: AWS link to the uploaded file
+                description: Upload OK status
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Requires the Authorization header in the form Authorization: Bearer {base64(docSpaceId~apiKey)} — the base64 encoding of the docSpaceId, a tilde, and the apiKey. A team key beginning abteam_ may be used instead to reach every space in the organization.'

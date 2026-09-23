@@ -1,0 +1,174 @@
+openapi: 3.2.0
+info:
+  title: Archbee Public Organization API
+  description: The Archbee Public API manages documentation spaces, documents, space groups, File Manager files, reader suggestions, organization exports and imported OpenAPI references in an Archbee workspace. Authentication uses an HTTP Bearer token whose value is base64(docSpaceId~apiKey), or a team key beginning abteam_.
+  version: '2026-09-04'
+  contact:
+    name: Archbee Support
+    email: support@archbee.com
+    url: https://www.archbee.com/
+  termsOfService: https://www.archbee.com/terms-of-service
+  x-generated-from: https://www.archbee.com/docs/<slug>.md api-oas-v2 blocks published by Archbee
+  x-generated-by: API Evangelist enrichment pipeline, local-v3
+  x-generated-date: '2026-09-04'
+servers:
+- url: https://api.archbee.com/api/public-api
+  description: Archbee API Server
+security:
+- bearerAuth: []
+tags:
+- name: Organization
+  description: Organization-level export and display rules
+paths:
+  /team/display-rules:
+    get:
+      operationId: organizationDisplayRules
+      summary: Organization Display Rules
+      tags:
+      - Organization
+      x-source-doc: https://www.archbee.com/docs/organization-display-rules
+      description: Export a list of display rules.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                teamId:
+                  type: string
+                  description: Team id for which display rules are computed.
+                  example: 21-character__string0
+              required:
+              - teamId
+      responses:
+        '200':
+          description: Successful export todo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  displayRules:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: Unique identifier for the display rule
+                        example: wRJ1O4ChAK_lioQj39bHk
+                      title:
+                        type: string
+                        description: Human-readable title for the display rule
+                        example: are gmail2
+                      combinator:
+                        type: string
+                        enum:
+                        - AND
+                        - OR
+                        description: Logical operator to combine multiple rules
+                        example: AND
+                      rules:
+                        type: object
+                        properties:
+                          field:
+                            type: string
+                            description: The field to evaluate the condition against
+                            example: email
+                          operator:
+                            type: string
+                            description: The comparison operator
+                            example: CONTAINS
+                          value:
+                            type: string
+                            description: The value to compare against
+                            example: gmail.com
+                        required:
+                        - field
+                        - operator
+                        - value
+                        description: Array of individual rules that define the conditions
+                    required:
+                    - id
+                    - title
+                    - combinator
+                    - rules
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /team/export:
+    get:
+      operationId: organizationExport
+      summary: Organization Export
+      tags:
+      - Organization
+      x-source-doc: https://www.archbee.com/docs/organization-export
+      description: Export assets, spaces with documents, team and user data from Archbee given teamId. Use --output
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                teamId:
+                  type: string
+                  description: Team id for which the export is computed.
+                  example: 21-character__string0
+                exportThisSpaceOnly:
+                  type: boolean
+                  description: OPTIONAL, use this if you want to export data only from the space with docSpaceId.
+                  example: true
+                exportAsLink:
+                  type: boolean
+                  description: OPTIONAL, use this if you want to get a link to the zip archive.
+                  example: true
+              required:
+              - teamId
+      responses:
+        '200':
+          description: Successful export
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Requires the Authorization header in the form Authorization: Bearer {base64(docSpaceId~apiKey)} — the base64 encoding of the docSpaceId, a tilde, and the apiKey. A team key beginning abteam_ may be used instead to reach every space in the organization.'

@@ -1,0 +1,134 @@
+openapi: 3.2.0
+info:
+  title: Archbee Public Suggestions API
+  description: The Archbee Public API manages documentation spaces, documents, space groups, File Manager files, reader suggestions, organization exports and imported OpenAPI references in an Archbee workspace. Authentication uses an HTTP Bearer token whose value is base64(docSpaceId~apiKey), or a team key beginning abteam_.
+  version: '2026-09-04'
+  contact:
+    name: Archbee Support
+    email: support@archbee.com
+    url: https://www.archbee.com/
+  termsOfService: https://www.archbee.com/terms-of-service
+  x-generated-from: https://www.archbee.com/docs/<slug>.md api-oas-v2 blocks published by Archbee
+  x-generated-by: API Evangelist enrichment pipeline, local-v3
+  x-generated-date: '2026-09-04'
+servers:
+- url: https://api.archbee.com/api/public-api
+  description: Archbee API Server
+security:
+- bearerAuth: []
+tags:
+- name: Suggestions
+  description: Reader-submitted suggested changes — merge or discard
+paths:
+  /suggest-change/discard:
+    post:
+      operationId: discardSuggestionDocument
+      summary: Discard suggestion document
+      tags:
+      - Suggestions
+      x-source-doc: https://www.archbee.com/docs/discard-suggestion-document
+      description: Discard and delete a suggestion document without merging it into the base document. The suggestion document must have a docId starting with 'SUGGEST-'.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                docId:
+                  type: string
+                  description: The ID of the suggestion document to discard. Must start with 'SUGGEST-'.
+                  example: SUGGEST-21character_string
+              required:
+              - docId
+      responses:
+        '200':
+          description: Suggestion successfully discarded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+  /suggest-change/merge:
+    post:
+      operationId: mergeSuggestionIntoMainDocument
+      summary: Merge suggestion into main document
+      tags:
+      - Suggestions
+      x-source-doc: https://www.archbee.com/docs/merge-suggestion-into-main-document
+      description: Merge a suggestion document into the base document. The suggestion document must have a docId starting with 'SUGGEST-'.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                docId:
+                  type: string
+                  description: The ID of the suggestion document to merge. Must start with 'SUGGEST-'.
+                  example: SUGGEST-21character_string
+              required:
+              - docId
+      responses:
+        '200':
+          description: Suggestion successfully merged
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - OK
+                    - Not OK
+                    description: Response Status
+                    example: Not OK
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: Some error message
+                    description: Array of messages
+                    example: '["Some error message"]'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Requires the Authorization header in the form Authorization: Bearer {base64(docSpaceId~apiKey)} — the base64 encoding of the docSpaceId, a tilde, and the apiKey. A team key beginning abteam_ may be used instead to reach every space in the organization.'
