@@ -272,7 +272,7 @@ paths:
     - url: https://api.archbee.com/api/public-api
       description: Archbee API Server
     post:
-      operationId: createSpace
+      operationId: postSpaceCreate
       summary: Create Space
       tags:
       - Spaces
@@ -344,12 +344,14 @@ paths:
                     example: '["Some error message"]'
       security:
       - bearerAuth: []
+      x-operation-id-source: normalized
+      x-operation-id-original: createSpace
   /space/delete:
     servers:
     - url: https://api.archbee.com/api/public-api
       description: Archbee API Server
     delete:
-      operationId: deleteSpace
+      operationId: deleteSpaceDelete
       summary: Delete Space
       tags:
       - Spaces
@@ -410,6 +412,8 @@ paths:
                     example: '["Some error message"]'
       security:
       - bearerAuth: []
+      x-operation-id-source: normalized
+      x-operation-id-original: deleteSpace
   /space/publish:
     servers:
     - url: https://api.archbee.com/api/public-api
@@ -654,6 +658,17 @@ paths:
       - bearerAuth: []
 components:
   schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message
+          example: Unauthorized
+        code:
+          type: integer
+          description: Error code
+          example: 401
     SpaceRequest:
       type: object
       required:
@@ -675,17 +690,6 @@ components:
           type: string
           description: Space description
           example: API reference documentation
-    SpaceList:
-      type: object
-      properties:
-        spaces:
-          type: array
-          items:
-            $ref: '#/components/schemas/Space'
-        totalCount:
-          type: integer
-          description: Total number of spaces
-          example: 3
     Space:
       type: object
       properties:
@@ -722,17 +726,17 @@ components:
           format: date-time
           description: Space creation timestamp
           example: '2026-01-15T10:00:00Z'
-    ErrorResponse:
+    SpaceList:
       type: object
       properties:
-        message:
-          type: string
-          description: Error message
-          example: Unauthorized
-        code:
+        spaces:
+          type: array
+          items:
+            $ref: '#/components/schemas/Space'
+        totalCount:
           type: integer
-          description: Error code
-          example: 401
+          description: Total number of spaces
+          example: 3
   securitySchemes:
     apiKey:
       type: apiKey

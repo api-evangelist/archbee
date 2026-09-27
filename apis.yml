@@ -250,9 +250,11 @@ apis:
   humanURL: https://www.archbee.com/docs/get-document
   baseURL: https://api.archbee.com/api/public-api
   tags:
+  - Spaces
   - Space
   tags_raw:
   - Spaces
+  - Space
   properties:
   - type: OpenAPI
     url: openapi/archbee-spaces-api-openapi.yml

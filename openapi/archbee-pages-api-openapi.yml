@@ -123,17 +123,6 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
-    ErrorResponse:
-      type: object
-      properties:
-        message:
-          type: string
-          description: Error message
-          example: Unauthorized
-        code:
-          type: integer
-          description: Error code
-          example: 401
     PageRequest:
       type: object
       required:
@@ -161,6 +150,17 @@ components:
           type: string
           description: Parent page ID for nested pages
           example: pg_parent123
+    PageList:
+      type: object
+      properties:
+        pages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Page'
+        totalCount:
+          type: integer
+          description: Total number of pages
+          example: 10
     Page:
       type: object
       properties:
@@ -204,17 +204,17 @@ components:
           format: date-time
           description: Last update timestamp
           example: '2026-04-19T10:00:00Z'
-    PageList:
+    ErrorResponse:
       type: object
       properties:
-        pages:
-          type: array
-          items:
-            $ref: '#/components/schemas/Page'
-        totalCount:
+        message:
+          type: string
+          description: Error message
+          example: Unauthorized
+        code:
           type: integer
-          description: Total number of pages
-          example: 10
+          description: Error code
+          example: 401
   securitySchemes:
     apiKey:
       type: apiKey

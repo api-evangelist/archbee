@@ -62,17 +62,6 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
-    MemberList:
-      type: object
-      properties:
-        members:
-          type: array
-          items:
-            $ref: '#/components/schemas/Member'
-        totalCount:
-          type: integer
-          description: Total number of members
-          example: 5
     Member:
       type: object
       properties:
@@ -99,6 +88,17 @@ components:
           - viewer
           - commenter
           example: editor
+    MemberList:
+      type: object
+      properties:
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/Member'
+        totalCount:
+          type: integer
+          description: Total number of members
+          example: 5
     ErrorResponse:
       type: object
       properties:
