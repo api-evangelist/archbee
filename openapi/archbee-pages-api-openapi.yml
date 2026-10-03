@@ -123,33 +123,6 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
-    PageRequest:
-      type: object
-      required:
-      - title
-      properties:
-        title:
-          type: string
-          description: Page title
-          example: Quick Start Guide
-        content:
-          type: string
-          description: Page content in Markdown
-          example: '# Quick Start
-
-
-            Welcome to our API...'
-        status:
-          type: string
-          description: Page status
-          enum:
-          - draft
-          - published
-          example: draft
-        parentId:
-          type: string
-          description: Parent page ID for nested pages
-          example: pg_parent123
     PageList:
       type: object
       properties:
@@ -161,6 +134,17 @@ components:
           type: integer
           description: Total number of pages
           example: 10
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message
+          example: Unauthorized
+        code:
+          type: integer
+          description: Error code
+          example: 401
     Page:
       type: object
       properties:
@@ -204,17 +188,33 @@ components:
           format: date-time
           description: Last update timestamp
           example: '2026-04-19T10:00:00Z'
-    ErrorResponse:
+    PageRequest:
       type: object
+      required:
+      - title
       properties:
-        message:
+        title:
           type: string
-          description: Error message
-          example: Unauthorized
-        code:
-          type: integer
-          description: Error code
-          example: 401
+          description: Page title
+          example: Quick Start Guide
+        content:
+          type: string
+          description: Page content in Markdown
+          example: '# Quick Start
+
+
+            Welcome to our API...'
+        status:
+          type: string
+          description: Page status
+          enum:
+          - draft
+          - published
+          example: draft
+        parentId:
+          type: string
+          description: Parent page ID for nested pages
+          example: pg_parent123
   securitySchemes:
     apiKey:
       type: apiKey
