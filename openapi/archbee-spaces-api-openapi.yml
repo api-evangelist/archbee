@@ -669,27 +669,17 @@ components:
           type: integer
           description: Error code
           example: 401
-    SpaceRequest:
+    SpaceList:
       type: object
-      required:
-      - name
       properties:
-        name:
-          type: string
-          description: Space name
-          example: API Reference
-        visibility:
-          type: string
-          description: Space visibility
-          enum:
-          - public
-          - private
-          - password-protected
-          example: public
-        description:
-          type: string
-          description: Space description
-          example: API reference documentation
+        spaces:
+          type: array
+          items:
+            $ref: '#/components/schemas/Space'
+        totalCount:
+          type: integer
+          description: Total number of spaces
+          example: 3
     Space:
       type: object
       properties:
@@ -726,17 +716,27 @@ components:
           format: date-time
           description: Space creation timestamp
           example: '2026-01-15T10:00:00Z'
-    SpaceList:
+    SpaceRequest:
       type: object
+      required:
+      - name
       properties:
-        spaces:
-          type: array
-          items:
-            $ref: '#/components/schemas/Space'
-        totalCount:
-          type: integer
-          description: Total number of spaces
-          example: 3
+        name:
+          type: string
+          description: Space name
+          example: API Reference
+        visibility:
+          type: string
+          description: Space visibility
+          enum:
+          - public
+          - private
+          - password-protected
+          example: public
+        description:
+          type: string
+          description: Space description
+          example: API reference documentation
   securitySchemes:
     apiKey:
       type: apiKey
