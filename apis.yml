@@ -287,6 +287,8 @@ apis:
   - type: DataModel
     url: data-model/archbee-data-model.yml
 common:
+  - type: FinOps
+    url: finops/archbee-finops.yml
   - type: Website
     url: https://www.archbee.com/
   - type: PostmanWorkspace
