@@ -151,3 +151,31 @@ api_metering:
     Archbee does not meter or price the Public API or the MCP server separately. API access is a
     feature of the subscription, and no plan publishes a request quota. The only usage-metered thing
     on the price list is AI tokens.
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - free
+  units: []
+  plans:
+  - name: Growing
+    access: paid
+    model: free
+    model_how: derived
+    units: []
+    periods:
+    - month
+  - name: Scaling
+    access: paid
+    model: free
+    model_how: derived
+    units: []
+    periods:
+    - month
+  - name: Enterprise
+    access: enterprise
+    model: free
+    model_how: derived
+    units: []
+    periods:
+    - month
