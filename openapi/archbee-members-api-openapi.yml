@@ -88,17 +88,6 @@ components:
           - viewer
           - commenter
           example: editor
-    ErrorResponse:
-      type: object
-      properties:
-        message:
-          type: string
-          description: Error message
-          example: Unauthorized
-        code:
-          type: integer
-          description: Error code
-          example: 401
     MemberList:
       type: object
       properties:
@@ -110,6 +99,17 @@ components:
           type: integer
           description: Total number of members
           example: 5
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message
+          example: Unauthorized
+        code:
+          type: integer
+          description: Error code
+          example: 401
   securitySchemes:
     apiKey:
       type: apiKey
