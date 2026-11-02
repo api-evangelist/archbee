@@ -1,0 +1,90 @@
+# Pricing transcribed from the provider's own page — see provenance. Numbers are quoted, not derived.
+generated: '2026-10-28'
+method: searched
+source: https://www.archbee.com/pricing
+sources:
+- https://www.archbee.com/pricing
+provenance:
+  tool: engine/economics/harvest_pricing.py
+  run: 20261028T120612
+  grounding: every price_text was found verbatim in the fetched page text
+audience: business-product
+pricing_basis: tiered-subscription
+delivery:
+  delivery: managed+licensed
+  method: page
+  read: '2026-10-28'
+  evidence: We deploy our software to an AWS subaccount that you own and pay for.
+  managed_tier: Growing
+published: true
+note: Documentation platform tiers with monthly pricing; Enterprise custom. Discounts noted (50% startup/non-profit,
+  free Growing for open source). Cloud-Prem price_amount reflects '100K' numeral literally.
+plan_count: 4
+currency: USD
+plans:
+- name: Growing
+  price_text: Starting at $80 per month
+  price: 80
+  currency: USD
+  period: month
+  included_quota: Unlimited readers, unlimited project spaces, 10GB + 2GB/member storage, 1 custom domain,
+    1 year revision history; AI add-on 20M tokens/month
+  overage: Additional tokens beyond your allocation are charged at $1.2 per 1M tokens.
+- name: Scaling
+  price_text: Starting at $350 per month
+  price: 350
+  currency: USD
+  period: month
+  included_quota: Everything in Growing; 20GB + 10GB/member, 2 years revision history; AI add-on 40M tokens/month
+  overage: Additional tokens beyond your allocation are charged at $1.2 per 1M tokens.
+- name: Enterprise
+  price_text: Custom pricing
+  period: none
+  included_quota: Everything in Scaling, all add-ons, SSO, 100GB + 10GB/member; AI add-on 100M tokens/month
+  overage: $1.2 per 1M tokens
+- name: Cloud-Prem (Enterprise)
+  price_text: starting at $100K per year
+  price: 100
+  currency: USD
+  period: year
+  included_quota: Deployed to an AWS subaccount you own; minimum 3-year contracts
+rate_limit_statements:
+- if overage exceeds 1.2B additional tokens in a billing cycle, we may invoice for the overage before
+  the next regular billing cycle
+x-canonical:
+  generated: '2026-11-01'
+  vocabulary: engine/economics/plans-canonical.yml
+  models:
+  - hybrid
+  - metered
+  - subscription
+  units: []
+  plans:
+  - name: Growing
+    access: other
+    model: hybrid
+    model_how: derived
+    units: []
+    periods:
+    - month
+  - name: Scaling
+    access: other
+    model: hybrid
+    model_how: derived
+    units: []
+    periods:
+    - month
+  - name: Enterprise
+    access: other
+    model: metered
+    model_how: derived
+    units: []
+    periods:
+    - none
+  - name: Cloud-Prem (Enterprise)
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods:
+    - year
