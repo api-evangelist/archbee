@@ -52,7 +52,7 @@ rate_limit_statements:
 - if overage exceeds 1.2B additional tokens in a billing cycle, we may invoice for the overage before
   the next regular billing cycle
 x-canonical:
-  generated: '2026-11-01'
+  generated: '2026-11-02'
   vocabulary: engine/economics/plans-canonical.yml
   models:
   - hybrid
